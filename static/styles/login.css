@@ -1,0 +1,124 @@
+* {margin:0;padding:0;}
+html {height:100%;}
+body {background-image:url(imgs/subtlenet2.png);font-family:Arial, Helvetica, sans-serif;}
+a {text-decoration:none;}
+.loginpanel {
+	width:450px;
+	height:250px;
+	margin-left:-225px;
+	margin-top:-150px;
+}
+
+#maincontent {
+    height: 381px;
+    width: 450px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-left: -225px;
+    margin-top: -325px;
+}
+
+.panel {
+    background-color:#EEEEEE;
+    border:1px solid #222222;
+    left:50%; 
+    position:fixed;
+    top:50%; 
+}
+.panel h3 {
+    background-color:#F25D23;
+    border-bottom-color:#222222;
+    border-bottom-style:solid;
+    border-bottom-width:1px;
+    color:#EEEEEE;
+    height:50px;
+    line-height:50px;
+    text-indent:25px;
+    width:100%;
+}
+.panel .panelbuttons {
+    margin:40px auto;
+    position:relative;
+    width:400px;
+}
+.panel .panelbuttons .inputblock {
+    background-color:#F6F6F6;
+    border:1px solid #BBBBBB;
+    display:block;
+    margin-bottom:15px;
+    overflow:hidden;
+}
+.panel .panelbuttons input {
+    border-left-color:#BBBBBB;
+    border-left-width:1px;
+    border-style:none none none solid;
+    float:right;
+    height:35px;
+    padding-left:5px;
+    width:355px;
+    font-size: 16px;
+}
+.panel .panelbuttons .inputblock:last-child {
+    margin-bottom:0;
+}
+#userblock {
+    background-image:url(imgs/user.png);
+    background-position:10px 50%;
+    background-repeat:no-repeat no-repeat;
+}
+#passblock {
+    background-image:url(imgs/key.png);
+    background-position:7px 50%;
+    background-repeat:no-repeat no-repeat;
+}
+
+.panel .panelforgotten {
+    float: right;
+    bottom:-25px;
+    color:#000;
+    font-size:14px;
+}
+
+.panel .panelforgotten:hover {
+    color:#CCCCCC;
+    text-decoration:underline;
+}
+
+.panel .panelbottom {
+	background-color:#F25D23;
+	border-top-color:#222222;
+	border-top-style:solid;
+	border-top-width:1px;
+	bottom:0;
+	height:50px;
+	position:absolute;
+	width:100%;
+}
+
+.panel .panelbottom input {
+    background-color:#666666;
+    border:1px solid #555555;
+    bottom:10px;
+    color:#CCCCCC;
+    cursor:pointer;
+    font-weight:bold;
+    height:30px;
+    padding:0 5px;
+    position:absolute;
+    right:25px;
+}
+.panel .panelbottom input:hover {
+    background-color:#333333;
+    border:1px solid #444444;
+}
+#foot {
+    margin-top: 10%;
+}
+
+#errorMessage {
+    color: red;
+    font-weight: bold;
+    font-size: 14px;
+    padding: 5px;
+}

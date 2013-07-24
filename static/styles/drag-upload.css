@@ -1,0 +1,108 @@
+#dropcanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+}
+#dropcanvas.in {
+    display: block;
+    background-image: url('imgs/black60.png');
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 3;
+}
+#dropcanvas .canvas_close {
+    background-image: url('imgs/close_button.png');
+    display: inline block;
+    float: right;
+    width: 40px;
+    height: 40px;
+}
+#dropzone {
+    background-image: url('imgs/black90.png');
+    padding: 10px;
+    border: 2px solid black;
+    -webkit-border-radius: 45px;
+    -moz-border-radius: 45px;
+    border-radius: 45px;
+    
+    color: #FFF;
+    text-align: center;
+    max-width: 800px;
+    margin: auto;
+    margin-top: 200px;
+}
+#dropzone.fade {
+    -webkit-transition: all 0.3s ease-out;
+    -moz-transition: all 0.3s ease-out;
+    -ms-transition: all 0.3s ease-out;
+    -o-transition: all 0.3s ease-out;
+    transition: all 0.3s ease-out;
+    opacity: 1;
+}
+
+#dropzone h3 {
+    font-size: 48px;
+    font-weight: bold;
+}
+#dropzone h4 {
+    font-size: 32px;
+}
+#dropzone p {
+    padding: 5px;
+    font-size: 24px;
+}
+
+#dropcanvas #fileupload {
+    width: 40%;
+    margin: auto;
+    padding: 10px;
+}
+
+.fileinput-button {
+   position: relative;
+   overflow: hidden;
+   float: left;
+   margin-right: 5px;
+}
+.fileinput-button input {
+   position: absolute;
+   top: 0;
+   right: 0;
+    margin: 0;
+   opacity: 0;
+   filter: alpha(opacity=0);
+   transform: translate(-300px, 0) scale(4);
+   font-size: 23px;
+   direction: ltr;
+   cursor: pointer;
+}
+.fileupload-buttonbar .ui-button,
+.fileupload-buttonbar .toggle {
+   margin-bottom: 5px;
+}
+.files .progress {
+   width: 200px;
+}
+.files .progress,
+.fileupload-buttonbar .progress {
+   height: 20px;
+}
+.files .ui-progressbar-value,
+.fileupload-buttonbar .ui-progressbar-value {
+   background: url(../img/progressbar.gif);
+}
+.fileupload-loading {
+   position: absolute;
+   left: 50%;
+   width: 128px;
+   height: 128px;
+   background: url(../img/loading.gif) center no-repeat;
+   display: none;
+}
+.fileupload-processing .fileupload-loading {
+   display: block;
+}

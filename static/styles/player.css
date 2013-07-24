@@ -1,0 +1,128 @@
+body {
+	font-family: Arial, sans-serif;
+    color: white;
+    font-size: 18px;
+    margin: 0;
+    width: 700px;
+    height: 110px;
+    overflow: hidden;
+}
+
+.hidden {
+    display: none;
+}
+
+#player-container {
+    background-color: #656565;   
+    width: 700px;
+    height: 110px;
+}
+
+#pause:before {
+    content: " ";
+    width: 0; height: 0;
+    border-bottom: 15px solid #888888;
+    border-left: 28px solid transparent;
+    border-right: 28px solid transparent;
+    position: absolute;
+    top: -15px;
+}
+#pause {
+    display: inline-block;
+    margin: 20px 0 20px 30px;
+    width: 56px;
+    height: 35px;
+    position: relative;
+    background: #888888 url('Play.png') no-repeat 50% 50%;
+}
+#pause:after {
+    content: "";
+    width: 0;
+    position: absolute;
+    bottom: -15px;
+    border-top: 15px solid #888888;
+    border-left: 28px solid transparent;
+    border-right: 28px solid transparent;
+}
+#info-left {
+    display: inline-block;
+    position: absolute;
+    background-color:#888888;
+    top: 19px;
+    left: 94px;
+    padding:2px;
+}
+
+#info-right {
+    display: inline-block;
+    float: right;
+}
+#track-info{
+	text-align:left;
+	text-indent:5px;
+	font-size:14px;
+	position:absolute;
+	left: 105px;
+	border-left: 5px solid #888888;
+}
+.diagonalBar{
+	width:60px;
+	height:5px;
+	-webkit-transform:rotate(31deg);
+	background-color:#888888;
+	position:absolute;
+	left: 53px;
+}
+#artist {
+	float:left;
+    font-size: 26px;
+    line-height:26px;
+}
+#song:before{
+	content: " - ";
+	margin-left:5px;
+}
+#song {
+	float:left;
+    font-size: 20px;
+    line-height:26px;
+}
+
+#bar-container {
+    display: inline-block;
+    margin-top: 2px;
+    height: 30px;
+    line-height:19px;
+}
+
+#bar {
+    display: inline-block;
+    width: 350px;
+    height: 2px;
+    background-color: white;
+    margin: 5px;
+}
+
+#current-position {
+	border-radius:0.8em;
+    background:#656565;   
+    width: 11px;
+    height: 12px;    
+    display: inline-block;
+    position: relative;
+    left: 62px;
+}
+
+#current-time, #end-time {
+    display: inline-block;
+    padding: 5px;
+}
+
+#avatar {
+    width: 100px;
+    height: 80px;
+}
+
+#logo {  
+    float: right;
+}

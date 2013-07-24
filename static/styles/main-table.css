@@ -1,0 +1,209 @@
+.voting-table {
+    width: 100%;
+	position:relative;
+}
+
+.voting-table tr {
+    height: 25px;
+    background: url('list-item.png') 0px 0px;
+    display: block;
+    position: relative;
+    -moz-box-shadow: 1px 1px 5px #888;
+    -webkit-box-shadow: 1px 1px 5px #888;
+    box-shadow: 1px 1px 5px #888;
+}
+
+.voting-table tbody tr {
+    cursor: pointer;
+	display: table;
+    position: relative;
+    width: 100%;
+}
+.voting-table tbody td {
+	text-overflow:ellipsis;
+}
+.voting-table th {
+    background: url('list-header.png');
+    font: bold 11px 'Helvetica Neue',Arial,sans-serif;
+    text-shadow: 0 1px 0 white;
+    text-transform: uppercase;
+    line-height: 22px;
+    padding: 0 5px;
+    text-align: left;
+}
+
+.voting-table thead tr {
+	display:table-row;
+}
+.voting-table thead tr:first-child{
+    height: 22px !important;
+}
+
+.voting-table td {
+    height: 25px;
+    padding: 0 5px;
+    vertical-align: middle;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.voting-table tr.even {
+    background-position: 0px 50px;
+}
+
+.voting-table .selected, .voting-table tr:hover {
+    background-position: 0px 25px !important;
+}
+
+.voting-table .col0 {
+    width: 20px;
+    text-align: center;
+    padding: 0 2px;
+}
+.voting-table .col1 {
+    width: 20px;
+    text-align: center;
+    padding: 0;
+}
+.voting-table .col2 {
+    width: 320px;
+	max-width:320px;
+}
+.voting-table .col3 {
+    width: 210px;
+	max-width:210px;
+}
+.voting-table .col4 {
+    text-align: right;
+    width: 60px;
+	max-width: 60px;
+}
+.voting-table .col5 {
+    width: 170px;
+	max-width:170px;
+}
+.voting-table .col6 {
+    width: 65px;
+	max-width:65px;
+}
+.voting-table .votebox{
+    text-align: right;
+    padding-right: 10px;
+    padding-left: 0;
+    overflow:hidden;
+    height: 25px;
+    line-height: 25px;
+}
+.voting-table .even .votebox{
+    background-position: 0px 50px;
+}
+.voting-table .votebtn {
+    background: transparent;
+    border: none;
+    width: 16px;
+    height: 16px;
+    padding: 0;
+    cursor: pointer;
+    position: relative;
+}
+.voting-table .votebtn:hover{
+    top: 1px;
+}
+.voting-table .votedown {
+    background: url('imgs/arrow_down_16x16.png') center center no-repeat;
+}
+.voting-table .votedown-red {
+    background: url('imgs/arrow_down_red_16x16.png') center center no-repeat;
+}
+.voting-table .votedown-green {
+    background: url('imgs/arrow_down_green_16x16.png') center center no-repeat;
+}
+.voting-table .voteup {
+    background: url('imgs/arrow_up_16x16.png') center center no-repeat;
+}
+.voting-table .voteup-red {
+    background: url('imgs/arrow_up_red_16x16.png') center center no-repeat;
+}
+.voting-table .voteup-green {
+    background: url('imgs/arrow_up_green_16x16.png') center center no-repeat;
+}
+.voting-table .addsong {
+    float: right;
+    color: #ff8400;
+   	border: 1px solid #ff8400;
+}
+.voting-table .score {
+    display: inline-block;
+    font-weight: bold;
+    text-align: center;
+    width: 20px;
+}
+.voting-table .source-icon {
+    margin-top: 2px;
+    width: 18px;
+    height: 18px;
+}
+
+#table-container{
+    margin: 20px auto 110px auto;
+    position: relative;
+    clear: both;
+    overflow: hidden;
+    border-radius: 0.8em !important;
+}
+
+/* Tiny Scrollbar */
+#table-container .viewport {
+    height: 500px;
+    overflow: hidden;
+    position: relative;
+}
+#table-container .overview {
+    width: 100%;
+    list-style: none;
+    position: absolute;
+    left: 0;
+    top: 0;
+    padding: 0;
+    margin: 0;
+}
+#table-container .scrollbar{
+    background: transparent url('imgs/bg-scrollbar-track-y.png') no-repeat 0 0;
+    position: relative;
+    background-position: 0 0;
+    float: right;
+    width: 15px;
+}
+#table-container .track {
+    background: transparent url('imgs/bg-scrollbar-trackend-y.png') no-repeat 0 100%;
+    height: 100%;
+    width:13px;
+    position: relative;
+    padding: 0 1px;
+}
+#table-container .thumb {
+    background: transparent url('imgs/bg-scrollbar-thumb-y.png') no-repeat 50% 100%;
+    height: 20px;
+    width: 25px;
+    cursor: pointer;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    left: -5px;
+}
+#table-container .thumb .end {
+    background: transparent url('imgs/bg-scrollbar-thumb-y.png') no-repeat 50% 0;
+    overflow: hidden;
+    height: 5px;
+    width: 25px;
+}
+#table-container .disable {
+    display: none;
+}
+.noSelect {
+    user-select: none;
+    -o-user-select: none;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+}

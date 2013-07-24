@@ -1,0 +1,108 @@
+{if:HEADER}
+<!DOCTYPE html>
+<html>
+<head>
+    <base href="{tag:CORE_SERVER /}" />
+	<title>{tag:PAGE_TITLE /}</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="author" content="MetalMichael" />
+    
+    <link rel="shortcut icon" href="favicon.ico" />
+	<link href="{tag:STATIC_SERVER /}styles/global.css" rel="stylesheet" type="text/css" />
+    <link href="{tag:STATIC_SERVER /}styles/{tag:PAGE_NAME /}.css" rel="stylesheet" type="text/css" />
+
+    <link href='http://fonts.googleapis.com/css?family=Ubuntu' rel='stylesheet' type='text/css' />
+    
+    <script src="{tag:STATIC_SERVER /}functions/global.js" type="text/javascript"></script>
+	{if:JQUERY_INCLUDES}
+        <script src="{tag:STATIC_SERVER /}functions/jquery.js" type="text/javascript"></script>
+        <script src="{tag:STATIC_SERVER /}functions/jquery-ui.js" type="text/javascript"></script>
+        <link href="{tag:STATIC_SERVER /}styles/jquery-ui.css" rel="stylesheet" />
+	{/if:JQUERY_INCLUDES}
+	
+    <script type="text/javascript">
+		function showHideDebug(elem) {
+			if($('#'+elem).is(':visible')) {
+				$('#'+elem).fadeOut();
+				$('#toggle_'+elem).html('(Show)');
+			} else {
+				$('#'+elem).fadeIn();
+				$('#toggle_'+elem).html('(Hide)');
+			}
+			window.scrollTo(0, $('body').height());
+			return false;
+		}
+        
+        var auth = "{tag:USER_AUTHKEY /}";
+	</script>
+	
+    <script src="{tag:STATIC_SERVER /}functions/{tag:PAGE_NAME /}/{tag:PAGE_NAME /}.js" type="text/javascript"></script>
+    {if:HEADER_INCLUDES}
+        {loop:HEADER_INCLUDES}
+            <script src="{tag:STATIC_SERVER /}functions/{tag:HEADER_INCLUDES[] /}" type="text/javascript"></script>
+        {/loop:HEADER_INCLUDES}
+    {/if:HEADER_INCLUDES}
+</head>
+<body style="{tag:BODY_STYLE /}">
+
+<div id="header">
+    <div id="adminlinks">
+        {tag:CLEAR_CACHE /}
+    	{if:MENUITEM_TOOLBOX}
+               <a id="toolbox" href="toolbox">[Toolbox]</a></li>
+    	{/if:MENUITEM_TOOLBOX}
+     </div>
+    <h2><a href="/" onclick="return changeNav('index')"><img src="{tag:STATIC_SERVER /}images/radio.png" alt="Radio" id="radio" /></a></h2>
+    <div id="navigation">
+        <ul>
+            <a href="/index" onclick="return changeNav('index')" id="nav-index"><li class="button indexBtn">Voting</li></a>
+            <a href="/history" onclick="return changeNav('history')" id="nav-history"><li class="button historyBtn">History</li></a>
+        </ul>
+    </div>
+    {if:SEARCH}
+    <form id="searchbox" method="get" onsubmit="updateSearch(); return false;">
+        <span class="label">Search: </span><input type="text" id="searchinput" onfocus="updateSearch();" />
+        <div id="library-buttons">
+            <ul>
+                <li>
+                    <label for="library-spotify">
+                        <img src="{tag:STATIC_SERVER /}images/spotify-icon.png" alt="Spotify Icon" title="Spotify" class="library-icon" />
+                    </label>
+                    <input type="checkbox" class="library-button" id="library-spotify" checked="checked" />
+                </li>
+                <li>
+                    <label for="library-youtube">
+                        <img src="{tag:STATIC_SERVER /}images/youtube-icon.png" alt="Youtube Icon" title="Youtube" class="library-icon" />
+                    </label>
+                    <input type="checkbox" class="library-button" id="library-youtube" />
+                </li>
+                <li>
+                    <label for="library-local">
+                        <img src="{tag:STATIC_SERVER /}images/folder-icon.png" alt="Local Icon" title="Local" class="library-icon" />
+                    </label>
+                    <input type="checkbox" class="library-button" id="library-local" />
+                </li>
+            </ul>
+        </div>
+    </form>
+    <div id="search">
+        <div id="search-results"></div>
+    </div>
+    {/if:SEARCH}
+    <div id="userinfo">
+        {tag:USER_NAME /} <a href="/login/logout">[x]</a>
+    </div>
+</div>  
+<div id="main">
+	<div id="content">
+{/if:HEADER}
+{if:FOOTER}
+	</div>
+    <div id="footer">
+        <a href="/" onclick="return changeNav('index')"><img src="{tag:STATIC_SERVER /}images/lanradio.png" alt="LAN Radio" id="footerlogo" /></a>
+    </div>
+</div>
+{tag:DEBUG_TABLES /}
+</body>
+</html>
+{/if:FOOTER}

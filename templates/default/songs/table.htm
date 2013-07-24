@@ -1,0 +1,29 @@
+<table id="voting-table" class="voting-table">
+    <tbody>
+        {if:TABLE_ROWS}
+            {loop:SONGS}
+                <tr id="row-{tag:SONGS[].ID /}" class="{tag:SONGS[].PARITY /}" onclick="clickRow('{tag:SONGS[].ID /}');">
+                    <td class="col0">{tag:SONGS[].COUNT /}</td>
+                    <td class="col1"><img class="source-icon" src="{tag:STATIC_SERVER /}images/{tag:SONGS[].SOURCE /}-icon.png" alt="{tag:SONGS[].SOURCE /}"/></td>
+                    <td class="col2">{tag:SONGS[].TITLE /}</td>
+                    <td class="col3">{tag:SONGS[].ARTIST /}</td>
+                    <td class="col4">{tag:SONGS[].DURATION /}</td>
+                    <td class="col5">{tag:SONGS[].ALBUM /}</td>
+                    <td class="col6 votebox">
+                        <a href="#" onclick="vote(1,'{tag:SONGS[].ID /}', {tag:SONGS[].COUNT /}); return false;">
+                            <button id="button-up-{tag:SONGS[].ID /}" class="voteup{tag:SONGS[].UPCOLOUR /} votebtn"></button>
+                        </a>
+                        <span id="score-{tag:SONGS[].ID /}" class="score">{tag:SONGS[].SCORE /}</span>
+                        <a href="#" onclick="vote(0,'{tag:SONGS[].ID /}', {tag:SONGS[].COUNT /}); return false;">
+                            <button id="button-down-{tag:SONGS[].ID /}" class="votedown{tag:SONGS[].DOWNCOLOUR /} votebtn"></button>
+                        </a>
+                    </td>
+                </tr>
+            {/loop:SONGS}
+        {else:TABLE_ROWS}
+            <tr class="odd">
+                <td colspan="6">No Current Tracks</td>
+            </tr>
+        {/if:TABLE_ROWS}
+    </tbody>
+</table>

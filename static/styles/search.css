@@ -1,0 +1,121 @@
+#search {
+    display: none;
+    overflow: hidden;
+    color:#000000;
+    background-color:#f25d23;
+    position: absolute;
+    right: 5%;
+    top: 40px;
+    border: 10px solid #222;
+    width: 700px;
+    max-height: 347px;
+    z-index: 2;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+}
+
+#library-buttons {
+    display: inline-block;
+    margin-left: 15px;
+}
+
+#library-buttons ul, #library-buttons ul li {
+    display: inline;
+    padding: 0 2px;
+}
+
+#library-buttons .library-icon {
+    position: relative;
+    top: 5px;
+}
+
+#library-buttons .library-button {
+    margin-bottom: 5px;
+}
+
+#searchbox {
+    position: absolute;
+    right: 270px;
+    top: 2px;
+    float: right;
+    z-index:2;
+    height: 25px;
+    line-height: 25px;
+}
+#searchinput{
+    padding: 0 5px 0 5px;
+}
+#searchfield {
+    color: #03214D;
+}
+#search-results {
+	color:#ffffff;
+    display: block;
+    clear: both;
+    padding: 10px;
+    border-collapse: collapse;
+    width: 100%;
+    overflow-y: scroll;
+    z-index: 1;
+}
+#search-results-table{
+	color:#000000;
+	width:700px;
+	position:relative;
+	left: -10px;
+	clear:both;
+	margin: 10px auto 10px;
+	background-color:white;
+}
+#search-results-table tr{
+	background-image:url(list-item.png);
+	background-position:0 0;
+}
+#search-results-table tr:nth-child(even) {
+  	background-position:0 50px;
+}
+#search-results-table tr td:nth-child(1),th:nth-child(1){
+	max-width:400px;
+	width:400px;
+}
+#search-results-table tr td:nth-child(2),th:nth-child(2){
+	max-width:100px;
+	width:100px;
+}
+#search-results-table tr td:nth-child(3),th:nth-child(3){
+	max-width:  50px;
+	width:50px;
+}
+#search-results-table tr td:nth-child(4),th:nth-child(4){
+	max-width:100px;
+	width:100px;
+}
+#search-results-table thead tr{
+	text-align:left;
+	text-indent: 5px;
+	background-position: 0 50px;
+	padding: 2px 0 2px 0;
+}
+#search-results-table td{
+	height: 25px;
+	text-overflow: ellipsis;
+	overflow:hidden;
+	padding:0 5px;
+  	vertical-align:middle;
+  	white-space:nowrap;
+}
+#search-results-table_length{
+	display:none;/*until fixed*/
+	float:left;
+	margin-bottom: 10px;
+}
+#search-results-table_filter{
+	float:right;
+	margin-bottom: 10px;
+}
+#search-results-table_info{
+	float:left;
+}
+#search-results-table_paginate{
+	float:right;
+}

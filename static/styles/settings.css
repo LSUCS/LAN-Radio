@@ -1,0 +1,29 @@
+#content h2,h3 {
+	text-indent: 0.8em;
+	font-size: 32px;
+	line-height: 32px;
+}
+table {
+	margin-bottom: 10px;
+}
+table td {
+	padding: 2px;
+}
+.label {
+	padding-top: 10px;
+}
+table .label {
+	text-indent: 30px;
+}
+.table-header{
+	border-bottom: 1px solid #000000;
+	font-size: 20px;
+	padding: 4px 0 4px 0;
+}
+input {
+	padding: 2px;
+}
+input[type="checkbox"],label{
+	position:relative;
+	left: -30px;
+}
