@@ -6,7 +6,7 @@ class Helper_Songs_Tableinfo extends CoreHelper {
                                     SELECT * FROM songlist
                                 ) user_rank,(SELECT @rownum:=0) r");
         
-        $Info = $DB->to_array('trackid');
+        $Info = Core::get('DB')->to_array('trackid');
         
         echo json_encode($Info);
     }

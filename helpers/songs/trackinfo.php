@@ -11,11 +11,10 @@ class Helper_Songs_Trackinfo extends CoreHelper {
             foreach($Err as $e) echo $e . "\n";
             die;
         }
-        
+        //die($trackID);
         Core::get('DB')->query("SELECT
                         vl.trackid,
                         vl.addedBy,
-                        u.Username,
                         vl.addedDate,
                         ti.Title,
                         ti.Artist,
@@ -25,8 +24,6 @@ class Helper_Songs_Trackinfo extends CoreHelper {
                     FROM voting_list AS vl
                     JOIN track_info AS ti
                         ON ti.trackid = vl.trackid
-                    JOIN users AS u
-                        ON u.ID = vl.addedBy
                     LEFT JOIN votes AS v
                         ON vl.trackid = v.trackid
                     WHERE vl.trackid = ?
@@ -35,6 +32,11 @@ class Helper_Songs_Trackinfo extends CoreHelper {
         
         if(Core::get('DB')->record_count() < 1) die('invalid');
         
-        echo json_encode(Core::get('DB')->next_record(MYSQLI_ASSOC));
+        $TrackInfo = Core::get('DB')->next_record(MYSQLI_ASSOC);
+        
+        $User = Model_User::loadFromID($TrackInfo['addedBy']);
+        $TrackInfo['Username'] = $User->Username;
+        
+        echo json_encode($TrackInfo);
     }
 }

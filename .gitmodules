@@ -1,0 +1,3 @@
+[submodule "libraries/phpws"]
+    path = libraries/phpws
+    url = git@github.com:MetalMichael/phpws.git

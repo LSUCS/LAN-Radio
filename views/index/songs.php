@@ -13,11 +13,9 @@ class View_Index_Songs extends CorePage{
     }
     
 	public function render(){
-
 		$this->showHeader('Index');
 		
 		Core::get('Template')->init('main');
-        Core::get('Template')->set('TEST', 'testing');
 		Core::get('Template')->push();
 		
 		$this->showFooter();

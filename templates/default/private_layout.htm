@@ -43,7 +43,7 @@
         {/loop:HEADER_INCLUDES}
     {/if:HEADER_INCLUDES}
 </head>
-<body style="{tag:BODY_STYLE /}">
+<body style="{tag:BODY_STYLE /}" id="{tag:PAGE_NAME /}">
 
 <div id="header">
     <div id="adminlinks">
@@ -52,7 +52,7 @@
                <a id="toolbox" href="toolbox">[Toolbox]</a></li>
     	{/if:MENUITEM_TOOLBOX}
      </div>
-    <h2><a href="/" onclick="return changeNav('index')"><img src="{tag:STATIC_SERVER /}images/radio.png" alt="Radio" id="radio" /></a></h2>
+    <h2><a href="/" ><img src="{tag:STATIC_SERVER /}images/radio.png" alt="Radio" id="radio" /></a></h2>
     <div id="navigation">
         <ul>
             <a href="/index" onclick="return changeNav('index')" id="nav-index"><li class="button indexBtn">Voting</li></a>
@@ -60,8 +60,8 @@
         </ul>
     </div>
     {if:SEARCH}
-    <form id="searchbox" method="get" onsubmit="updateSearch(); return false;">
-        <span class="label">Search: </span><input type="text" id="searchinput" onfocus="updateSearch();" />
+    <form id="searchbox" method="get" onsubmit="search.updateSearch(); return false;">
+        <span class="label">Search: </span><input type="text" id="searchinput" onfocus="search.updateSearch();" />
         <div id="library-buttons">
             <ul>
                 <li>

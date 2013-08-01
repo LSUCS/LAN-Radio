@@ -8,7 +8,6 @@ class Core {
         'DB' => 'CoreDatabase',
         'Template' => 'CoreTemplate',
         'Cache' => 'CoreCache',
-        'BBCode' => 'CoreBBCode',
     	'API' => 'CoreAPI'
     );
 
@@ -74,9 +73,11 @@ class Core {
                 $SessionInfo = Core::get('DB')->next_record();
 
                 if($SessionInfo && $SessionInfo['UserID'] == $userID) {
-                    Core::requireLibrary('LANAuth');
+                    /*Core::requireLibrary('LANAuth');
                     $Auth = new LANAuth;
                     $_SESSION['logged_user'] = $Auth->getUserByID($userID);
+                    */
+                    $_SESSION['logged_user']= Model_User::loadFromID($userID);
                     return;
                 }
             }
@@ -99,8 +100,7 @@ class Core {
      * @return boolean
      */
     public function loggedIn() {
-        if (!isset($_SESSION['logged_user'])) return false;
-        else return true;
+        return isset($_SESSION['logged_user']);
     }
 
     /**
@@ -109,6 +109,8 @@ class Core {
      */
     public function enforceLogin() {
         if (!$this->loggedIn()) {
+            echo var_dump($_SESSION);
+            die('nope');
             // clean request uri
             $requesturi = $_SERVER['REQUEST_URI'];
             $requesturi = urlencode($requesturi);
@@ -126,9 +128,8 @@ class Core {
      * @param $class_color Users class color as an html color code 
      * @return string
      */
-    public function linkUser($uid, $uname, $class_symbol = '', $class_color = false) {
+    public function linkUser($uid, $uname, $class_color = false) {
         $ClassSymbol = '';
-        if($this->LoggedUser['ShowClassSymbols'] == '1') $ClassSymbol = $class_symbol;
         $ClassColor = (($class_color) ? 'color:#' . $class_color : '');
         return "$ClassSymbol<a href='".CORE_SERVER."user/$uid' style='$ClassColor'>$uname</a>";
     }
@@ -141,10 +142,10 @@ class Core {
      */
     public function linkUserMe($skip_class_symbol = false, $skip_class_color = false) {
         return $this->linkUser(
-            $this->LoggedUser['userid'],
-            $this->LoggedUser['username'],
+            $this->LoggedUser->ID,
+            $this->LoggedUser->Username/*,
             (($skip_class_symbol) ? '' : $this->LoggedUser['_CI']['Symbol']),
-            (($skip_class_color) ? false : $this->LoggedUser['_CI']['Color']));
+            (($skip_class_color) ? false : $this->LoggedUser['_CI']['Color'])*/);
     }
 
     public function formatBytes($Bytes, $Decimals = 2) {
@@ -381,7 +382,7 @@ class Core {
         }
         
         if($folder) {
-            $folder += "/";
+            $folder .= "/";
         } else {
             $folder = "";
         }

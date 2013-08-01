@@ -135,6 +135,19 @@ class CoreDatabase{
 		mysqli_data_seek($this->QueryID, 0);
 		return $Return;
 	}
+    
+    /**
+     * Return a single dimensional array of one field values
+     * 
+     * @param bool $Key Key of thing
+     * @return array
+     */
+     function collect($Key) {
+		$Return = array();
+		while($Row = mysqli_fetch_array($this->QueryID)) $Return[] = $Row[$Key];
+		mysqli_data_seek($this->QueryID, 0);
+		return $Return;
+	}
 
     /**
      * Actually do the connection to MySQL.

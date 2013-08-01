@@ -2,7 +2,7 @@
 class Helper_Login_ProcessLogin extends CoreHelper{
 	
 	public function run(){
-		
+		        
         Core::requireLibrary("LANAuth");
         $Auth = new LANAuth;
         

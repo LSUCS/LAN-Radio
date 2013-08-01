@@ -32,10 +32,10 @@ abstract class CorePage{
             
 			$Template->init('private_layout', true);
 			$Template->set('USER_NAME_LINK', $this->parent->linkUserMe());
-			$Template->set('USER_NAME', $this->parent->LoggedUser['username']);
+			$Template->set('USER_NAME', $this->parent->LoggedUser->Username);
             $Template->set('USER_AUTHKEY', '');
 
-			if($this->parent->LoggedUser['moderator']) {
+			if($this->parent->LoggedUser->isAdmin) {
                 $Template->set('MENUITEM_TOOLBOX', true, true);
                 $Template->set('MENUITEM_ADMINBAR', true, true);
 				$Template->set('CLEAR_CACHE', '<a href="'.Core::get('Cache')->generateClearCacheURL().'" id="clearcache">[Clear Cache]</a>');
@@ -78,7 +78,7 @@ abstract class CorePage{
 			$Template->set('DEBUG_TABLES', '');	
 		} else {
 			$Template->init('private_layout', true);
-			if($this->parent->LoggedUser['IsAdmin'])
+			if($this->parent->LoggedUser->isAdmin)
 				$Template->set('DEBUG_TABLES', $this->parent->debug());
             else
                 $Template->set('DEBUG_TABLES', '');

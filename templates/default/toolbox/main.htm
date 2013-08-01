@@ -1,0 +1,102 @@
+<div class="box">
+    <h2>Settings</h2>
+    <table>
+    {if:RUNNING}
+        <form action="/toolbox/name" method="post">
+            <tr>
+                <td class="table-header" colspan="2">Event Controls</td>
+            </tr>
+            <tr>
+                <td colspan="2">Radio Currently Running</td>
+            </tr>
+            <tr>
+                <td class="label">Event Name (Unrecommended to change this)</td>
+                <td>
+                    <select name="event">
+        {loop:EVENTS}
+                        <option value="{tag:EVENTS[].ID /}">{tag:EVENTS[].Name /}</option>
+        {/loop:EVENTS}
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="center"><input class="button" type="submit" value="Change" /></td>
+            </tr>
+        </form>
+    {else:RUNNING}
+        <tr>
+            <td colspan="2" style="font-weight: bold;" class="center">No event currently running</td>
+        </tr>
+    {/if:RUNNING}
+        <form method="post" action="/toolbox/global">
+            <tr>
+                <td class="table-header" colspan="2">Global Settings</td>
+            </tr>
+            <!-- Libraries -->
+            <tr>
+                <td class="label" colspan="2">Available Libraries</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <input type="checkbox" name="spotify" id="spotify-button" {if:SPOTIFY}checked="checked"{/if:SPOTIFY} />
+                    <label for="spotify-button">Spotify</label>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <input type="checkbox" name="youtube" id="youtube-button" {if:YOUTUBE}checked="checked"{/if:YOUTUBE} />
+                    <label for="youtube-button">Youtube</label>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <input type="checkbox" name="local" id="local-button" {if:LOCAL}checked="checked"{/if:LOCAL} />
+                    <label for="local-button">Local</label>
+                </td>
+            </tr>
+            <!-- End Libraries -->
+            <tr>
+                <td class="label">Allow Upload</td>
+                <td><input type="checkbox" name="upload" {if:UPLOAD}checked="checked"{/if:UPLOAD} /></td>
+            </tr>
+            <tr>
+                <td colspan="2" class="center"><input class="button" type="submit" value="Submit" /></td>
+            </tr>
+        </form>
+    </table>
+    
+    <h3>Event Settings</h3>
+    <table>
+        <form method="post" action="/toolbox/add">
+            <tr>
+                <td colspan="2">Event Name:</td>
+                <td><input type="text" name="newEventName" /></td>
+                <td colspan="2"><input class="button" type="submit" value="Add" /></td>
+            </tr>
+        </form>
+        <tr>
+            <td colspan="5" style="font-weight: bold;">Current Events</td>
+        </tr>
+    {loop:EVENTS2}
+        <form method="post" action="/toolbox/start">
+            <input type="hidden" name="eventID" value="{tag:EVENTS2[].ID /}" />
+            <tr>
+                <td colspan="2">
+                    <input type="text" value="{tag:EVENTS2[].Name /}" />
+                </td>
+                <td>
+                    <input class="button" type="submit" name="startEvent" {tag:EVENTS2[].START_ACTION /} />
+                </td>
+                <td>
+                    <input class="button" type="submit" name="endEvent" {tag:EVENTS2[].END_ACTION /} />
+                </td>
+            </tr>
+        </form>
+    {/loop:EVENTS2}
+            </tr>
+        </form>
+    </table>
+</div>

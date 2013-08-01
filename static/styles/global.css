@@ -171,7 +171,7 @@ a {
     border: 1px solid #bbbbbb;
 }
 
-.index .indexBtn, .history .historyBtn, .button:hover, .selected{
+#index .indexBtn, #history .historyBtn, .button:hover, .selected{
     color: #ffffff;
     background: #f25d23; /* Old browsers */
     background: -moz-linear-gradient(top, #f47543 0%, #f25d23 99%); /* FF3.6+ */

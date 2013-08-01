@@ -7,7 +7,7 @@ class Helper_Songs_Songs extends CoreHelper {
         $VotingTracks = Core::get("DB")->to_array(false, MYSQL_ASSOC);
                 
         //Load the users' votes
-        Core::get("DB")->query("SELECT trackid, updown FROM votes WHERE userid = " . $this->parent->LoggedUser['userid']); //. $this->parent->LoggedUser->ID);
+        Core::get("DB")->query("SELECT trackid, updown FROM votes WHERE userid = " . $this->parent->LoggedUser->ID); //. $this->parent->LoggedUser->ID);
         $this->UserVotes = Core::get("DB")->to_array('trackid', MYSQLI_ASSOC);
         
   		Core::get('Template')->init('table');
