@@ -35,7 +35,7 @@ abstract class CorePage{
 			$Template->set('USER_NAME', $this->parent->LoggedUser->Username);
             $Template->set('USER_AUTHKEY', '');
 
-			if($this->parent->LoggedUser->isAdmin) {
+			if($this->parent->LoggedUser->isAdmin) {			 
                 $Template->set('MENUITEM_TOOLBOX', true, true);
                 $Template->set('MENUITEM_ADMINBAR', true, true);
 				$Template->set('CLEAR_CACHE', '<a href="'.Core::get('Cache')->generateClearCacheURL().'" id="clearcache">[Clear Cache]</a>');

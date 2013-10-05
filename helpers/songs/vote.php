@@ -21,14 +21,14 @@ class Helper_Songs_Vote extends CoreHelper {
             die('notrack');
         }
         
-        Core::get('DB')->query("SELECT updown FROM votes WHERE trackid = ? AND userid = ?", array($trackID, $this->parent->LoggedUser["userid"]));
+        Core::get('DB')->query("SELECT updown FROM votes WHERE trackid = ? AND userid = ?", array($trackID, $this->parent->LoggedUser->ID));
         if(Core::get('DB')->record_count()) {
             list($vote) = Core::get('DB')->next_record(MYSQLI_NUM);
             if($vote == $direction) die('identical');
             
-            Core::get('DB')->query("UPDATE votes SET updown = ? WHERE trackid = ? AND userid = ?", array($direction, $trackID, $this->parent->LoggedUser["userid"]));
+            Core::get('DB')->query("UPDATE votes SET updown = ? WHERE trackid = ? AND userid = ?", array($direction, $trackID, $this->parent->LoggedUser->ID));
         } else {
-            Core::get('DB')->query("INSERT INTO votes (trackid, userid, updown) VALUES (?, ?, ?)", array($trackID, $this->parent->LoggedUser["userid"], $direction));
+            Core::get('DB')->query("INSERT INTO votes (trackid, userid, updown) VALUES (?, ?, ?)", array($trackID, $this->parent->LoggedUser->ID, $direction));
         }
         
         //Find out the new position in the big table.

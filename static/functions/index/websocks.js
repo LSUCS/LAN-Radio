@@ -15,8 +15,8 @@ var ws = {
     },
     
     onopen: function() {
-        websocks = true;
         console.log("connected");
+        radioJS.websocks = true;
     },
     
     onmessage: function(msg) {
@@ -75,11 +75,11 @@ var ws = {
     },
     
     onnext: function(d) {
-        readioJS.removeRow($($('#voting-table tr')[0]));
+        radioJS.removeRow($($('#voting-table tr')[0]));
     },
     
     onclose: function() {
-        websocks = true;
+        radioJS.websocks = false;
         console.log("closed");
     },
     

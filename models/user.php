@@ -6,14 +6,14 @@ class Model_User extends CoreModel {
     public $Username; // varchar(25) NOT NULL,
     public $Email; // varchar(30) NOT NULL,
     public $AvatarURL; // varchar(255) DEFAULT NULL,
-    public $IsAdmin = false; // int(1) NOT NULL,
+    public $isAdmin = false; // int(1) NOT NULL,
 
     public function __construct() {
         $this->ID = null;
         $this->Username = null;
         $this->Email = '';
         $this->AvatarURL = '';
-        $this->IsAdmin = false;
+        $this->isAdmin = false;
     }
 
     protected function _loadFromRecord($record) {
@@ -21,7 +21,7 @@ class Model_User extends CoreModel {
         $this->Username = $record['username'];
         $this->Email = $record['email'];
         $this->AvatarURL = $record['avatar'];
-        $this->IsAdmin = $record['moderator'];
+        $this->isAdmin = $record['moderator'];
     }
 
     /**
@@ -55,7 +55,6 @@ class Model_User extends CoreModel {
             
             $this->_getCache()->set($cK, $out);
         }
-
         $this->_loadFromRecord($out);
         return $this;
     }

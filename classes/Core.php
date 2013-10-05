@@ -60,7 +60,7 @@ class Core {
     }
 
     public function handleSessions() {
-        if(isset($_COOKIE['session']) && !isset($_SESSION['logged_user'])) {
+        //if(isset($_COOKIE['session']) && !isset($_SESSION['logged_user'])) {
             // Cookie Security
             $Crypt = new CoreCrypt;
             $cookieInfo = $Crypt->decrypt($_COOKIE['session']);
@@ -83,7 +83,7 @@ class Core {
             }
             $_SESSION = array(); // nuke
             session_destroy();
-        }
+        //}
     }
 
     /**
@@ -109,8 +109,6 @@ class Core {
      */
     public function enforceLogin() {
         if (!$this->loggedIn()) {
-            echo var_dump($_SESSION);
-            die('nope');
             // clean request uri
             $requesturi = $_SERVER['REQUEST_URI'];
             $requesturi = urlencode($requesturi);
@@ -131,7 +129,7 @@ class Core {
     public function linkUser($uid, $uname, $class_color = false) {
         $ClassSymbol = '';
         $ClassColor = (($class_color) ? 'color:#' . $class_color : '');
-        return "$ClassSymbol<a href='".CORE_SERVER."user/$uid' style='$ClassColor'>$uname</a>";
+        return "$ClassSymbol<a href='//lsucs.org.uk/members/$uid' style='$ClassColor'>$uname</a>";
     }
 
     /**

@@ -9,7 +9,8 @@
                     <td class="col3">{tag:SONGS[].ARTIST /}</td>
                     <td class="col4">{tag:SONGS[].DURATION /}</td>
                     <td class="col5">{tag:SONGS[].ALBUM /}</td>
-                    <td class="col6 votebox">
+                    <td class="col6">{tag:SONGS[].ADDEDBY /}</td>
+                    <td class="col7 votebox">
                         <a href="#" onclick="radioJS.vote(1,'{tag:SONGS[].ID /}'); event.stopPropagation(); return false;">
                             <button id="button-up-{tag:SONGS[].ID /}" class="voteup{tag:SONGS[].UPCOLOUR /} votebtn"></button>
                         </a>

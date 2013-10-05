@@ -1,7 +1,7 @@
 <?php
 class View_Toolbox_Toolbox extends CorePage{    
 	public function render(){
-        if(!$_SESSION['logged_user']['moderator']) Core::niceError(403);
+        if(!$_SESSION['logged_user']->isAdmin) Core::niceError(403);
 		
         $template = Core::get('Template');
         $db = Core::get('DB');

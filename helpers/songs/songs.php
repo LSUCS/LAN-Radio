@@ -16,9 +16,15 @@ class Helper_Songs_Songs extends CoreHelper {
             $a = 'even';
             $counter = 0;
             $Songs = array();
+            //Store users so we don't have to get them multiple times
+            $Users = array();
             foreach($VotingTracks as $VT) {
                 $counter++;
                 $parity = ($counter % 2 == 0) ? 'even' : 'odd';
+                
+                if(!array_key_exists($VT['addedBy'], $Users)) {
+                    $Users[$VT['addedBy']] = Model_User::loadFromID($VT['addedBy']);
+                }
                 
                 $Songs[] = array(
                     'ID' => $VT['trackid'],
@@ -28,6 +34,7 @@ class Helper_Songs_Songs extends CoreHelper {
                     'ARTIST' => Core::displayStr($VT['Artist']),
                     'DURATION' => Core::get_time($VT['Duration']),
                     'ALBUM' => Core::displayStr($VT['Album']),
+                    'ADDEDBY' => Core::linkUser($VT['addedBy'], $Users[$VT['addedBy']]->Username),
                     'SCORE' => $VT['Score'],
                     'PARITY' => $parity,
                     'UPCOLOUR' => $this->getColour(1, $VT['trackid']),

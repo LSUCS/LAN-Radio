@@ -4,7 +4,7 @@
         <h3>Drop Audio File(s) To Upload</h3>
         <h4>Supported formats: MP3, M4A, WAV, FLAC, OGG</h4>
         <p>Once uploaded the file(s) will be checked manually, before being approved to be added to the local library. Upload progress can be monitored in the bottom right corner.<br />
-        Max File Size: <?=formatBytes(MAX_UPLOAD_SIZE)?></p>
+        Max File Size: <?=Core::formatBytes(MAX_UPLOAD_SIZE)?></p>
     </div>
     <form id="fileupload" action="//jquery-file-upload.appspot.com/" method="POST" enctype="multipart/form-data">
         <div class="row fileupload-buttonbar">
@@ -30,7 +30,8 @@
                 <th class="col3">Artist/Uploader</th>
                 <th class="col4"></th>
                 <th class="col5">Album</th>
-                <th class="col6"></th>
+                <th class="col6">Added By</th>
+                <th class="col7"></th>
             </tr>
         </thead>
     </table>

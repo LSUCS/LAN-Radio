@@ -52,17 +52,15 @@
 	color:#ffffff;
     display: block;
     clear: both;
-    padding: 10px;
+    padding: 10px 0;
     border-collapse: collapse;
     width: 100%;
-    overflow-y: scroll;
+    overflow: hidden;
     z-index: 1;
 }
 #search-results-table{
 	color:#000000;
-	width:700px;
-	position:relative;
-	left: -10px;
+	width: 100%;
 	clear:both;
 	margin: 10px auto 10px;
 	background-color:white;
@@ -74,21 +72,23 @@
 #search-results-table tr:nth-child(even) {
   	background-position:0 50px;
 }
-#search-results-table tr td:nth-child(1),th:nth-child(1){
-	max-width:400px;
-	width:400px;
+#search-results-table tr td:nth-child(1), th:nth-child(1){
+    width: 30px !important;
 }
-#search-results-table tr td:nth-child(2),th:nth-child(2){
-	max-width:100px;
-	width:100px;
+#search-results-table tr td:nth-child(2), th:nth-child(2){
+	max-width: 400px;
+	width: 40%;
 }
-#search-results-table tr td:nth-child(3),th:nth-child(3){
-	max-width:  50px;
-	width:50px;
+#search-results-table tr td:nth-child(3), th:nth-child(3){
+	max-width: 300px;
+	width: 30%;
 }
-#search-results-table tr td:nth-child(4),th:nth-child(4){
-	max-width:100px;
-	width:100px;
+#search-results-table tr td:nth-child(4), th:nth-child(4){
+	width: 50px;
+}
+#search-results-table tr td:nth-child(5), th:nth-child(5){
+	max-width: 300px;
+	width: 30%;
 }
 #search-results-table thead tr{
 	text-align:left;
@@ -118,4 +118,9 @@
 }
 #search-results-table_paginate{
 	float:right;
+}
+
+#search-results-table .search-library-icon {
+    width: 20px;
+    height: 20px;
 }

@@ -83,6 +83,10 @@
 	max-width:170px;
 }
 .voting-table .col6 {
+    width: 150px;
+    max-width: 200px;
+}
+.voting-table .col7 {
     width: 65px;
 	max-width:65px;
 }
