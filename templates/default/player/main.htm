@@ -10,31 +10,27 @@
 <body>
 
 <div id="player-container">
-    <div id="player-top">
+    <div id="player">
         <a href="#" id="pause-button"><div id="pause"></div></a>
-        <div id="info-left">
-        	<div id="bar-container">
-	            <div id="current-position"></div>
+        <div id="track-info">
+            <span id="song"></span>
+            <span id="artist">Artist</span>
+        </div>
+        <div id="time-info">
+        	<div id="bar-container">           
 	            <div id="current-time">0:00</div>
 	            <div id="current-time-seconds" class="hidden"></div>
-	            <div id="bar"></div>
+	            <div id="bar"><div id="current-position"></div></div>
 	            <div id="end-time">0:00</div>
 	            <div id="end-time-seconds" class="hidden"></div>
         	</div>
         </div>
-        <div id="info-right">
+        <div id="user-info">
             <div id="vote-container"><div id="votes"></div><br />Votes</div>
             <div id="user-info"><div id="avatar"><img /></div></div>
         </div>
     </div>
-    <div id="player-bottom">
-    	<div class="diagonalBar"></div>
-    	<div id="track-info">
-			<div id="artist">Artist</div>
-			<div id="song">Song</div>
-		</div>
-        <div id="logo"><img /></div>
-    </div>
+
 </div>
 
 </body>

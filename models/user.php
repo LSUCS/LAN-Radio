@@ -7,6 +7,7 @@ class Model_User extends CoreModel {
     public $Email; // varchar(30) NOT NULL,
     public $AvatarURL; // varchar(255) DEFAULT NULL,
     public $isAdmin = false; // int(1) NOT NULL,
+    public $Theme = null;
 
     public function __construct() {
         $this->ID = null;

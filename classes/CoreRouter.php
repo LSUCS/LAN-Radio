@@ -52,7 +52,6 @@ class CoreRouter {
     public function run() {
         $ru = $_SERVER['REQUEST_URI'];
         // this is in the format /user/blah/
-        // however, for forks, it goes /lukegb/index.php?/user/blah/?blahblah!
         $end = strpos($ru, '?');
         
         $qs = '';

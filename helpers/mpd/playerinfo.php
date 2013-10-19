@@ -6,7 +6,7 @@ class Helper_Mpd_Playerinfo extends CoreHelper {
         $this->MPD = new MPD('localhost', 6600);
     
         if(!empty($this->MPD->errStr)) {
-            json_encode(array('error' => $this->MPD->errStr));
+            echo json_encode(array('error' => $this->MPD->errStr));
             die;
         }
         

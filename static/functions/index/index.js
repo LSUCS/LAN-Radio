@@ -169,7 +169,10 @@ var radioJS = {
                 'id': id
             },
             success: function(votedata) {
-                if(!this.websocks) radioJS.reloadTable();
+                if(!this.websocks) {
+                    $('#score-' + escapeID(id)).html(votedata.split('!!')[0]);
+                    radioJS.reloadTable();
+                }
             }
         });
     },

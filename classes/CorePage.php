@@ -70,6 +70,7 @@ abstract class CorePage{
 	public function showFooter(){
 		// Stop render time
 		list($usec, $sec) = explode(" ", microtime());
+        
 		$this->parent->Debug['ViewRenderTime'] = number_format((($usec + $sec) - $this->parent->renderStarted), 8);	
 			
 		$Template = Core::get('Template');
@@ -89,7 +90,9 @@ abstract class CorePage{
 			$Template->set('CREATION_TIME', '');
 		$Template->set('HEADER', false, true);
 		$Template->set('FOOTER', true, true);
+        $Template->set('YEAR', date('Y'));
 		$Template->push();
+        
 	}
 }
 

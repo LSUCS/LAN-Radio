@@ -1,7 +1,11 @@
+$(document).ready(function() {
+    history.changeTable('recent');
+});
+
 var history = {
-    changingTable = false,
+    changingTable: false,
     
-   changeTable: function(table) {
+    changeTable: function(table) {
         if(this.changingTable) return;
         
         var currentTable = $('#current-table').html();
@@ -24,6 +28,9 @@ var history = {
             direction = 0;
         }
         
+        $('#history-navigation a').removeClass('selected');
+        $('#button-' + table).addClass('selected');
+        
         $.ajax({
             "type": "GET",
             "url": "/history/table/" + table,
@@ -32,6 +39,8 @@ var history = {
                 history.createTable(data, direction);
            }
         });
+        
+        return false;
     },
     
     createTable: function(tableData, direction) {

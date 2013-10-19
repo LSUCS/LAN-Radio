@@ -30,7 +30,10 @@ table {
 	border-collapse: collapse;
 	border-spacing: 0;
 }
-
+#copyright {
+    margin-top: 10px;
+    padding-bottom: 15px;
+}
 #radio {
     width: 120px;
     margin: 4px 10px;
@@ -148,6 +151,52 @@ a {
     font-size: 10px;
     z-index: -1;
 }
+
+/* debug stuff */
+
+.debugDiv {
+	background-color: rgba(0, 0, 0, 0.7);
+	padding: 5px;
+}
+
+.debugDivChild {
+	background-color: rgba(0, 0, 0, 0.5);
+	padding: 5px;
+	display: none;
+	max-height: 700px;
+	overflow-y: auto;
+}
+
+.debugDivChild pre {
+	white-space: pre-wrap;
+}
+
+.debugDivError {
+	background-color: rgba(50, 0, 0, 0.7);
+	padding: 5px;
+}
+
+.debugDivChildError {
+	background-color: rgba(50, 0, 0, 0.5);
+	padding: 5px;
+	display: none;
+}
+
+.debugDivChild tr td, .debugDivChildError tr td {
+	font-size: 8pt;
+}
+
+.debugContainer {
+	position: fixed;
+	bottom: 0px;
+	left: 0px;
+}
+
+.toolboxinfo {
+	color: #666;
+	font-size: 11px;	
+}
+
 .button{
     cursor: pointer;
     overflow:hidden;

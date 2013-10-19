@@ -37,6 +37,7 @@ function addInfo(info, initial) {
     $('#end-time').html(timestamp(info.length));
     $('#end-time-seconds').html(info.length);
     $('#votes').html(info.votes);
+    $('#avatar img').attr("src", info.avatar)
     
     if(initial) {
         movePointer(info.position);
@@ -56,6 +57,7 @@ function addNoInfo() {
     $('#end-time').html("0:00");
     $('#end-time-seconds').html("0");
     $('#votes').html("");
+    $('#avatar img').attr("src", "");
     
     reloadTimer = window.setTimeout("reload();", 1000*5);
 }
@@ -75,8 +77,8 @@ function second() {
 }
 
 function movePointer(seconds) {
-    var newLeft = parseInt($('#current-position').css('left')) + barWidth/$('#end-time-seconds').html() * seconds;
-    $('#current-position').css('left', newLeft + 'px');
+    var newWidth = parseInt($('#bar').css('width'));
+    $('#current-position').css('width', newWidth + '%');
 }
 
 function timestamp(time) {
@@ -87,7 +89,7 @@ function timestamp(time) {
         hours += 1;
         time -= 60*60;
     }
-    while(time > 60) {
+    while(time >= 60) {
         minutes += 1;
         time -= 60;
     }

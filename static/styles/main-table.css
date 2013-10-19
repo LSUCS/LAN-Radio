@@ -2,7 +2,19 @@
     width: 100%;
 	position:relative;
 }
-
+.voting-table a{
+    color:inherit;
+}
+.voting-table .col6 a:hover{
+    color:#F25D23;
+}
+/*
+.voting-table .col6 a::after{
+    content:'→';
+    position:relative;
+    top: -2px;
+    margin-left:5px;
+}*/
 .voting-table tr {
     height: 25px;
     background: url('list-item.png') 0px 0px;
@@ -53,6 +65,7 @@
 
 .voting-table .selected, .voting-table tr:hover {
     background-position: 0px 25px !important;
+    color:#FFFFFF;
 }
 
 .voting-table .col0 {
