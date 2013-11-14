@@ -1,0 +1,16 @@
+#about-page{
+    background-color:#FFFFFF;
+    border-radius:0.3em;
+    padding: 15px;
+}
+#about-page a{
+    color:inherit;
+    border-bottom:1px dotted #000000;
+}
+#about-page h2{
+    font-size:32px;
+}
+#about-page h3{
+    margin-top:15px;
+    font-size:26px;
+}

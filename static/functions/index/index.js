@@ -17,11 +17,14 @@ $(document).bind('dragover', function (e) {
 $(function() {
 	dialogBox = $('<div id="track-info"></div>').dialog({autoOpen: false, width: 600});
     radioJS.refreshTable();
+    radioJS.scrollbar = $('#table-container');
+    radioJS.scrollbar.tinyscrollbar();
 });
 
 var radioJS = {
     //Whether or not we're using websockets
     websocks: false,
+    scrollbar: null,
     
     //Gets the position of a song
     getPosition: function(rowID) {
@@ -169,7 +172,8 @@ var radioJS = {
                 'id': id
             },
             success: function(votedata) {
-                if(!this.websocks) {
+                if(!radioJS.websocks) {
+                    alert('testing');
                     $('#score-' + escapeID(id)).html(votedata.split('!!')[0]);
                     radioJS.reloadTable();
                 }
@@ -195,7 +199,7 @@ var radioJS = {
             url: "/songs",
             success: function(table) {
                 $('#table-goes-here').html(table);
-                $('#table-container').tinyscrollbar();
+                radioJS.scrollbar.tinyscrollbar_update('relative');
             }
         });
     },

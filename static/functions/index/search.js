@@ -2,10 +2,10 @@ $(function () {
     'use strict';
 
     // Initialize the jQuery File Upload widget:
-    $('body').fileupload({
+    /*$('body').fileupload({
         url: '/upload?auth=' + $('#userauth').html(),
         dropZone: $('#dropzone')
-    });
+    });*/
     
     $('#search-results').resizable();
 });
@@ -81,7 +81,7 @@ var search = {
     
     addTableEvents: function(dt) {
         $(dt.fnGetNodes()).on('dblclick', function() {
-            this.addSong($(this).attr('id'));
+            search.addSong($(this).attr('id'));
             $(this).off('dblclick');
         }).on('click', function() {
             $(this).addClass("selected").siblings().removeClass("selected");
@@ -113,7 +113,7 @@ var search = {
     },
     
     addSong: function(songid) {
-        console.log(songid);
+        //console.log(songid);
         $.ajax({
             type: "GET",
             url: "/songs/add",
@@ -121,7 +121,12 @@ var search = {
                 track: songid
             },
             success: function(data){
-                
+                if(dialogBox.dialog('isOpen') === true) {
+                    dialogBox.dialog('close');
+                }
+                dialogBox.dialog({'title': "Song Added"});
+                dialogBox.html('<span class="ui-icon ui-icon-circle-check" style="float: left; margin: 0 7px 50px 0;"></span>Song Added');
+                console.log(dialogBox.dialog('open'));
             }
         })
     }

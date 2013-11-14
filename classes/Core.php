@@ -104,7 +104,7 @@ class Core {
     }
 
     /**
-     * Ensures the user is actually loggedin. If not, redirects to the login page
+     * Ensures the user is actually logged in. If not, redirects to the login page
      * @return void
      */
     public function enforceLogin() {
@@ -115,6 +115,16 @@ class Core {
 
             header("Location: " . CORE_SERVER . "login/?return=$requesturi");
             die;
+        }
+    }
+    
+    /**
+     * Ensures the user is an admin
+     * @return void
+     */
+    public function enforceAdmin() {
+        if (!$this->LoggedUser->isAdmin) {
+            Core::niceError(403);
         }
     }
 

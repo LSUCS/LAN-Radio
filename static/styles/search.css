@@ -6,12 +6,12 @@
     position: absolute;
     right: 5%;
     top: 40px;
-    border: 10px solid #222;
+    border: 5px solid #333;
     width: 700px;
     max-height: 347px;
     z-index: 2;
-    -moz-border-radius: 10px;
-    border-radius: 10px;
+    -moz-border-radius: 0.3em;
+    border-radius: 0.3em;
 }
 
 #library-buttons {
@@ -70,31 +70,38 @@
 	background-position:0 0;
 }
 #search-results-table tr:nth-child(even) {
-  	background-position:0 50px;
+  	background-position:0 54px;
 }
 #search-results-table tr td:nth-child(1), th:nth-child(1){
     width: 30px !important;
 }
 #search-results-table tr td:nth-child(2), th:nth-child(2){
-	max-width: 400px;
-	width: 40%;
+	max-width:300px;
+    width:300px;
 }
 #search-results-table tr td:nth-child(3), th:nth-child(3){
-	max-width: 300px;
-	width: 30%;
+	max-width:188px;
+    width:188px;
 }
 #search-results-table tr td:nth-child(4), th:nth-child(4){
-	width: 50px;
+	max-width:50px;
+    width:50px;
 }
 #search-results-table tr td:nth-child(5), th:nth-child(5){
-	max-width: 300px;
-	width: 30%;
+	max-width:200px;
+    width:200px;
 }
 #search-results-table thead tr{
 	text-align:left;
 	text-indent: 5px;
 	background-position: 0 50px;
-	padding: 2px 0 2px 0;
+	padding: 5px 0;
+    height: 25px;
+    line-height:25px;
+    cursor:default;
+}
+#search-results-table tbody tr{
+    cursor:pointer;
 }
 #search-results-table td{
 	height: 25px;
@@ -112,15 +119,36 @@
 #search-results-table_filter{
 	float:right;
 	margin-bottom: 10px;
+    margin-right:10px;
+}
+#search-results-table_filter input{
+    padding: 0 5px;
+    width:150px;
 }
 #search-results-table_info{
-	float:left;
+	position:absolute;
+    top:10px;
+    left:10px;
 }
 #search-results-table_paginate{
 	float:right;
+    margin-top:-5px;
+    margin-right:25px;
+    line-height:25px;
 }
-
+#search-results-table_previous{
+    cursor:pointer;
+    margin-right:5px;
+}
+#search-results-table_next{
+    cursor:pointer;    
+    margin-left:5px;
+}
 #search-results-table .search-library-icon {
     width: 20px;
     height: 20px;
+}
+#search-results-table tbody .selected, #search-results-table tbody tr:hover {
+    background-position: 0px 27px !important;
+    color:#FFFFFF;
 }

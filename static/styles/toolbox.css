@@ -1,0 +1,30 @@
+h2 {
+    font-size: 24px;
+    text-align: center;
+}
+
+#status {
+    width: 800px;
+    height: 400px;
+    overflow-y: scroll;
+    margin: auto;
+    background-color: #fff;
+    text-align: left;
+}
+
+li {
+    display: inline-block;
+    padding: 10px 20px;
+}
+
+#content {
+    text-align: center;
+}
+
+#volume-slider {
+    margin-bottom: 20px;
+}
+
+#add-song {
+    width: 250px;
+}

@@ -4,17 +4,12 @@
 }
 .voting-table a{
     color:inherit;
+    //border-bottom:1px dotted #000000;
 }
 .voting-table .col6 a:hover{
     color:#F25D23;
+    border-color:#F25D23;
 }
-/*
-.voting-table .col6 a::after{
-    content:'→';
-    position:relative;
-    top: -2px;
-    margin-left:5px;
-}*/
 .voting-table tr {
     height: 25px;
     background: url('list-item.png') 0px 0px;
@@ -24,7 +19,6 @@
     -webkit-box-shadow: 1px 1px 5px #888;
     box-shadow: 1px 1px 5px #888;
 }
-
 .voting-table tbody tr {
     cursor: pointer;
 	display: table;
@@ -46,6 +40,7 @@
 
 .voting-table thead tr {
 	display:table-row;
+    cursor:default;
 }
 .voting-table thead tr:first-child{
     height: 22px !important;
@@ -60,11 +55,11 @@
 }
 
 .voting-table tr.even {
-    background-position: 0px 50px;
+    background-position: 0px 53px;
 }
 
-.voting-table .selected, .voting-table tr:hover {
-    background-position: 0px 25px !important;
+.voting-table .selected, #voting-table tr:hover {
+    background-position: 0px 27px !important;
     color:#FFFFFF;
 }
 
@@ -122,9 +117,10 @@
     padding: 0;
     cursor: pointer;
     position: relative;
+    top: 2px;    
 }
 .voting-table .votebtn:hover{
-    top: 1px;
+    top: 3px;
 }
 .voting-table .votedown {
     background: url('imgs/arrow_down_16x16.png') center center no-repeat;
@@ -162,11 +158,11 @@
 }
 
 #table-container{
-    margin: 20px auto 110px auto;
+    margin: 20px auto;
     position: relative;
     clear: both;
     overflow: hidden;
-    border-radius: 0.8em !important;
+    border-radius: 0.3em !important;
 }
 
 /* Tiny Scrollbar */

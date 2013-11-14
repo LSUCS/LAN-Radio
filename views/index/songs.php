@@ -4,7 +4,7 @@ class View_Index_Songs extends CorePage{
     function headerIncludes() {
         return array(
             'index/websocks.js',
-            'index/file-upload.js',
+            //'index/file-upload.js',
             'index/search.js',
             'index/boxshadow-hooks.js',
             'index/dataTables.min.js',

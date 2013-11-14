@@ -38,7 +38,7 @@ body {
 }
 #song {
     float:left;
-    font-size: 32px;
+    font-size: 28px;
     font-weight:bold;
     line-height:36px;
     max-width:300px;
@@ -60,7 +60,7 @@ body {
 	float:left;
     font-size: 14px;
     line-height:36px;
-    max-width:300px;
+    max-width:150px;
     text-overflow:ellipsis;
     white-space:nowrap;
     overflow:hidden;
@@ -126,8 +126,11 @@ body {
     position:absolute;
     top: 5px;
     right: 5px;
+    text-align:center;
 }
 #vote-container #votes{
     position:absolute;
-    bottom:-16px;
+    bottom:-25px;
+    text-align:center;
+    width:100%;
 }

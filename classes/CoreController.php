@@ -6,6 +6,7 @@
 class CoreController {
     protected $core;
     const ENFORCE_LOGIN = true;
+    const REQUIRE_ADMIN = false;
     const FALLBACK_TO_INDEX = false;
 
     /**
@@ -49,6 +50,9 @@ class CoreController {
     public function run($pieces) {
         if (static::ENFORCE_LOGIN) {
             $this->core->enforceLogin();
+        }
+        if (static::REQUIRE_ADMIN) {
+            $this->core->enforceAdmin();
         }
 
         $this->__routing($pieces);

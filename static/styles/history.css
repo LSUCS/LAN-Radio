@@ -65,23 +65,40 @@
 	border-bottom-left-radius: 0.4em;
 	border-bottom-right-radius: 0.4em;
 }
-table tr {
+.table-container > table{
+
+}
+.table-container > table tr {
     height: 25px;
-    line-height: 25px;
+    line-height:25px;
     background: url('list-item.png') 0px 0px;
-	display:table-row;
+    display: block;
     position: relative;
     -moz-box-shadow: 1px 1px 5px #888;
     -webkit-box-shadow: 1px 1px 5px #888;
     box-shadow: 1px 1px 5px #888;
 }
-table thead tr {
-	padding: 2px;
-	background-position: 0 50px;
-	height: 22px;
-	line-height: 22px;
+.table-container > table tr.even {
+    background-position: 0px 50px;
 }
-table tbody td {
+.table-container > table .selected, .table-container > table tr:hover {
+    background-position: 0px 25px !important;
+    color:#FFFFFF;
+}
+.table-container > table thead tr {
+    display:table-row;
+    cursor:default;
+}
+.table-container > table tbody td {
 	text-overflow:ellipsis;
 	display:table-cell;
+}
+.table-container > table th {
+    background: url('list-header.png');
+    font: bold 11px 'Helvetica Neue',Arial,sans-serif;
+    text-shadow: 0 1px 0 white;
+    text-transform: uppercase;
+    line-height: 22px;
+    padding: 0 5px;
+    text-align: left;
 }

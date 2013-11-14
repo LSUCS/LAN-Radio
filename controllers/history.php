@@ -1,5 +1,5 @@
 <?php
-
+die('coming soon');
 class Controller_History extends CoreController {    
     public function action_index() {
         $this->showView('history');

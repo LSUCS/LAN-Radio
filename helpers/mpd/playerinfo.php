@@ -58,6 +58,7 @@ class Helper_Mpd_Playerinfo extends CoreHelper {
                     } else {
                         $expire = 10;
                     }
+                    if($expire > 30 || $expire < 1) $expire = 30;
                 }
             }
             

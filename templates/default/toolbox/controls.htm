@@ -1,0 +1,21 @@
+<div class="box">
+<h2>Controls</h2>
+
+<div class="status" id="status"></div>
+<a href="#" id="refresh" onclick="controls.reloadStatus(); return false;">Refresh</a>
+
+    <ul>
+        <li><a href="#" onclick="controls.click('play'); return false;">Play</a></li>
+        <li><a href="#" onclick="controls.click('pause'); return false;">Pause</a></li>
+        <li><a href="#" onclick="controls.click('stop'); return false;">Stop</a></li>
+        <li><a href="#" onclick="controls.click('next'); return false;">Next</a></li>
+    </ul>
+    
+    <h3>Volume</h3>
+    <div id="volume-slider"></div>
+    
+    <h3>Add Song</h3>
+    <input type="text" id="add-song" />
+    <button id="add-button">Add</button>
+
+</div>

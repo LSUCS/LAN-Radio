@@ -182,6 +182,7 @@ class Helper_History_Showtable extends CoreHelper {
         $this->TableType = $Table;
         
         $DB = Core::get('DB');
+        //die($this->build_query());
         $DB->query($this->build_query());
         $Total = $DB->record_count();
         $Data = $DB->to_array(false, MYSQLI_ASSOC);        
@@ -194,9 +195,6 @@ class Helper_History_Showtable extends CoreHelper {
         $this->end_table();
         echo $this->Output;
     }
-    
-
 }
-
 
 ?>
