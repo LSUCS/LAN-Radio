@@ -32,5 +32,4 @@ class Helper_Login_ProcessLogin extends CoreHelper{
 	}
 }
 
-
 ?>

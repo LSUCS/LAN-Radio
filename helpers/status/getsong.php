@@ -17,6 +17,24 @@ class Helper_Status_Getsong extends CoreHelper {
         Core::get('DB')->query("DELETE FROM votes WHERE trackid = '%s'", $ID);
         //Core::get('DB')->query("DELETE FROM track_info WHERE trackid = '%s'", $ID);
         Core::get('DB')->query("DELETE FROM voting_list WHERE trackid = '%s'", $ID);
+        
+        
+        $Track = array("ID" => $ID);
+        $msgData = array('type'=>'event', 'event'=>'delete', 'data' => $Track);
+        try{
+            Core::requireLibrary("websocket.client", "phpws/phpws");
+            $msg = WebSocketMessage::create(json_encode($msgData));
+            
+            $socket = new WebSocket("ws://" . WEBSOCKET_HOST . ":" . WEBSOCKET_PORT . "/" . WEBSOCKET_SERVICE);
+            $socket->open();
+            $socket->setAdmin();
+            $socket->sendMessage($msg);
+            //$socket->close();
+        } catch(Exception $e) {
+            var_dump($e);
+            die;
+        }    
+        
     
     }
 }

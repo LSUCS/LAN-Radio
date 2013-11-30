@@ -35,7 +35,9 @@ class Helper_Songs_Trackinfo extends CoreHelper {
         $TrackInfo = Core::get('DB')->next_record(MYSQLI_ASSOC);
         
         $User = Model_User::loadFromID($TrackInfo['addedBy']);
+        
         $TrackInfo['Username'] = $User->Username;
+        $TrackInfo['Avatar'] = $User->AvatarURL;
         
         echo json_encode($TrackInfo);
     }

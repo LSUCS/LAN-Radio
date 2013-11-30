@@ -5,11 +5,21 @@ class Helper_Songs_Add extends CoreHelper {
         //Check everything is well in Smallville
         $trackID = Core::unEscapeID($_GET['track']);
 
-        Core::get('DB')->query("SELECT * FROM voting_list WHERE trackid = ?", array($trackID));
-        if(Core::get('DB')->record_count()) die('exists');
+        $db = Core::get('DB');
+
+        $db->query("SELECT * FROM voting_list WHERE trackid = ?", array($trackID));
+        if($db->record_count()) die('exists');
         
-        Core::get('DB')->query("SELECT * FROM track_info WHERE trackid = ?", array($trackID));
-        if(!Core::get('DB')->record_count()) {
+        //Check if the user has been adding too much.
+        $db->query("SELECT addedDate FROM voting_list WHERE addedBy = ? AND UNIX_TIMESTAMP() - UNIX_TIMESTAMP(addedDate) < " . ADD_TIME . " ORDER BY addedBy ASC", array($this->parent->LoggedUser->ID));
+        if($db->record_count() > ADD_MAX) {
+            list($voteTime) = $db->next_record(MYSQLI_NUM);
+            $timeToNextVote = time() - strtotime($voteTime) - ADD_TIME;
+            die('addmax - ' . $timeToNextVote);
+        }
+        
+        $db->query("SELECT * FROM track_info WHERE trackid = ?", array($trackID));
+        if(!$db->record_count()) {
             
             //Get info on the track and add it to the database
             if(strstr($trackID, 'spotify')) {
@@ -40,21 +50,18 @@ class Helper_Songs_Add extends CoreHelper {
             }
             
             //Add info to the track catalogue
-            Core::get('DB')->query("INSERT IGNORE INTO track_info (trackid, Title, Artist, Album, Duration) VALUES(?, ?, ?, ?, ?)",
+            $db->query("INSERT IGNORE INTO track_info (trackid, Title, Artist, Album, Duration) VALUES(?, ?, ?, ?, ?)",
                 array($trackID, $Track['Title'], $Track['Artist'], $Track['Album'], $Track['Time']));
         }
         
         //Add it to the voting list
-        Core::get('DB')->query("INSERT INTO voting_list (trackid, addedBy, addedDate) VALUES (?, ?, NOW())", array($trackID, $this->parent->LoggedUser->ID));
+        $db->query("INSERT INTO voting_list (trackid, addedBy, addedDate) VALUES (?, ?, NOW())", array($trackID, $this->parent->LoggedUser->ID));
         
         //Add a vote
-        Core::get('DB')->query("INSERT INTO votes (trackid, userid, updown) VALUES (?, ?, 1) ON DUPLICATE KEY UPDATE updown = 1", array($trackID, $this->parent->LoggedUser->ID));
-        
-        ini_set('display_errors', 1);
-        error_reporting(E_ALL);
+        $db->query("INSERT INTO votes (trackid, userid, updown) VALUES (?, ?, 1) ON DUPLICATE KEY UPDATE updown = 1", array($trackID, $this->parent->LoggedUser->ID));
         
         //Find out the new position in the big table.
-        Core::get('DB')->query("SELECT *, @rownum:=@rownum+1 as row_position FROM
+        $db->query("SELECT *, @rownum:=@rownum+1 as row_position FROM
                                     ( SELECT * FROM songlist ) position, (SELECT @rownum:=0) r");
 
         $NewRows = Core::get("DB")->to_array('trackid');

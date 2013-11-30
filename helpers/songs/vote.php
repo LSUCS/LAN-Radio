@@ -16,26 +16,37 @@ class Helper_Songs_Vote extends CoreHelper {
             die;
         }
         
-        Core::get('DB')->query("SELECT * FROM voting_list WHERE trackid = ?", array($trackID));
-        if(!Core::get('DB')->record_count()) {
+        $db = Core::get('DB');
+        
+        $db->query("SELECT * FROM voting_list WHERE trackid = ?", array($trackID));
+        if(!$db->record_count()) {
             die('notrack');
         }
-        
-        Core::get('DB')->query("SELECT updown FROM votes WHERE trackid = ? AND userid = ?", array($trackID, $this->parent->LoggedUser->ID));
-        if(Core::get('DB')->record_count()) {
-            list($vote) = Core::get('DB')->next_record(MYSQLI_NUM);
+             
+        $db->query("SELECT updown FROM votes WHERE trackid = ? AND userid = ?", array($trackID, $this->parent->LoggedUser->ID));
+        if($db->record_count()) {
+            list($vote) = $db->next_record(MYSQLI_NUM);
             if($vote == $direction) die('identical');
             
-            Core::get('DB')->query("UPDATE votes SET updown = ? WHERE trackid = ? AND userid = ?", array($direction, $trackID, $this->parent->LoggedUser->ID));
+            $db->query("UPDATE votes SET updown = ? WHERE trackid = ? AND userid = ?", array($direction, $trackID, $this->parent->LoggedUser->ID));
         } else {
-            Core::get('DB')->query("INSERT INTO votes (trackid, userid, updown) VALUES (?, ?, ?)", array($trackID, $this->parent->LoggedUser->ID, $direction));
+            if(!$direction) {
+                //Check if the user has been down voting too much.
+                $db->query("SELECT time FROM votes WHERE updown = 0 AND userid = ? AND time > UNIX_TIMESTAMP()-" . VOTE_TIME . " ORDER BY time ASC", array($this->parent->LoggedUser->ID));
+                if($db->record_count() > VOTE_MAX) {
+                    list($voteTime) = $db->next_record(MYSQLI_NUM);
+                    $timeToNextVote = time() - $voteTime - VOTE_TIME;
+                    die('votemax - ' . $timeToNextVote);
+                }
+            }
+            $db->query("INSERT INTO votes (trackid, userid, updown, time) VALUES (?, ?, ?, UNIX_TIMESTAMP())", array($trackID, $this->parent->LoggedUser->ID, $direction));
         }
         
         //Find out the new position in the big table.
-        Core::get('DB')->query("SELECT *, @rownum:=@rownum+1 as row_position FROM (
+        $db->query("SELECT *, @rownum:=@rownum+1 as row_position FROM (
                                     SELECT * FROM songlist
                                 ) user_rank,(SELECT @rownum:=0) r");
-        $NewRows = Core::get('DB')->to_array('trackid');
+        $NewRows = $db->to_array('trackid');
         $RowInfo = $NewRows[$trackID];
         
         $Track = array("ID" => $trackID, "position" => $RowInfo["row_position"], "score" => $RowInfo["Score"]);

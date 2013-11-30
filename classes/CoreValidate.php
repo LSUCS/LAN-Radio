@@ -282,7 +282,7 @@ class CoreValidate {
     }
     
     private function validateTrackID() {
-        if(!preg_match('/(spotify:(?:track:[a-z0-9]+)|http:\/\/gdata\.youtube\.com\/feeds\/api\/videos\/[a-z0-9-]+)/i', $this->Value)) {
+        if(!preg_match('/(spotify:(?:track:[a-z0-9]+)|http:\/\/gdata\.youtube\.com\/feeds\/api\/videos\/[a-z0-9-_]+)/i', $this->Value)) {
             return $this->err('An invalid track ID was entered for the field: ' . $this->Field . ' -  ' . $this->Value);
         }
         return true;

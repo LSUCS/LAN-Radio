@@ -5,7 +5,7 @@ class Helper_Mpd_Command extends CoreHelper {
     
     private function connect() {
         Core::requireLibrary('MPD');
-        $this->MPD = new MPD(MPD_HOST, MPD_PORT);
+        $this->MPD = new MPD(MPD_HOST, MPD_PORT, MPD_PASSWORD);
     
         if(!empty($this->MPD->errStr)) $this->jsonError($this->MPD->errStr);
     }

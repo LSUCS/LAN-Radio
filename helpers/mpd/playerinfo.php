@@ -3,7 +3,7 @@
 class Helper_Mpd_Playerinfo extends CoreHelper {
     private function connect() {
         Core::requireLibrary('MPD');
-        $this->MPD = new MPD('localhost', 6600);
+        $this->MPD = new MPD(MPD_HOST, MPD_PORT, MPD_PASSWORD);
     
         if(!empty($this->MPD->errStr)) {
             echo json_encode(array('error' => $this->MPD->errStr));
@@ -32,26 +32,18 @@ class Helper_Mpd_Playerinfo extends CoreHelper {
                 $Return['year'] = $this->MPD->current_track_year;
                 $Return['file'] = $this->MPD->current_track_file;
                 
-                Core::get('DB')->query("SELECT 
-                                vl.addedBy AS UserID,
-                                u.Username,
-                                u.Avatar,
-                                SUM(IF(v.updown, 1, -1)) AS Votes 
-                            FROM voting_list AS vl
-                            LEFT JOIN votes AS v
-                                ON vl.trackid = v.trackid
-                            JOIN users AS u
-                                ON u.ID = vl.addedBy 
-                            WHERE vl.trackid = ?", array($Return['file']));
+                Core::get('DB')->query("SELECT votes, addedBy FROM history WHERE trackid = ? ORDER BY datePlayed DESC LIMIT 1", array($this->MPD->current_track_file));
                 if(Core::get('DB')->record_count() == 0) {
-                    $Return = array('error' => 'Kaboomboom');
+                    $Return = array('error' => 'Kaboomboom', 'track' => $this->MPD->current_track_file);
                     $expire = 3;
                 } else {
                     $Info = Core::get('DB')->next_record(MYSQLI_ASSOC);
-                
-                    $Return['votes'] = $Info['Votes'];
-                    $Return['avatar'] = $Info['Avatar'];
-                    $Return['username'] = $Info['Username'];
+                    
+                    $Return['votes'] = $Info['votes'];
+                    
+                    $User = Model_User::loadFromID($Info['addedBy']);
+                    $Return['avatar'] = $User->AvatarURL;
+                    $Return['username'] = $User->Username;
                     
                     if($Return['length'] - $Return['position'] < 10) {
                         $expire = $Return['length'] - $Return['position'];

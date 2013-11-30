@@ -355,7 +355,7 @@ class Core {
      * @return bool
      */
     public function validID($ID) {
-        return preg_match('/(spotify:(?:track:[a-z0-9]+)|http:\/\/gdata\.youtube\.com\/feeds\/api\/videos\/[a-z0-9-]+)/i', $ID); 
+        return preg_match('/(spotify:(?:track:[a-z0-9]+)|http:\/\/gdata\.youtube\.com\/feeds\/api\/videos\/[a-z0-9-_]+)/i', $ID); 
     }
     
     public function unEscapeID($ID) {

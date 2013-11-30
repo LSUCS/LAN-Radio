@@ -3,7 +3,7 @@
 class Helper_Mpd_Search extends CoreHelper {
     private function connect() {
         Core::requireLibrary('MPD');
-        $this->MPD = new MPD('localhost', 6600);
+        $this->MPD = new MPD(MPD_HOST, MPD_PORT, MPD_PASSWORD);
     
         if(!empty($this->MPD->errStr)) json_encode(array('error' => $this->MPD->errStr));
     }

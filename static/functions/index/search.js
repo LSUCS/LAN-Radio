@@ -120,12 +120,25 @@ var search = {
             data: {
                 track: songid
             },
-            success: function(data){
+            success: function(data) {
+                var message;
+                var icon;
+                var addIndex = data.indexOf('addmax');
+                if(addIndex != -1) {
+                    message = "You have added too many songs! You must wait " + formatNiceTime(data.substr(10)) + " before adding more songs.";
+                    icon = "close";
+                } else if(data == "exists") {
+                    message = "This song already exists in the Voting List";
+                    icon = "close";
+                } else {
+                    message = "Song Added";;
+                    icon = "check";
+                }
                 if(dialogBox.dialog('isOpen') === true) {
                     dialogBox.dialog('close');
                 }
-                dialogBox.dialog({'title': "Song Added"});
-                dialogBox.html('<span class="ui-icon ui-icon-circle-check" style="float: left; margin: 0 7px 50px 0;"></span>Song Added');
+                dialogBox.dialog({'title': message});
+                dialogBox.html('<span class="ui-icon ui-icon-circle-' + icon + '" style="float: left; margin: 0 7px 50px 0;"></span>' + message);
                 console.log(dialogBox.dialog('open'));
             }
         })

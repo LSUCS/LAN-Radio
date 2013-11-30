@@ -1,5 +1,4 @@
-
-$(document).bind('dragover', function (e) {
+/*$(document).bind('dragover', function (e) {
     var dropZone = $('#dropcanvas'),
         timeout = window.dropZoneTimeout;
     if (!timeout) {
@@ -12,7 +11,7 @@ $(document).bind('dragover', function (e) {
     } else {
         dropZone.removeClass('hover');
     }
-});
+});*/
 
 $(function() {
 	dialogBox = $('<div id="track-info"></div>').dialog({autoOpen: false, width: 600});
@@ -145,6 +144,42 @@ var radioJS = {
 
     // 1 = up, 0 = down
     vote: function(direction, id) {
+        
+        $.ajax({
+            type: "GET",
+            url: "songs/vote/" + direction,
+            data: {
+                'id': id
+            },
+            success: function(votedata) {
+                var voteIndex = votedata.indexOf('votemax');
+                var message;
+                if(votedata == 'identical') {
+                    message = "This vote is identical to a previous vote you made.";
+                } else if(voteIndex != -1) {
+                    message = "You have downvoted too many songs. You must wait " + formatNiceTime(votedata.substr(11)) + " before downvoting again.";
+                }
+                if(message) {
+                    if(dialogBox.dialog('isOpen') === true) {
+                        dialogBox.dialog('close');
+                    }
+                    dialogBox.dialog({'title': "Vote Error"});
+                    dialogBox.html('<span class="ui-icon ui-icon-circle-close" style="float: left; margin: 0 7px 50px 0;"></span>' + message);
+                    console.log(dialogBox.dialog('open'));
+                } else {
+                    radioJS.voteChangeArrows(direction, id);
+                    if(!radioJS.websocks) {
+                        if(votedata.indexOf('identical') != -1) {
+                            $('#score-' + escapeID(id)).html(votedata.split('!!')[0]);
+                            radioJS.reloadTable();
+                        }
+                    }
+                }
+            }
+        });
+    },
+    
+    voteChangeArrows: function(direction, id) { 
         var id2 = escapeID(id);
         movingPosition = this.getPosition('row-' + id2);
         if(direction == 1) {
@@ -163,22 +198,7 @@ var radioJS = {
             $('#button-up-' + id2).addClass('voteup');
         } else {
             return;
-        }
-        
-        $.ajax({
-            type: "GET",
-            url: "songs/vote/" + direction,
-            data: {
-                'id': id
-            },
-            success: function(votedata) {
-                if(!radioJS.websocks) {
-                    alert('testing');
-                    $('#score-' + escapeID(id)).html(votedata.split('!!')[0]);
-                    radioJS.reloadTable();
-                }
-            }
-        });
+        }  
     },
     
     reloadTable: function() {
@@ -310,5 +330,9 @@ var radioJS = {
     displayVoteInfo: function(data) {
         var ret = [data.Votes, formatUsername(data.addedBy, data.Username)];
         return ret.join("<br />");
+    },
+    
+    clickVotes: function(data) {
+        
     }
 }

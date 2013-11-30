@@ -3,8 +3,8 @@ function escapeID(ID) {
 }
 
 function formatTime(time) {
-    var hours = 0
-    var minutes = 0
+    var hours = 0;
+    var minutes = 0;
     var seconds = 0;
     while(time > 60*60) {
         hours++;
@@ -25,6 +25,27 @@ function formatTime(time) {
         return minutes + ':' + time;
     }
 }
+
+function formatNiceTime(time) {
+    var minutes = 0;
+    var seconds = 0;
+    while(time > 60) {
+        minutes++;
+        time -= 60;
+    }
+    
+    if(minutes > 0) { 
+        var ret = minutes + ' Minutes';
+        if(time > 0) {
+            ret += ' and ' + time + ' Seconds';
+        }
+        return ret
+    } else {
+        return time + ' Seconds';
+    }
+}
+
+
 
 function changeNav(page) {
     if(page == "index") {
