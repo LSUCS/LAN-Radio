@@ -1,4 +1,13 @@
 <div id="history-container">
+    <div id="eventSelectorContainer">
+        LAN:
+        <select id="eventSelector">
+            <option value="0">(All)</option>
+            {loop:EVENTS}
+                <option value="{tag:EVENTS[].ID /}">{tag:EVENTS[].Name /}</option>
+            {/loop:EVENTS}
+        </select>
+    </div>
     <div class="hbtnncontainer topBtnContainer">
         <h3 id="history-navigation">
             <a href="#" class="button topBtn selected" id="button-recent" onclick="history.changeTable('recent'); return false;">Recent Songs</a>

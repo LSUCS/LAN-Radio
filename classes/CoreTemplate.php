@@ -40,8 +40,8 @@ class CoreTemplate {
             $file = 'templates/_STYLE_/' . $templateName . '.htm';
         }
         // If the user is logged in, does their theme have a template for this page?
-        if ($this->parent->loggedIn() && file_exists(str_replace('_STYLE_', $this->parent->LoggedUser->Theme, $file)))
-            $file = str_replace('_STYLE_', $this->parent->LoggedUser['Theme'], $file);
+        if ($this->parent->loggedIn() && file_exists(str_replace('_STYLE_', $this->parent->LoggedUser->theme, $file)))
+            $file = str_replace('_STYLE_', $this->parent->LoggedUser->theme, $file);
         else
             $file = str_replace('_STYLE_', DEFAULT_STYLE, $file);
 

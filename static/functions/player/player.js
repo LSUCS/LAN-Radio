@@ -37,7 +37,8 @@ function addInfo(info, initial) {
     $('#end-time').html(timestamp(info.length));
     $('#end-time-seconds').html(info.length);
     $('#votes').html(info.votes);
-    $('#avatar img').attr("src", info.avatar)
+    $('#avatar img').attr("src", info.avatar);
+    $('#avatar img').attr("title", info.username);
     
     if(initial) {
         movePointer(info.position);
@@ -76,8 +77,8 @@ function second() {
     }
 }
 
-function movePointer(seconds) {
-    var newWidth = parseInt($('#bar').css('width'));
+function movePointer(offset) {
+    var newWidth = ((parseInt($('#current-time-seconds').html()))/(parseInt($('#end-time-seconds').html())))*100;
     $('#current-position').css('width', newWidth + '%');
 }
 

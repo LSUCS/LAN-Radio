@@ -1,28 +1,44 @@
 $(document).ready(function() {
     history.changeTable('recent');
+    
+    $('#eventSelector').on("change", function() {
+        history.changeTable(history.currentTable, $(this).val(), 1);
+    })
 });
 
 var history = {
     changingTable: false,
+    scrollbar: false,
+    currentTable: '',
+    currentEvent: 0,
+    currentPage: 1,
     
-    changeTable: function(table) {
+    changeTable: function(table, event, page) {
         if(this.changingTable) return;
         
-        var currentTable = $('#current-table').html();
-        if(table == currentTable) return;
+        if(!event) event = this.currentEvent;
+        if(!page) page = this.currentPage;
+        
+        if(table == this.currentTable && event == this.currentEvent && page == this.currentPage) return;
+        
+        //Begin Changing
+        
+        //If there's not a scrollbar, make sure one doesn't appear
+        if($(window).height() >= $("body").get(0).scrollHeight) {
+            this.scrollbar = true;
+            $("body").css("overflow-y", "hidden");
+        }
         
         this.changingTable = true;
-        
-        var direction;
-        var otherDirection;
         
         var tablePositions = new Array;
         tablePositions['recent'] = 0;
         tablePositions['popular'] = 1;
         tablePositions['popartist'] = 2;
         tablePositions['popuser'] = 3;
-        
-        if(tablePositions[table] > tablePositions[currentTable]) {
+                
+        var direction;
+        if(tablePositions[table] > tablePositions[this.currentTable]) {
             direction = 1;
         } else {
             direction = 0;
@@ -31,14 +47,18 @@ var history = {
         $('#history-navigation a').removeClass('selected');
         $('#button-' + table).addClass('selected');
         
-        $.ajax({
-            "type": "GET",
-            "url": "/history/table/" + table,
-            "dataType": "html",
-            "success": function(data) {
+        data = [table, event, page];
+        data = data.join('/');
+        $.get(
+            "/history/table/" + data,
+            function(data) {
                 history.createTable(data, direction);
            }
-        });
+        );
+        
+        this.currentTable = table;
+        this.currentEvent = event;
+        this.currentPage = page
         
         return false;
     },
@@ -46,11 +66,12 @@ var history = {
     createTable: function(tableData, direction) {
         var currentTable = $('#history-container .table-container');
         var currentOffsets = currentTable.offset();
+        var currentTableHeight = currentTable.outerHeight();
         
         var windowWidth = $(window).width();
         
         var position1 = windowWidth + 20;
-        var position2 = -1*currentOffsets.left - 1200 - 20;
+        var position2 = -1*currentOffsets.left - 2000 - 20;
         if(direction) {
             var initialPosition = position1;
             var destinationPosition = position2;
@@ -61,26 +82,26 @@ var history = {
         
         var newTable = document.createElement('div');
         newTable = $(newTable).html(tableData).addClass('table-container');
-        newTable = newTable.css('position', 'absolute').css('top', currentOffsets.top + 'px');
-        newTable = newTable.css('left', initialPosition + 'px');
+        newTable = newTable.css('position', 'relative').css('top', -currentTableHeight + 'px').css('left', initialPosition + 'px');
         $('#history-container').append(newTable);
         
         finished = 0;
         
-        this.moveTable(newTable, currentOffsets.left, currentTable);
+        this.moveTable(newTable, 0, currentTable);
         
-        currentTable.css('position', 'absolute').css('left', currentOffsets.left).css('top', currentOffsets.top);
+        currentTable.css('position', 'relative').css('top', 0);
         this.moveTable(currentTable, destinationPosition, currentTable);
     },
     
     moveTable: function(table, Xpos, tableToRemove) {
         $(table).animate({
-            position: 'absolute',
+            position: 'relative',
             left: Xpos + 'px'
         }, {
             queue: false,
             duration: 1000,
             complete: function() {
+                table.css('top', '0');
                 history.cleanUp(tableToRemove);
             }
         });
@@ -90,6 +111,10 @@ var history = {
         if(++finished > 1) {
             tableToRemove.remove();
             this.changingTable = false;
+        }
+        if(this.scrollbar) {
+            $("body").css("overflow-y", "auto");
+            this.scrollbar = false;
         }
         return;
     }

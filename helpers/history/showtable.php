@@ -11,15 +11,12 @@ class Helper_History_Showtable extends CoreHelper {
                 'Votes' => 'h.votes',
                 'PlayCount' => 'COUNT(h2.trackid)',
                 'ChooserID' => 'h.addedBy',
-                'Chooser' => 'u.Username',
                 'Played' => 'h.datePlayed',
                 'Added' => 'h.dateAdded'
             ),
             'tables' => array(
                 'history AS h',
                 'JOIN track_info AS ti ON h.trackid = ti.trackid',
-                'LEFT JOIN votes AS v ON h.trackid = v.trackid',
-                'LEFT JOIN users AS u ON h.addedBy = u.ID',
                 'LEFT JOIN history AS h2 ON h.trackid = h2.trackid'
             ),
             'group' => 'GROUP BY h.trackid',
@@ -33,46 +30,42 @@ class Helper_History_Showtable extends CoreHelper {
                 'Duration' => 'ti.duration',
                 'Album' => 'ti.Album',
                 'Votes' => 'SUM(h.votes)',
-                'PlayCount' => 'COUNT(h2.trackid)',
-                'LastPlayed' => 'MAX(h2.datePlayed)'
+                'PlayCount' => 'COUNT(h.trackid)',
+                'LastPlayed' => 'MAX(h.datePlayed)'
             ),
             'tables' => array(
-                'history AS h',
-                'JOIN track_info AS ti ON h.trackid = ti.trackid',
-                'LEFT JOIN history AS h2 ON h.trackid = h2.trackid'
+                'track_info AS ti',
+                'LEFT JOIN history AS h ON ti.trackid = h.trackid'
             ),
             'group' => 'GROUP BY h.trackid',
             'order' => 'ORDER BY PlayCount DESC'
         ),
         'popartist' => array(
             'columns' => array(
-                'Artist' => 'ti.artist',
-                'Tracks' => 'COUNT(DISTINCT h2.trackid)',
-                'TotalPlays' => 'COUNT(h2.trackid)',
-                'TotalVotes' => 'SUM(h2.votes)'
+                'Artist' => 'a.artist',
+                'Tracks' => 'COUNT(DISTINCT h.trackid)',
+                'TotalPlays' => 'COUNT(h.trackid)',
+                'TotalVotes' => 'SUM(h.votes)'
             ),
             'tables' => array(
-                'history AS h',
-                'JOIN track_info AS ti ON h.trackid = ti.trackid',
-                'JOIN track_info AS ti2 ON ti.artist = ti2.artist',
-                'LEFT JOIN history AS h2 ON ti2.trackid = h2.trackid'
+                '(SELECT DISTINCT Artist FROM track_info) as a',
+                'JOIN track_info AS ti ON a.Artist = ti.Artist',
+                'LEFT JOIN history AS h ON ti.trackid = h.trackid'
             ),
             'group' => 'GROUP BY ti.artist',
             'order' => 'ORDER BY TotalVotes DESC'
         ),
         'popuser' => array(
             'columns' => array(
-                'UserID' => 'u.ID',
-                'Chooser' => 'u.Username',
-                'TotalVotes' => 'SUM(h2.votes)',
-                'TotalPlays' => 'COUNT(h2.trackid)'
+                'UserID' => 'u.addedBy',
+                'TotalVotes' => 'SUM(h.votes)',
+                'TotalPlays' => 'COUNT(h.trackid)'
             ),
             'tables' => array(
-                'history AS h',
-                'LEFT JOIN history AS h2 ON h.addedBy = h2.addedBy',
-                'JOIN users AS u ON h.addedBy = u.ID'
+                '(SELECT DISTINCT addedBy FROM history) as u',
+                'LEFT JOIN history AS h ON u.addedBy = h.addedBy'
             ),
-            'group' => 'GROUP BY h.addedBy',
+            'group' => 'GROUP BY u.addedBy',
             'order' => 'ORDER BY TotalVotes DESC'
         )
     );
@@ -86,28 +79,37 @@ class Helper_History_Showtable extends CoreHelper {
         'Votes' => array('label' => 'Score', 'column' => true),
         'PlayCount' => array('label' => 'Play Count', 'column' => true),
         'ChooserID' => array('label' => 'Username', 'column' => true),
-        'Chooser' => array('label' => '', 'column' => false),
         'Played' => array('label' => 'Played', 'column' => true),
         'Added' =>  array('label' => 'Time before Played', 'column' => true),
         'LastPlayed' => array('label' => 'Last Played', 'column' => true),
         'Tracks' => array('label' => 'Unique Songs', 'column' => true),
         'TotalPlays' => array('label' => 'Total Plays', 'column' => true),
         'TotalVotes' => array('label' => 'Total Votes', 'column' => true),
-        'UserID' => array('label' => 'Added By', 'column' => true)
+        'UserID' => array('label' => 'Username', 'column' => true)
     );
     
-    private $TableType;
+    private $tableType;
+    private $eventID;
+    private $page;
+    private $rowsPerPage = 20;
     private $Cols = 0;
     private $Output;
     
     private function build_query() {
         $Cols = array();
-        foreach($this->Tables[$this->TableType]['columns'] as $Column => $ColQuery) {
+        foreach($this->Tables[$this->tableType]['columns'] as $Column => $ColQuery) {
             $Cols[] = $ColQuery . ' AS ' . $Column;
         }
-        $Query = "SELECT " . implode(', ', $Cols) . " FROM " . implode(' ', $this->Tables[$this->TableType]['tables']);
-        if(array_key_exists('group', $this->Tables[$this->TableType])) $Query .= " " . $this->Tables[$this->TableType]['group'];
-        if(array_key_exists('order', $this->Tables[$this->TableType])) $Query .= " " . $this->Tables[$this->TableType]['order'];
+        $Query = "SELECT " . implode(', ', $Cols) . " FROM " . implode(' ', $this->Tables[$this->tableType]['tables']);
+        //Event ID, if it's not 0 (0 = all)
+        //Fix for joining for user table
+        if($this->tableType == "popuser" && $this->eventID) {
+            $Query = str_replace('ON u.addedBy = h.addedBy','ON u.addedBy = h.addedBy AND h.eventID = ' . $this->eventID, $Query);
+        }
+        if($this->eventID) $Query .= " WHERE h.eventID = " . $this->eventID;
+        if(array_key_exists('group', $this->Tables[$this->tableType])) $Query .= " " . $this->Tables[$this->tableType]['group'];
+        if(array_key_exists('order', $this->Tables[$this->tableType])) $Query .= " " . $this->Tables[$this->tableType]['order'];
+        $Query .= " LIMIT " . ($this->page-1) * $this->rowsPerPage . "," . $this->rowsPerPage;
 
         return $Query;
     }
@@ -118,15 +120,16 @@ class Helper_History_Showtable extends CoreHelper {
     
     private function build_table_header() {
         $this->Output = '
-            <span class="hidden" id="current-table">' . $this->TableType .'</span>
-            <table id="history-table-' . $this->TableType . '">
+            <table class="history-table" id="history-table-' . $this->tableType . '">
                 <thead>
-                    <tr>';
-        foreach($this->Tables[$this->TableType]['columns'] as $Col => $CQ) {
+                    <tr class="header-row">';
+        $i = 0;
+        foreach($this->Tables[$this->tableType]['columns'] as $Col => $CQ) {
             if($this->Columns[$Col]['column']) {
                 $this->Cols++;
-                $this->Output .= '<th class="' . strtolower($Col) . '">' . $this->Columns[$Col]['label'] . '</th>';
+                $this->Output .= '<th class="' . strtolower($Col) . ' col' . $i . '">' . $this->Columns[$Col]['label'] . '</th>';
             }
+            $i++;
         }
         $this->Output .= '
                     </tr>
@@ -138,31 +141,37 @@ class Helper_History_Showtable extends CoreHelper {
     private function add_data($Data) {
         $a = 'even';
         foreach($Data as $D) {
+            $i = 0;
             $a = ($a == 'even') ? 'odd' : 'even';
             $this->Output .= "<tr class='" . $a . "'>";
             foreach($D as $Col=>$Val) {
                 if(!$this->Columns[$Col]['column']) continue;
+                $title = "";
                 switch($Col) {
                     case 'Duration':
-                        $this->Output .= "<td>" . Core::get_time($Val) . "</td>";
+                        $rowInfo = Core::get_time($Val);
                         break;
                     case 'UserID':
                     case 'ChooserID':
-                        $this->Output .= "<td>" . Core::linkUser($Val, $D['Chooser']) . "</td>";
+                        $User = Model_User::loadFromID($Val);
+                        $rowInfo = Core::linkUser($User);
+                        $title = $User->username;
                         break;
                     case 'Played':
-                        $this->Output .= "<td>" . Core::timeDiff($Val) . "</td>";
+                        $rowInfo = Core::timeDiff($Val);
                         break;
                     case 'Added':
-                        $this->Output .= "<td>" . Core::timeDiff(strtotime($Val) - strtotime($D['Played'])) . "</td>";
+                        $rowInfo = Core::timeDiff(strtotime($D['Played']) - strtotime($Val), false, 2, true);
                         break;
                     case 'Votes':
                     case 'PlayCount':
-                        $this->Output .= "<td>" . number_format($Val) . "</td>";
+                        $rowInfo = number_format($Val);
                         break;
                     default:
-                        $this->Output .= "<td>" . Core::displayStr($Val) . "</td>";
+                        $rowInfo = $title = Core::displayStr($Val);
                 }
+                $this->Output .= "<td class='col" . $i . "' title='" . $title . "'>" . $rowInfo . "</td>";
+                $i++;
             }
         }
     }
@@ -176,10 +185,14 @@ class Helper_History_Showtable extends CoreHelper {
     }
     
     public function run() {
-        $Table = $this->arguments;
+        if(count($this->arguments) < 3) $this->error(403);
+        $this->tableType = $this->arguments[0];
+        $this->eventID = $this->arguments[1];
+        $this->page = $this->arguments[2];
         
-        if(!in_array($Table, array_keys($this->Tables))) $this->error('Table does not exist');
-        $this->TableType = $Table;
+        if(!in_array($this->tableType, array_keys($this->Tables))) $this->error('Table does not exist');
+        if(!Core::isNumber($this->eventID)) $this->error('Invalid Event ID');
+        if(!Core::isNumber($this->page)) $this->error('Invalid Page Number');
         
         $DB = Core::get('DB');
         //die($this->build_query());
@@ -196,5 +209,3 @@ class Helper_History_Showtable extends CoreHelper {
         echo $this->Output;
     }
 }
-
-?>

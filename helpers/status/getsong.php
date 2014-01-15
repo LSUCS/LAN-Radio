@@ -10,12 +10,11 @@ class Helper_Status_Getsong extends CoreHelper {
         list($ID, $Score, $addedBy, $DateAdded) = Core::get('DB')->next_record(MYSQLI_NUM);
         echo $ID;
         
-        Core::get('DB')->query("INSERT INTO history (trackid, votes, addedBy, datePlayed, dateAdded) 
-                        VALUES ('%s', '%s', '%s', NOW(), '%s')", 
-                        array($ID,$Score,$addedBy,$DateAdded));
+        Core::get('DB')->query("INSERT INTO history (trackid, votes, addedBy, datePlayed, dateAdded, eventID) 
+                        VALUES ('%s', '%s', '%s', NOW(), '%s', '%s')", 
+                        array($ID,$Score,$addedBy,$DateAdded,CoreSettings::get('currentEvent')));
     
         Core::get('DB')->query("DELETE FROM votes WHERE trackid = '%s'", $ID);
-        //Core::get('DB')->query("DELETE FROM track_info WHERE trackid = '%s'", $ID);
         Core::get('DB')->query("DELETE FROM voting_list WHERE trackid = '%s'", $ID);
         
         
@@ -34,7 +33,5 @@ class Helper_Status_Getsong extends CoreHelper {
             var_dump($e);
             die;
         }    
-        
-    
     }
 }

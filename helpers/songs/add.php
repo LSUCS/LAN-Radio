@@ -2,11 +2,22 @@
 
 class Helper_Songs_Add extends CoreHelper {    
     public function run() {
+        $C = Core::get('Cache');
+        $db = Core::get('DB');
+        
+        $bannedUsers = $C->get('add-banned');
+        if(!$bannedUsers) {
+            $db->query("SELECT * FROM banned_users");
+            $bannedUsers = $db->to_array('UserID', MYSQLI_ASSOC);
+            $C->set('add-banned', $bannedUsers);
+        } 
+        if(array_key_exists($bannedUsers, $this->parent->LoggedUser->ID)) { 
+            die("banned");
+        }
+        
         //Check everything is well in Smallville
         $trackID = Core::unEscapeID($_GET['track']);
-
-        $db = Core::get('DB');
-
+        
         $db->query("SELECT * FROM voting_list WHERE trackid = ?", array($trackID));
         if($db->record_count()) die('exists');
         
@@ -19,38 +30,57 @@ class Helper_Songs_Add extends CoreHelper {
         }
         
         $db->query("SELECT * FROM track_info WHERE trackid = ?", array($trackID));
-        if(!$db->record_count()) {
-            
-            //Get info on the track and add it to the database
-            if(strstr($trackID, 'spotify')) {
-                
-                $data = $this->lookupJSON('http://ws.spotify.com/lookup/1/.json?uri=' . $trackID);
-                
-                $Track = array(
-                    'Title' => $data->track->name,
-                    'Artist' => $data->track->artists[0]->name,
-                    'Album' => $data->track->album->name,
-                    'Time' => $data->track->length
-                );
-            } else {
-
-                $data = $this->lookupJSON($trackID . '?alt=json');
-                
-                //Youtube API is annoying
-                $t = '$t';
-                $group = 'media$group';
-                $duration = 'yt$duration';
-                
-                $Track = array(
-                    'Title' => $data->entry->title->$t,
-                    'Artist' => $data->entry->author[0]->name->$t,
-                    'Album' => 'n/a',
-                    'Time' => $data->entry->$group->$duration->seconds
-                );
+        $needLookup = false;
+        if($db->record_count()) {
+            $TrackInfo = $db->next_record(MYSQLI_ASSOC);
+            if(empty($TrackInfo["Artist"]) || empty($TrackInfo["Title"])) {
+                $needLookup = true;
+            }
+        } else {
+            $needLookup = true;
+        }
+        
+        if($needLookup) {
+            $flag = 0;
+            for($try = 1; $try <= 3; $try++) {
+                //Get info on the track and add it to the database
+                if(Core::getSource($trackID) == "spotify") {
+                    
+                    $data = $this->lookupJSON('http://ws.spotify.com/lookup/1/.json?uri=' . $trackID);
+                    
+                    $Track = array(
+                        'Title' => $data->track->name,
+                        'Artist' => $data->track->artists[0]->name,
+                        'Album' => $data->track->album->name,
+                        'Time' => $data->track->length
+                    );
+                } else {
+    
+                    $data = $this->lookupJSON($trackID . '?alt=json');
+                    
+                    //Youtube API is annoying
+                    $t = '$t';
+                    $group = 'media$group';
+                    $duration = 'yt$duration';
+                    
+                    $Track = array(
+                        'Title' => $data->entry->title->$t,
+                        'Artist' => $data->entry->author[0]->name->$t,
+                        'Album' => 'n/a',
+                        'Time' => $data->entry->$group->$duration->seconds
+                    );
+                }
+                if(!empty($Track['Title']) && !empty($Track['Artist'])) {
+                    $flag = 1;
+                    break;
+                }
+            }
+            if($flag == 0) {
+                $this->error("Sorry, the information for this track could not be found at this time");
             }
             
             //Add info to the track catalogue
-            $db->query("INSERT IGNORE INTO track_info (trackid, Title, Artist, Album, Duration) VALUES(?, ?, ?, ?, ?)",
+            $db->query("INSERT INTO track_info (trackid, Title, Artist, Album, Duration) VALUES(?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE",
                 array($trackID, $Track['Title'], $Track['Artist'], $Track['Album'], $Track['Time']));
         }
         

@@ -15,7 +15,7 @@ body {
     width: 700px;
     height: 110px;
 }
-#pause {
+.play, .pause {
     display: inline-block;
     margin: 10px 0 10px 20px;
     width: 80px;
@@ -23,9 +23,15 @@ body {
     position: relative;
     background: #F25D23;
     border-radius:50%;
-    background-image: url(../images/play.png);
-    background-position:32px center;
     background-repeat: no-repeat;
+}
+.play {
+    background-image: url(../images/play.png);
+    background-position: 32px center;
+}
+.pause {
+    background-image: url(../images/pause.png);
+    background-position: 27px center;
 }
 #track-info{
 	text-align:left;

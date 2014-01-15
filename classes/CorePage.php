@@ -32,7 +32,7 @@ abstract class CorePage{
             
 			$Template->init('private_layout', true);
 			$Template->set('USER_NAME_LINK', $this->parent->linkUserMe());
-			$Template->set('USER_NAME', $this->parent->LoggedUser->Username);
+			$Template->set('USER_NAME', $this->parent->LoggedUser->username);
             $Template->set('USER_AUTHKEY', '');
 
 			if($this->parent->LoggedUser->isAdmin) {			 
@@ -95,5 +95,3 @@ abstract class CorePage{
         
 	}
 }
-
-?>

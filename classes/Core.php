@@ -71,13 +71,13 @@ class Core {
                 
                 Core::get('DB')->query("SELECT UserID FROM users_sessions WHERE SessionID = ?", array($sessionID));
                 $SessionInfo = Core::get('DB')->next_record();
-
                 if($SessionInfo && $SessionInfo['UserID'] == $userID) {
                     /*Core::requireLibrary('LANAuth');
                     $Auth = new LANAuth;
                     $_SESSION['logged_user'] = $Auth->getUserByID($userID);
                     */
                     $_SESSION['logged_user']= Model_User::loadFromID($userID);
+                    //if($_SESSION['logged_user']->Username !== "MetalMichael" && $_SESSION['logged_user']->Username !== "Mael") die("Live Maintenence Taking Place. Up Soon");
                     return;
                 }
             }
@@ -136,10 +136,8 @@ class Core {
      * @param $class_color Users class color as an html color code 
      * @return string
      */
-    public function linkUser($uid, $uname, $class_color = false) {
-        $ClassSymbol = '';
-        $ClassColor = (($class_color) ? 'color:#' . $class_color : '');
-        return "$ClassSymbol<a href='//lsucs.org.uk/members/$uid' style='$ClassColor'>$uname</a>";
+    public function linkUser($User) {
+        return "<a href='//lsucs.org.uk/members/" . $User->ID . "'>" . $User->username . "</a>";
     }
 
     /**
@@ -148,12 +146,8 @@ class Core {
      * @param bool $skip_class_color Set to TRUE to ignore class color
      * @return string
      */
-    public function linkUserMe($skip_class_symbol = false, $skip_class_color = false) {
-        return $this->linkUser(
-            $this->LoggedUser->ID,
-            $this->LoggedUser->Username/*,
-            (($skip_class_symbol) ? '' : $this->LoggedUser['_CI']['Symbol']),
-            (($skip_class_color) ? false : $this->LoggedUser['_CI']['Color'])*/);
+    public function linkUserMe() {
+        return $this->linkUser($this->LoggedUser);
     }
 
     public function formatBytes($Bytes, $Decimals = 2) {
@@ -193,22 +187,27 @@ class Core {
         }
     }
     
-    public function timeDiff($TimeStamp, $Levels=2, $HideAgo=false, $Span=true, $Lowercase=false) {
+    public function timeDiff($TimeStamp, $Diff = true, $Levels=2, $HideAgo=false, $Span=true, $Lowercase=false) {
         /*
         Returns a <span> by default but can optionally return the raw time
         difference in text (e.g. "16 hours and 28 minutes", "1 day, 18 hours").
         */
         if(!Core::isNumber($TimeStamp)) { // Assume that $TimeStamp is SQL timestamp
-                if($TimeStamp == '0000-00-00 00:00:00') { return 'Never'; }
-                $TimeStamp = strtotime($TimeStamp);
+            if($TimeStamp == '0000-00-00 00:00:00') { return 'Never'; }
+            $TimeStamp = strtotime($TimeStamp);
         }
         if($TimeStamp == 0) { return 'Never'; }
-        $Time = time()-$TimeStamp;
+        
+        if($Diff) {
+            $Time = time()-$TimeStamp;
+        } else {
+            $Time = $TimeStamp;
+        }
         
         // If the time is negative, then it expires in the future.
         if($Time < 0) {
-                $Time = -$Time;
-                $HideAgo = true;
+            $Time = -$Time;
+            $HideAgo = true;
         }
 
         $Years=floor($Time/31556926); // seconds in one year
@@ -229,93 +228,109 @@ class Core {
         $Minutes=floor($Remain/60); // seconds in one minute
         $Remain = $Remain - $Minutes*60;
 
-        $Seconds=$Remain;
+        $Seconds = $Remain;
 
         $Return = '';
 
-        if ($Years>0 && $Levels>0) {
-                if ($Years>1) {
-                        $Return .= $Years.' years';
-                } else {
-                        $Return .= $Years.' year';
-                }
-                $Levels--;
+        if($Years>0 && $Levels>0) {
+            if($Years>1) {
+                $Return .= $Years.' years';
+            } else {
+                $Return .= $Years.' year';
+            }
+            $Levels--;
         }
 
-        if ($Months>0 && $Levels>0) {
-                if ($Return!='') {
-                        $Return.=', ';
-                }
-                if ($Months>1) {
-                        $Return.=$Months.' months';
-                } else {
-                        $Return.=$Months.' month';
-                }
-                $Levels--;
+        if($Months>0 && $Levels>0) {
+            if(!empty($Return)) {
+                $Return.=', ';
+            }
+            if ($Months>1) {
+                $Return.=$Months.' months';
+            } else {
+                $Return.=$Months.' month';
+            }
+            $Levels--;
         }
 
-        if ($Weeks>0 && $Levels>0) {
-                if ($Return!="") {
-                        $Return.=', ';
-                }
-                if ($Weeks>1) { 
-                        $Return.=$Weeks.' weeks';
-                } else {
-                        $Return.=$Weeks.' week';
-                }
-                $Levels--;
+        if($Weeks>0 && $Levels>0) {
+            if(!empty($Return)) {
+                $Return.=', ';
+            }
+            if ($Weeks>1) { 
+                $Return.=$Weeks.' weeks';
+            } else {
+                $Return.=$Weeks.' week';
+            }
+            $Levels--;
         }
 
-        if ($Days>0 && $Levels>0) {
-                if ($Return!='') {
-                        $Return.=', ';
-                }
-                if ($Days>1) {
-                        $Return.=$Days.' days';
-                } else {
-                        $Return.=$Days.' day';
-                }
-                $Levels--;
+        if($Days>0 && $Levels>0) {
+            if(!empty($Return)) {
+                $Return.=', ';
+            }
+            if ($Days>1) {
+                $Return.=$Days.' days';
+            } else {
+                $Return.=$Days.' day';
+            }
+            $Levels--;
         }
 
-        if ($Hours>0 && $Levels>0) {
-                if ($Return!='') {
-                        $Return.=', ';
-                }
-                if ($Hours>1) {
-                        $Return.=$Hours.' hours';
-                } else {
-                        $Return.=$Hours.' hour';
-                }
-                $Levels--;
+        if($Hours>0 && $Levels>0) {
+            if(!empty($Return)) {
+                $Return.=', ';
+            }
+            if ($Hours>1) {
+                $Return.=$Hours.' hours';
+            } else {
+                $Return.=$Hours.' hour';
+            }
+            $Levels--;
         }
 
-        if ($Minutes>0 && $Levels>0) {
-                if ($Return!='') {
-                        $Return.=' and ';
-                }
-                if ($Minutes>1) {
-                        $Return.=$Minutes.' mins';
-                } else {
-                        $Return.=$Minutes.' min';
-                }
-                $Levels--;
+        if($Minutes>0 && $Levels>0) {
+            if(!empty($Return)) {
+                $Return.=', ';
+            }
+            if ($Minutes>1) {
+                $Return.=$Minutes.' mins';
+            } else {
+                $Return.=$Minutes.' min';
+            }
+            $Levels--;
         }
         
-        if($Return == '') {
-                $Return = 'Just now';
+        if($Seconds>0 && $Levels>0) {
+            if(!empty($Return)) {
+                $Return.=', ';
+            }
+            if($Seconds>1) {
+                $Return.=$Seconds.' seconds';
+            } else {
+                $Return.=$Seconds.' second';
+            }
+            $Levels--;
+        }
+        
+        if(empty($Return)) {
+            $Return = 'Just now';
         } elseif (!$HideAgo) {
-                $Return .= ' ago';
+            $Return .= ' ago';
         }
 
-        if ($Lowercase) {
-                $Return = strtolower($Return);
+        if($Lowercase) {
+            $Return = strtolower($Return);
         }
         
-        if ($Span) {
+        if($Span) {
+            if($Diff) {
                 return '<span class="time" title="'.date('M d Y, H:i', $TimeStamp).'">'.$Return.'</span>';
+            } else {
+                return '<span class="time" title="'. self::timeDiff($TimeStamp, false, 10, true, false) .'">'.$Return.'</span>';
+            }
         } else {
-                return $Return;
+            return $Return;
         }
     }
     
@@ -382,7 +397,7 @@ class Core {
             $Return = false;
         }
         // We're converting input to a int, then string and comparing to original
-        $Return = ($Str == strval(intval($Str)) ? true : false);
+        $Return = ($Str == strval(intval($Str))) ? true : false;
         return $Return;
     }
         
@@ -506,7 +521,7 @@ class Core {
      * @return void
      */
     public function niceError($id) {
-        header("Location: error.php?id=$id");
+        header("Location: error.php?id=" . $id);
         exit;
     }
 
@@ -554,5 +569,3 @@ class Core {
         self::$_errors[] = "PHP Error $errno: $errstr (File: $errfile, Line: $errline)";
     }
 }
-
-?>

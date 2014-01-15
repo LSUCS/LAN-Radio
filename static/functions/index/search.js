@@ -130,6 +130,9 @@ var search = {
                 } else if(data == "exists") {
                     message = "This song already exists in the Voting List";
                     icon = "close";
+                } else if(data == "banned") {
+                    message = "You have been banned from adding songs";
+                    icon = "close";
                 } else {
                     message = "Song Added";;
                     icon = "check";

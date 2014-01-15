@@ -1,36 +1,100 @@
 <!DOCTYPE HTML>
 <head>
-	<meta http-equiv="content-type" content="text/html" />
-	<meta name="author" content="MetalMichael" />
+    <meta http-equiv="content-type" content="text/html" />
+    <meta name="author" content="MetalMichael" />
 
     <link rel="stylesheet" href="{tag:STATIC_SERVER /}styles/player.css" />
     <script type="text/javascript" src="{tag:STATIC_SERVER /}functions/jquery.js"></script>
     <script type="text/javascript" src="{tag:STATIC_SERVER /}functions/player/player.js"></script>
+    <script type="text/javascript" src="{tag:STATIC_SERVER /}functions/player/jquery.jplayer.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            
+            var stream = {
+                title: "LAN Radio",
+                oga: '{tag:STREAM_LINK /}.ogg',
+                mp3: '{tag:STREAM_LINK /}.mp3'
+            }
+            //Lazy
+            var retries = 0;
+            $("#jplayer").jPlayer({
+                ready: function (event) {
+                    $(this).jPlayer("setMedia", stream);
+                },
+                swfPath: '{tag:STATIC_SERVER /}functions/player',
+                supplied: "mp3, oga",
+                cssSelectorAncestor: "#player",
+                pause: function() {
+                    $(this).jPlayer('clearMedia');
+                },
+                play: function() {
+                    
+                },
+                playing: function() {
+                    retries = 0;
+                },
+          		error: function(event) {
+                    if(event.jPlayer.error.type === $.jPlayer.error.URL_NOT_SET) {
+    				    // Setup the media stream again and play it.
+				        $(this).jPlayer("setMedia", stream).jPlayer("play");
+                    } else {
+              		    console.log(event);
+                        if(retries < 5) {
+                            retries++;
+                            console.log("Playback failed. Retry: " + retries);
+                            $(this).jPlayer("play");
+                        }
+                    }
+        		}
+            });
+            
+            $('#play-pause').on('click', function() {
+                playPauseButton();
+            });
+        });
+        
+        function playPauseButton() {
+            if($($('#play-pause').children()[0]).hasClass('play')) {
+                $($('#play-pause').children()[0]).addClass('pause').removeClass('play');
+                $('#jplayer').jPlayer('play');
+            } else {
+                $($('#play-pause').children()[0]).addClass('play').removeClass('pause');
+                $("#jplayer").jPlayer('pause');
+            }
+            return false;
+        } 
+    </script>
 </head>
 <body>
 
 <div id="player-container">
-    <div id="player">
-        <a href="lan-radio:8000/stream.ogg.m3u" id="pause-button"><div id="pause"></div></a>
+    
+    <div id="jplayer" class="jp-jplayer"></div>
+
+    <div id="jplayer"></div>
+
+    <div id="player" class="jp-audio jp-controls">
+        <a id="play-pause" href="#">
+            <div class="play"></div>
+        </a>
         <div id="track-info">
             <span id="song"></span>
             <span id="artist">Artist</span>
         </div>
         <div id="time-info">
-        	<div id="bar-container">           
-	            <div id="current-time">0:00</div>
-	            <div id="current-time-seconds" class="hidden"></div>
-	            <div id="bar"><div id="current-position"></div></div>
-	            <div id="end-time">0:00</div>
-	            <div id="end-time-seconds" class="hidden"></div>
-        	</div>
+            <div id="bar-container">           
+                <div id="current-time">0:00</div>
+                <div id="current-time-seconds" class="hidden"></div>
+                <div id="bar"><div id="current-position"></div></div>
+                <div id="end-time">0:00</div>
+                <div id="end-time-seconds" class="hidden"></div>
+            </div>
         </div>
         <div id="user-info">
             <div id="vote-container"><div id="votes"></div><br />Votes</div>
             <div id="user-info"><div id="avatar"><img /></div></div>
         </div>
     </div>
-
 </div>
 
 </body>

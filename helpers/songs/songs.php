@@ -7,7 +7,7 @@ class Helper_Songs_Songs extends CoreHelper {
         $VotingTracks = Core::get("DB")->to_array(false, MYSQL_ASSOC);
                 
         //Load the users' votes
-        Core::get("DB")->query("SELECT trackid, updown FROM votes WHERE userid = " . $this->parent->LoggedUser->ID); //. $this->parent->LoggedUser->ID);
+        Core::get("DB")->query("SELECT trackid, updown FROM votes WHERE userid = " . $this->parent->LoggedUser->ID);
         $this->UserVotes = Core::get("DB")->to_array('trackid', MYSQLI_ASSOC);
         
   		Core::get('Template')->init('table');
@@ -34,7 +34,7 @@ class Helper_Songs_Songs extends CoreHelper {
                     'ARTIST' => Core::displayStr($VT['Artist']),
                     'DURATION' => Core::get_time($VT['Duration']),
                     'ALBUM' => Core::displayStr($VT['Album']),
-                    'ADDEDBY' => Core::linkUser($VT['addedBy'], $Users[$VT['addedBy']]->Username),
+                    'ADDEDBY' => Core::linkUser($Users[$VT['addedBy']]),
                     'SCORE' => $VT['Score'],
                     'PARITY' => $parity,
                     'UPCOLOUR' => $this->getColour(1, $VT['trackid']),

@@ -1,15 +1,10 @@
 #history-container {
-	width: 1000px;
+    width: 100%;
 	margin: 0 auto;
 }
 #history-container .table-container {
     padding-top: 15px;
     margin: auto;
-}
-
-#history-container table {
-    width: 1000px;
-	margin: 0 auto;
 }
 
 #history-container #history-navigation {
@@ -25,10 +20,8 @@
 .buttons{width:100%;text-align:center;margin-top: 10px;}
 .buttons .button{margin-bottom: 10px;}
 .hbtnncontainer{
-	margin: 2px;
-	overflow:auto;
-	display:table-cell;
-	clear:both;
+	margin: auto;
+    width: 1000px;
 }
 .hbtnncontainer .button{
 	clear: none !important;
@@ -65,24 +58,20 @@
 	border-bottom-left-radius: 0.4em;
 	border-bottom-right-radius: 0.4em;
 }
-.table-container > table{
-
-}
 .table-container > table tr {
     height: 25px;
     line-height:25px;
     background: url('list-item.png') 0px 0px;
-    display: block;
     position: relative;
     -moz-box-shadow: 1px 1px 5px #888;
     -webkit-box-shadow: 1px 1px 5px #888;
     box-shadow: 1px 1px 5px #888;
 }
 .table-container > table tr.even {
-    background-position: 0px 50px;
+    background-position: 0px 54px;
 }
 .table-container > table .selected, .table-container > table tr:hover {
-    background-position: 0px 25px !important;
+    background-position: 0px 27px !important;
     color:#FFFFFF;
 }
 .table-container > table thead tr {
@@ -101,4 +90,114 @@
     line-height: 22px;
     padding: 0 5px;
     text-align: left;
+}
+
+
+
+.history-table {
+    margin: auto;
+	position:relative;
+}
+.history-table a{
+    color:inherit;
+}
+.history-table tr {
+    height: 25px;
+    background: url('list-item.png') 0px 0px;
+    position: relative;
+    -moz-box-shadow: 1px 1px 5px #888;
+    -webkit-box-shadow: 1px 1px 5px #888;
+    box-shadow: 1px 1px 5px #888;
+
+    cursor: pointer;
+    width: 100%;
+}
+.history-table tbody td {
+	text-overflow:ellipsis;
+}
+.history-table th {
+    background: url('list-header.png');
+    font: bold 11px 'Helvetica Neue',Arial,sans-serif;
+    text-shadow: 0 1px 0 white;
+    text-transform: uppercase;
+    line-height: 22px;
+    padding: 0 5px;
+    text-align: left;
+}
+
+.history-table thead tr {
+    cursor:default;
+}
+.history-table thead tr:first-child{
+    height: 22px !important;
+}
+
+.history-table td {
+    height: 25px;
+    padding: 0 5px;
+    vertical-align: middle;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.history-table tr.even {
+    background-position: 0px 53px;
+}
+
+.history-table .selected, .history-table tr:hover {
+    background-position: 0px 27px !important;
+    color:#FFFFFF;
+}
+
+.header-row:hover {
+    color: #000 !important;
+}
+
+.history-table .col0 {
+    width: 320px;
+    max-width: 320px;
+    text-align: left;
+}
+.history-table .col1 {
+    width: 210px;
+    max-width: 210px;
+    text-align: left;
+}
+.history-table .col2 {
+    width: 80px;
+	max-width: 80px;
+}
+.history-table .col3 {
+    width: 210px;
+	max-width:210px;
+}
+.history-table .col4 {
+    width: 50px;
+	max-width: 50px;
+    text-align: center;
+}
+.history-table .col5 {
+    width: 70px;
+	max-width: 70px;
+    text-align: center;
+}
+.history-table .col6 {
+    width: 110px;
+    max-width: 110px;
+}
+.history-table .col7 {
+    width: 125px;
+	max-width: 125px;
+}
+.history-table .col8 {
+    width: 140px;
+	max-width: 140px;
+}
+.history-table .col9 {
+    width: 180px;
+	max-width: 180px;
+}
+#eventSelectorContainer{
+    float: right;
+    font-size: 20px;
 }

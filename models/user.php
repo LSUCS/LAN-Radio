@@ -3,11 +3,11 @@
 class Model_User extends CoreModel {
 
     public $ID; // int(11) NOT NULL AUTO_INCREMENT,
-    public $Username; // varchar(25) NOT NULL,
-    public $Email; // varchar(30) NOT NULL,
-    public $AvatarURL; // varchar(255) DEFAULT NULL,
+    public $username; // varchar(25) NOT NULL,
+    public $email; // varchar(30) NOT NULL,
+    public $avatarURL; // varchar(255) DEFAULT NULL,
     public $isAdmin = false; // int(1) NOT NULL,
-    public $Theme = null;
+    public $theme = null;
 
     public function __construct() {
         $this->ID = null;
@@ -19,9 +19,9 @@ class Model_User extends CoreModel {
 
     protected function _loadFromRecord($record) {
         $this->ID = $record['userid'];
-        $this->Username = $record['username'];
-        $this->Email = $record['email'];
-        $this->AvatarURL = $record['avatar'];
+        $this->username = $record['username'];
+        $this->email = $record['email'];
+        $this->avatarURL = $record['avatar'];
         $this->isAdmin = $record['moderator'];
     }
 

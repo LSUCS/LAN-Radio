@@ -8,23 +8,21 @@ class View_Toolbox_Toolbox extends CorePage{
         
         $this->showHeader('Toolbox', "default", false);
 		$template->init('main');
-		
-        $db->query("SELECT * FROM site_config");
-        if($db->record_count() !== 1) die('Fatal Settings Error');
-        $settings = $db->next_record(MYSQLI_ASSOC);
-        $template->set('RUNNING', $settings['running'], true);
+  
+        $template->set('RUNNING', CoreSettings::get('running'), true);
         
-        $template->set('SPOTIFY', $settings['spotify'], true);
-        $template->set('YOUTUBE', $settings['youtube'], true);
-        $template->set('LOCAL', $settings['local'], true);
-        $template->set('UPLOAD', $settings['upload'], true);
+        $template->set('SPOTIFY', CoreSettings::get('spotify'), true);
+        $template->set('YOUTUBE', CoreSettings::get('youtube'), true);
+        $template->set('LOCAL', CoreSettings::get('local'), true);
+        $template->set('UPLOAD', CoreSettings::get('upload'), true);
         
         $db->query("SELECT ID, Name FROM site_events");
         $events = $db->to_array(false, MYSQLI_ASSOC);
         $template->set('EVENTS', $events);
         
+        $currentEvent = CoreSettings::get('currentEvent');
         foreach($events as $key=>$e) {
-            if($e["ID"] = $settings['currentEvent']) {
+            if($e["ID"] == $currentEvent) {
                 $events[$key]["START_ACTION"] = "disabled='disabled' value='Running'";
                 $events[$key]["END_ACTION"] = "value='End'";
             } else {
@@ -39,5 +37,3 @@ class View_Toolbox_Toolbox extends CorePage{
 	}
 	
 }
-
-?>

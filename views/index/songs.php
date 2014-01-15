@@ -22,5 +22,3 @@ class View_Index_Songs extends CorePage{
 	}
 	
 }
-
-?>

@@ -4,7 +4,6 @@
 }
 .voting-table a{
     color:inherit;
-    //border-bottom:1px dotted #000000;
 }
 .voting-table .col6 a:hover{
     color:#F25D23;

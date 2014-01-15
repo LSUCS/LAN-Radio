@@ -24,8 +24,7 @@ class Helper_Toolbox_Start extends CoreHelper {
             exit;
         }
         
-        $db->query("SELECT currentEvent FROM site_config");
-        list($currentEvent) = $db->next_record(MYSQLI_ASSOC);
+        $currentEvent = CoreSettings::get('currentEvent');
         
         //We're trying to start an event
         if(isset($_POST['startEvent'])) {

@@ -32,7 +32,7 @@ class Helper_Mpd_Playerinfo extends CoreHelper {
                 $Return['year'] = $this->MPD->current_track_year;
                 $Return['file'] = $this->MPD->current_track_file;
                 
-                Core::get('DB')->query("SELECT votes, addedBy FROM history WHERE trackid = ? ORDER BY datePlayed DESC LIMIT 1", array($this->MPD->current_track_file));
+                Core::get('DB')->query("SELECT votes, addedBy FROM history ORDER BY datePlayed DESC LIMIT 1", array($this->MPD->current_track_file));
                 if(Core::get('DB')->record_count() == 0) {
                     $Return = array('error' => 'Kaboomboom', 'track' => $this->MPD->current_track_file);
                     $expire = 3;
