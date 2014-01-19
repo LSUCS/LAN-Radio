@@ -99,8 +99,8 @@ class Core {
     public function debug() {
         // Populate debug var
         $this->Debug['Queries'] = self::get('DB')->Queries;
-        $this->Debug['CacheHits'] = Cache::CacheHits;
-        $this->Debug['AutoloadedFiles'] = CoreAutoLoader::get_loaded_files();
+        $this->Debug['CacheHits'] = Cache::$CacheHits;
+        $this->Debug['AutoloadedFiles'] = AutoLoader::get_loaded_files();
         $this->Debug['RegistryLoaded'] = self::get_classes_in_registry();
         $this->Debug['Core'] = array('RequestedPage', 'View', 'ViewRenderTime', 'Templates', 'RegistryLoaded');
         $ret = "<div class='debugContainer'>";

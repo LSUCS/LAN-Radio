@@ -5,6 +5,7 @@ namespace Core\Helper\Status;
 use \Core as Core;
 use Core\Core as C;
 use Core\Settings;
+use Core\Config;
 
 class Getsong extends Core\Helper {
     public function run() {
@@ -15,21 +16,22 @@ class Getsong extends Core\Helper {
         
         list($ID, $Score, $addedBy, $DateAdded) = C::get('DB')->next_record(MYSQLI_NUM);
         echo $ID;
-        
+        /*
         C::get('DB')->query("INSERT INTO history (trackid, votes, addedBy, datePlayed, dateAdded, eventID) 
                         VALUES (?, ?, ?, NOW(), ?, ?)", 
                         $ID, $Score, $addedBy, $DateAdded, Settings::get('currentEvent'));
     
         C::get('DB')->query("DELETE FROM votes WHERE trackid = '%s'", $ID);
         C::get('DB')->query("DELETE FROM voting_list WHERE trackid = '%s'", $ID);
-        
+        */
         
         $Track = array("ID" => $ID);
         $msgData = array('type'=>'event', 'event'=>'delete', 'data' => $Track);
-        try{
-            $msg = phpws_WebSocketMessage::create(json_encode($msgData));
+        try {
+            C::loadLibrary('phpws/phpws/websocket.client.php');
+            $msg = \WebSocketMessage::create(json_encode($msgData));
             
-            $socket = new WebSocket("ws://" . WEBSOCKET_HOST . ":" . WEBSOCKET_PORT . "/" . WEBSOCKET_SERVICE);
+            $socket = new \WebSocket("ws://" . Config::WEBSOCKET_HOST . ":" . Config::WEBSOCKET_PORT . "/" . Config::WEBSOCKET_SERVICE);
             $socket->open();
             $socket->setAdmin();
             $socket->sendMessage($msg);
@@ -37,6 +39,6 @@ class Getsong extends Core\Helper {
         } catch(Exception $e) {
             var_dump($e);
             die;
-        }    
+        }   
     }
 }

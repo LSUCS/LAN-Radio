@@ -161,7 +161,7 @@ class Showtable extends Core\Helper {
                     case 'UserID':
                     case 'ChooserID':
                         $User = new User($Val);
-                        $rowInfo = Core::linkUser($User);
+                        $rowInfo = $User->link();
                         $title = $User->username;
                         break;
                     case 'Played':
@@ -185,10 +185,6 @@ class Showtable extends Core\Helper {
     
     private function end_table() {
         $this->Output .= "</tbody></table>";
-    }
-    
-    private function error($E) {
-        die($E);
     }
     
     public function run() {

@@ -5,28 +5,14 @@ namespace Core;
 class Utility {
 
     /**
-     * Creates a full hyperlink to the user
-     * @param $uid User id number
-     * @param $uname Username
-     * @param $class_symbol User's class symbol
-     * @param $class_color Users class color as an html color code 
-     * @return string
-     */
-    public function linkUser($User) {
-        return "<a href='//lsucs.org.uk/members/" . $User->ID . "'>" . $User->username . "</a>";
-    }
-
-    /**
      * Creates a full hyperlink to the logged in user
-     * @param bool $skip_class_symbol Set to TRUE to ignore class symbol
-     * @param bool $skip_class_color Set to TRUE to ignore class color
      * @return string
      */
-    public function linkUserMe() {
+    public static function linkUserMe() {
         return $this->linkUser($this->LoggedUser);
     }
 
-    public function formatBytes($Bytes, $Decimals = 2) {
+    public static function formatBytes($Bytes, $Decimals = 2) {
         $Unit = array(' B', ' KB', ' MB', ' GB', ' TB', ' PB', ' EB', ' ZB', ' YB');
         $UnitPointer = 0;
         while($Bytes >= 1024 && $UnitPointer < count($Unit)) {
@@ -41,7 +27,7 @@ class Utility {
      * @param int $Time The song time in seconds
      * @return string
      */
-    public function get_time($Time) {
+    public static function get_time($Time) {
         $Hours = $Minutes = $Seconds = 0;
         while($Time > 60*60) {
             $Time -= 60*60;
@@ -63,12 +49,12 @@ class Utility {
         }
     }
     
-    public function timeDiff($TimeStamp, $Diff = true, $Levels=2, $HideAgo=false, $Span=true, $Lowercase=false) {
+    public static function timeDiff($TimeStamp, $Diff = true, $Levels=2, $HideAgo=false, $Span=true, $Lowercase=false) {
         /*
         Returns a <span> by default but can optionally return the raw time
         difference in text (e.g. "16 hours and 28 minutes", "1 day, 18 hours").
         */
-        if(!Core::isNumber($TimeStamp)) { // Assume that $TimeStamp is SQL timestamp
+        if(!self::isNumber($TimeStamp)) { // Assume that $TimeStamp is SQL timestamp
             if($TimeStamp == '0000-00-00 00:00:00') { return 'Never'; }
             $TimeStamp = strtotime($TimeStamp);
         }
@@ -216,7 +202,7 @@ class Utility {
      * @param string $Str The string to be converted
      * @return string
      */
-    public function displayStr($Str) {
+    public static function displayStr($Str) {
         if($Str === NULL || $Str === FALSE || is_array($Str)) {
             return '';
         }
@@ -245,15 +231,15 @@ class Utility {
      * @param string $ID The ID to validate
      * @return bool
      */
-    public function validID($ID) {
+    public static function validID($ID) {
         return preg_match('/(spotify:(?:track:[a-z0-9]+)|http:\/\/gdata\.youtube\.com\/feeds\/api\/videos\/[a-z0-9-_]+)/i', $ID); 
     }
     
-    public function unEscapeID($ID) {
+    public static function unEscapeID($ID) {
         return str_replace(array('\:', '\.', '\[', '\]', '\/'), array(':', '.', '[', ']', '/'), $ID);
     }
     
-    public function getSource($ID){
+    public static function getSource($ID){
         if(strstr($ID, "spotify") !== false) {
             return "spotify";
         }
@@ -267,7 +253,7 @@ class Utility {
      * @param string $Str The string to test
      * @return bool
      */
-    public function isNumber($Str) {
+    public static function isNumber($Str) {
         $Return = true;
         if ($Str < 0) {
             $Return = false;
@@ -282,7 +268,7 @@ class Utility {
      * @param string $Str The string to be converted
      * @return string
      */
-    public function makeUtf8($Str) {
+    public static function makeUtf8($Str) {
         if ($Str != "") {
             if (self::isUtf8($Str)) {
                 $Encoding = "UTF-8";
@@ -307,7 +293,7 @@ class Utility {
      * @param string $Str The string to be checked
      * @return bool
      */
-    public function isUtf8($Str) {
+    public static function isUtf8($Str) {
         return preg_match('%^(?:
     		[\x09\x0A\x0D\x20-\x7E]			 // ASCII
     		| [\xC2-\xDF][\x80-\xBF]			// non-overlong 2-byte

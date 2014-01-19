@@ -57,7 +57,6 @@ function processLogin() {
 	setTimeout(function(){COOLDOWN=false;},1234);
 	$.post('/login/login/', {action: 'login', user: $('#username').val(), password: $('#password').val()}, function(data){
 		var msg = '';
-        console.log("Got data: " + data);
 		if(data=='dne_badpass'){ msg = "Your username or password was incorrect."; }
 		if(data=='dne_banned'){ msg = "Your account is BANNED! You are not welcome here."; }
 
@@ -78,8 +77,9 @@ function processLogin() {
 function successfulLogin(){
 	$('#maincontent').fadeOut(500);
 	$('#foot').html("");
-	$('#foot').animate({height: '100%'}, 250, function(){ $('#foot').animate({top: 0, height: '40px'}, function(){
-		document.location = "/index/";
-		
-	}); });
+	$('#foot').animate({height: '100%'}, 250, function(){ 
+        $('#foot').animate({top: 0, height: '40px'}, function(){
+		  //document.location = "/index/";
+		});
+    });
 }

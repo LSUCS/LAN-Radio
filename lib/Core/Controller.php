@@ -123,7 +123,7 @@ abstract class Controller {
         try {
             $className = 'Core\\Helper\\' . ucfirst($controllerName);
             $StartTime = microtime(true);
-            $Helper = new $className($this, $arguments);
+            $Helper = new $className($arguments);
             $Helper->run();
             $EndTime = microtime(true);
 			$this->Debug['Helper'] = "$className";

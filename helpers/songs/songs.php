@@ -6,6 +6,7 @@ use \Core as Core;
 use Core\Core as C;
 use Core\Utility;
 use Core\Model\User;
+use Core\Session;
 
 class Songs extends Core\Helper { 
     public function run() {
@@ -14,10 +15,10 @@ class Songs extends Core\Helper {
         $VotingTracks = C::get("DB")->to_array(false, MYSQL_ASSOC);
                 
         //Load the users' votes
-        C::get("DB")->query("SELECT trackid, updown FROM votes WHERE userid = " . $this->parent->LoggedUser->ID);
+        C::get("DB")->query("SELECT trackid, updown FROM votes WHERE userid = ?", Session::getUser()->ID);
         $this->UserVotes = C::get("DB")->to_array('trackid', MYSQLI_ASSOC);
         
-  		Core::get('Template')->init('table');
+  		C::get('Template')->init('table');
         
         if(count($VotingTracks)) {
             $a = 'even';
@@ -41,7 +42,7 @@ class Songs extends Core\Helper {
                     'ARTIST' => Utility::displayStr($VT['Artist']),
                     'DURATION' => Utility::get_time($VT['Duration']),
                     'ALBUM' => Utility::displayStr($VT['Album']),
-                    'ADDEDBY' => Utility::linkUser($Users[$VT['addedBy']]),
+                    'ADDEDBY' => $Users[$VT['addedBy']]->link(),
                     'SCORE' => $VT['Score'],
                     'PARITY' => $parity,
                     'UPCOLOUR' => $this->getColour(1, $VT['trackid']),

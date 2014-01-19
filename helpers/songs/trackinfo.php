@@ -5,14 +5,14 @@ namespace Core\Helper\Songs;
 use \Core as Core;
 use Core\Core as C;
 use Core\Validate;
-use Core\Utiltiy;
+use Core\Utility;
 use Core\Model\User;
 
 class Trackinfo extends Core\Helper {
     public function run() {
         $trackID = $_GET['id'];
         
-        $Val = Validate($_GET);
+        $Val = new Validate($_GET);
         $Val->val('id', 'trackid', true, "Invalid or missing Track ID");
         
         if($Err = $Val->getErrors()) {
@@ -48,13 +48,13 @@ class Trackinfo extends Core\Helper {
         $T->set('Title', $TrackInfo['Title']);
         $T->set('Artist', $TrackInfo['Artist']);
         $T->set('Album', $TrackInfo['Album']);
-        $T->set('Duration', Utiltiy::get_time($TrackInfo['Duration']));
+        $T->set('Duration', Utility::get_time($TrackInfo['Duration']));
         $T->set('Votes', $TrackInfo['Votes']);
         $T->set('Username', $User->username);
         $T->set('UserID', $User->ID);
         $T->set('Avatar', $User->avatarURL);
         
-        switch(Utiltiy::getSource($trackID)) {
+        switch(Utility::getSource($trackID)) {
             case 'youtube':
                 $code = array_pop(explode('/', $trackID));
                 $tag = '<iframe width="560" height="315" src="http://www.youtube.com/embed/' . $code . '" frameborder="0" allowfullscreen></iframe>';

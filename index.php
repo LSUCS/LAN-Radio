@@ -2,8 +2,11 @@
 
 namespace Core;
 
+ini_set('display_errors', true);
+error_reporting(E_ALL);
+
 //Auto loading
-require(dirname(__FILE__) . DIRECTORY_SEPARATOR . "lib" . DIRECTORY_SEPARATOR . "Core" . DIRECTORY_SEPARATOR . "Autoloader.php");
+require(dirname(__FILE__) . DIRECTORY_SEPARATOR . "lib" . DIRECTORY_SEPARATOR . "Core" . DIRECTORY_SEPARATOR . "AutoLoader.php");
 
 //Run
 AutoLoader::initialise();

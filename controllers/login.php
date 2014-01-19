@@ -3,12 +3,13 @@
 namespace Core\Controller;
 
 use Core;
+use Core\Session;
 
 class Login extends Core\Controller {
     const ENFORCE_LOGIN = false;
 
     protected function __routing($pieces) {
-        if (Core::loggedIn()) { // logged in
+        if (Session::loggedIn()) { // logged in
             if ($pieces[0] != 'logout') {
                 $this->redirect('index');
                 exit();

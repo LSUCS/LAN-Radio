@@ -11,23 +11,21 @@ class ProcessLogin extends Core\Helper {
 	
 	public function run(){
 		        
-        $Auth = new LAN_Auth;
-        
-        $UserInfo = $Auth->getUser($_POST['user']);
+        $Auth = new \LAN\Auth;
+        $UserInfo = $Auth::getUser($_POST['user']);
         if(!$UserInfo) {
             echo 'dne_nouser';
             exit;            
         }
 		
-		$passwordCorrect = $Auth->checkCredentials($_POST['user'], $_POST['password']);
+		$passwordCorrect = $Auth::checkCredentials($_POST['user'], $_POST['password']);
 		if (!$passwordCorrect) {
 			echo 'dne_badpass';
 			exit;
 		}
         
         //IP History and device detection normally goes here
-        
-        $SessionID = Crypt::random_hash();
+        $SessionID = Crypt::randomHash();
         C::get('DB')->query("INSERT INTO users_sessions (SessionID, UserID, Date) VALUES (?, ?, NOW())", $SessionID, $UserInfo['userid']);
         
         $plainKey = $UserInfo['userid'] . "||~#~||" . $SessionID;

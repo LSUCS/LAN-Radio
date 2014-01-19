@@ -1,6 +1,6 @@
 <?php
 
-namespace Core\View\Songs;
+namespace Core\View\Index;
 
 use \Core;
 use Core\Core as C;

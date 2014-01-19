@@ -1,5 +1,7 @@
 <?php
 
+namespace Core;
+
 define('USERNAME_REGEX', '/^[a-z0-9-_\/]{1,20}$/i');
 define('EMAIL_REGEX', '/^[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i');
 

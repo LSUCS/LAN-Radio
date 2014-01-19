@@ -3,8 +3,8 @@
 namespace Core;
 
 class Cache {
-	public $CacheHits = array();
-	public $ClearCache = false;
+	public static $CacheHits = array();
+	public static $ClearCache = false;
 	
 	public static function generateClearCacheURL() {
         $URI = (empty(Core::get('Core')->pieces)) ? 'index' : Core::get('Core')->pieces;
@@ -12,11 +12,11 @@ class Cache {
 	}
 	
 	public static function get($key, &$flags = NULL) {
-		if($this->ClearCache) return false;
+		if(self::$ClearCache) return false;
         
 		$ret = apc_fetch($key, $succ);
 		if($succ) {
-			$this->CacheHits[] = array('Key' => $key, 'Value' => $ret, 'Source' => 'apc');
+			self::$CacheHits[] = array('Key' => $key, 'Value' => $ret, 'Source' => 'apc');
 			return $ret;
 		}
         return false;

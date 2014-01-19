@@ -17,27 +17,33 @@ Class Session {
      * Populates $_SESSION['logged_user'] and loads User Model
      * @return void
      */
-    public function handleSessions() {
-        //if(isset($_COOKIE['session']) && !isset($_SESSION['logged_user'])) {
-            // Cookie Security
-            $Crypt = new CoreCrypt;
-            $cookieInfo = $Crypt->decrypt($_COOKIE['session']);
-            if(strstr($cookieInfo ,'||~#~||')) {
-                $cookieInfo = explode('||~#~||', $cookieInfo);
-                $userID = $cookieInfo[0];
-                $sessionID = $cookieInfo[1];
-                
-                Core::get('DB')->query("SELECT UserID FROM users_sessions WHERE SessionID = ?", array($sessionID));
-                $SessionInfo = Core::get('DB')->next_record();
-                if($SessionInfo && $SessionInfo['UserID'] == $userID) {
-                    $_SESSION['logged_user'] = new User($userID);
-                    //if($_SESSION['logged_user']->Username !== "MetalMichael" && $_SESSION['logged_user']->Username !== "Mael") die("Live Maintenence Taking Place. Up Soon");
-                    return;
+    public static function handleSessions() {
+        //If there is a cookie set by us
+        if(isset($_COOKIE['session'])) {
+            //If php Session data didn't work correctly
+            if(!isset($_SESSION['logged_user'])) {
+                // Cookie Security
+                $cookieInfo = Crypt::decrypt($_COOKIE['session']);
+                if(strstr($cookieInfo ,'||~#~||')) {
+                    $cookieInfo = explode('||~#~||', $cookieInfo);
+                    $userID = $cookieInfo[0];
+                    $sessionID = $cookieInfo[1];
+                    
+                    Core::get('DB')->query("SELECT UserID FROM users_sessions WHERE SessionID = ?", $sessionID);
+                    $SessionInfo = Core::get('DB')->next_record();
+                    if($SessionInfo && $SessionInfo['UserID'] == $userID) {
+                        $_SESSION['logged_user'] = self::$loggedUser = new User($userID);
+                        //if($_SESSION['logged_user']->Username !== "MetalMichael" && $_SESSION['logged_user']->Username !== "Mael") die("Live Maintenence Taking Place. Up Soon");
+                        return;
+                    }
+                    die('test');
                 }
+                self::logout();
+            } else {
+                //If it did work correctly, just populate our info
+                self::$loggedUser = $_SESSION['logged_user'];
             }
-            $_SESSION = array(); // nuke
-            session_destroy();
-        //}
+        }
     }
     
     /**
@@ -52,7 +58,7 @@ Class Session {
             if(isset($_COOKIE['session'])) {
                 $cookieInfo = Crypt::decrypt($_COOKIE['session']);
                 
-                Core::get('DB')->query("DELETE FROM UserSessions WHERE UserID = ? AND SessionID = ?", $cookieInfo[0], $cookieInfo[1]);
+                Core::get('DB')->query("DELETE FROM users_sessions WHERE UserID = ? AND SessionID = ?", $cookieInfo[0], $cookieInfo[1]);
             }
             
             //Delete cookies
@@ -97,7 +103,7 @@ Class Session {
      * @return boolean
      */
     public static function isAdmin() {
-        return (self::$loggedUser->isAdmin());
+        return self::$loggedUser->isAdmin();
     }
     
     /**

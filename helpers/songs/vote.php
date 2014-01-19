@@ -6,10 +6,12 @@ use \Core as Core;
 use Core\Core as C;
 use Core\Validate;
 use Core\Cache;
+use Core\Config;
+use Core\Session;
 
 class Vote extends Core\Helper {
     public function run() {
-        
+
         $direction = $this->arguments[0];
         
         $trackID = $_GET['id'];
@@ -30,23 +32,23 @@ class Vote extends Core\Helper {
             die('notrack');
         }
              
-        $db->query("SELECT updown FROM votes WHERE trackid = ? AND userid = ?", $trackID, $this->parent->LoggedUser->ID);
+        $db->query("SELECT updown FROM votes WHERE trackid = ? AND userid = ?", $trackID, Session::getUser()->ID);
         if($db->record_count()) {
             list($vote) = $db->next_record(MYSQLI_NUM);
             if($vote == $direction) die('identical');
             
-            $db->query("UPDATE votes SET updown = ? WHERE trackid = ? AND userid = ?", $direction, $trackID, $this->parent->LoggedUser->ID);
+            $db->query("UPDATE votes SET updown = ? WHERE trackid = ? AND userid = ?", $direction, $trackID, Session::getUser()->ID);
         } else {
             if(!$direction) {
                 //Check if the user has been down voting too much.
-                $db->query("SELECT time FROM votes WHERE updown = 0 AND userid = ? AND time > UNIX_TIMESTAMP()-" . VOTE_TIME . " ORDER BY time ASC", $this->parent->LoggedUser->ID);
-                if($db->record_count() > VOTE_MAX) {
+                $db->query("SELECT time FROM votes WHERE updown = 0 AND userid = ? AND time > UNIX_TIMESTAMP()-" . Config::VOTE_TIME . " ORDER BY time ASC", Session::getUser()->ID);
+                if($db->record_count() > Config::VOTE_MAX) {
                     list($voteTime) = $db->next_record(MYSQLI_NUM);
-                    $timeToNextVote = time() - $voteTime - VOTE_TIME;
+                    $timeToNextVote = time() - $voteTime - Config::VOTE_TIME;
                     die('votemax - ' . $timeToNextVote);
                 }
             }
-            $db->query("INSERT INTO votes (trackid, userid, updown, time) VALUES (?, ?, ?, UNIX_TIMESTAMP())", $trackID, $this->parent->LoggedUser->ID, $direction);
+            $db->query("INSERT INTO votes (trackid, userid, updown, time) VALUES (?, ?, ?, UNIX_TIMESTAMP())", $trackID, Session::getUser()->ID, $direction);
         }
         Cache::delete('votes_' . $trackID);
         
@@ -59,11 +61,12 @@ class Vote extends Core\Helper {
         
         $Track = array("ID" => $trackID, "position" => $RowInfo["row_position"], "score" => $RowInfo["Score"]);
         $msgData = array('type'=>'event', 'event'=>'vote', 'data' => $Track);
-        
-        try{
-            $msg = phpws_WebSocketMessage::create(json_encode($msgData));
+
+        try {
+            C::loadLibrary('phpws/phpws/websocket.client.php');
+            $msg = \WebSocketMessage::create(json_encode($msgData));
             
-            $socket = new WebSocket("ws://" . WEBSOCKET_HOST . ":" . WEBSOCKET_PORT . "/" . WEBSOCKET_SERVICE);
+            $socket = new \WebSocket("ws://" . Config::WEBSOCKET_HOST . ":" . Config::WEBSOCKET_PORT . "/" . Config::WEBSOCKET_SERVICE);
             $socket->open();
             $socket->setAdmin();
             $socket->sendMessage($msg);

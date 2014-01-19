@@ -22,7 +22,7 @@ class Votes extends Core\Helper {
         $trackID = $_GET['id'];
         
         if(!$voters = Cache::get('votes_' . $trackID)) {
-            C::get("DB")->query("SELECT * FROM votes WHERE trackid = ? ORDER BY time ASC", array($trackID));
+            C::get("DB")->query("SELECT * FROM votes WHERE trackid = ? ORDER BY time ASC", $trackID);
             
             $voters = array();    
             while($vote = C::get('DB')->next_record(MYSQLI_ASSOC)) {

@@ -23,7 +23,7 @@ abstract class Page{
 	public function showHeader($pageName = "Unknown", $header="default", $search = true){
 		$Template = Core::get('Template');
         //Can force public. Can't force private
-		if(Session::loggedIn() || $header == "public") {
+		if(!Session::loggedIn() || $header == "public") {
             //Public options
 			$Template->init('public_layout', true);
 			$Template->set('CLEAR_CACHE', '');
@@ -58,10 +58,18 @@ abstract class Page{
             $Template->set('PAGE_NAME', array_shift($ru_parts));
             $Template->set('SEARCH', ($search) ? true:false, true);
 		}
+        
+        //Get the controller from the router
+        $r = Router::getInstance();
+        $controller = $r->getCalledController();
+        
+        //Get the action from the controller
+        $action = $this->controller->getCalledAction();
+        
 		// Basic Tags
         $Template->set("CONTROLLER", $controller);
         $Template->set("ACTION", $action);
-		$Template->set('PAGE_TITLE', "$pageName :: ".SITE_NAME);
+		$Template->set('PAGE_TITLE', "$pageName :: " . Config::SITE_NAME);
 		$Template->set('BODY_STYLE', $this->bodyStyle);
 		$Template->set('HEADER_INCLUDES', $this->headerIncludes(), true);
 		$Template->set('JQUERY_INCLUDES', $this->useJQuery, true);

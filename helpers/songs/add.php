@@ -6,6 +6,8 @@ use \Core as Core;
 use Core\Core as C;
 use Core\Cache;
 use Core\Utiltiy;
+use Core\Config;
+use Core\Session;
 
 class Add extends Core\Helper {
     public function run() {
@@ -28,10 +30,10 @@ class Add extends Core\Helper {
         if($db->record_count()) die('exists');
         
         //Check if the user has been adding too much.
-        $db->query("SELECT addedDate FROM voting_list WHERE addedBy = ? AND UNIX_TIMESTAMP() - UNIX_TIMESTAMP(addedDate) < " . ADD_TIME . " ORDER BY addedBy ASC", $this->parent->LoggedUser->ID);
-        if($db->record_count() > ADD_MAX) {
+        $db->query("SELECT addedDate FROM voting_list WHERE addedBy = ? AND UNIX_TIMESTAMP() - UNIX_TIMESTAMP(addedDate) < " . Config::ADD_TIME . " ORDER BY addedBy ASC", Session::getUser()->ID);
+        if($db->record_count() > Config::ADD_MAX) {
             list($voteTime) = $db->next_record(MYSQLI_NUM);
-            $timeToNextVote = time() - strtotime($voteTime) - ADD_TIME;
+            $timeToNextVote = time() - strtotime($voteTime) - Config::ADD_TIME;
             die('addmax - ' . $timeToNextVote);
         }
         
@@ -109,13 +111,19 @@ class Add extends Core\Helper {
 
         $msgData = array('type'=>'event', 'event'=>'add', 'data'=>$Track);
         
-        $msg = phpws_WebSocketMessage::create(json_encode($msgData));
-
-        $socket = new WebSocket("ws://" . WEBSOCKET_HOST . ":" . WEBSOCKET_PORT . "/" . WEBSOCKET_SERVICE);
-        $socket->open();
-        $socket->setAdmin();
-        $socket->sendMessage($msg);
-        //$socket->close();
+        try {
+            C::loadLibrary('phpws/phpws/websocket.client.php');
+            $msg = \WebSocketMessage::create(json_encode($msgData));
+            
+            $socket = new \WebSocket("ws://" . Config::WEBSOCKET_HOST . ":" . Config::WEBSOCKET_PORT . "/" . Config::WEBSOCKET_SERVICE);
+            $socket->open();
+            $socket->setAdmin();
+            $socket->sendMessage($msg);
+            //$socket->close();
+        } catch(Exception $e) {
+            var_dump($e);
+            die;
+        }   
 
     }
     function lookupJSON($URL, $Decode=true) {

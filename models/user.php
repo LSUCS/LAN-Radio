@@ -4,6 +4,7 @@ namespace Core\Model;
 
 use \Core as Core;
 use Core\Core as C;
+use Core\Cache;
 
 class User extends Core\Model {
 
@@ -14,12 +15,14 @@ class User extends Core\Model {
     public $isAdmin = false; // int(1) NOT NULL,
     public $theme = null;
 
-    public function __construct() {
+    public function __construct($id) {
         $this->ID = null;
         $this->Username = null;
         $this->Email = '';
         $this->avatarURL = '';
         $this->isAdmin = false;
+        
+        $this->_loadFromID($id);
     }
 
     protected function _loadFromRecord($record) {
@@ -31,64 +34,41 @@ class User extends Core\Model {
     }
 
     /**
-     * Method for fetching a users by it's ID.
-     *
-     * @static
-     * @param $id
-     * @return Model_User
-     */
-    public static function loadFromID($id) {
-        $inst = new self();
-        return $inst->_loadFromID($id);
-    }
-
-    /**
      * @throws CoreModelNoSuchRecordException
      * @param $id
      * @return Model_User
      */
     protected function _loadFromID($id) {
         $cK = 'user_' . $id;
-        $out = $this->_getCache()->get($cK);
+        $out = Cache::get($cK);
         if (!$out) {
-            Core::requireLibrary('LANAuth');
-            $Auth = new LANAuth;
+            $Auth = new \LAN\Auth;
             $out = $Auth->getUserByID($id);
             
             if(array_key_exists('error', $out)) {
                 throw new CoreModelNoSuchRecordException();
             }
             
-            $this->_getCache()->set($cK, $out);
+            Cache::set($cK, $out);
         }
         $this->_loadFromRecord($out);
         return $this;
     }
-
+    
     /**
-     * Get the ID for this object
-     *
-     * @return int Database ID
+     * Creates a full hyperlink to the user
+     * @return string
      */
-    public function getID() {
-        if (is_null($this->ID)) return false;
-        return $this->ID;
+    public function link() {
+        return "<a href='//lsucs.org.uk/members/" . $this->ID . "'>" . $this->username . "</a>";
     }
-
-    public static function getVisitorUser() {
-        $lu = Core::get('Core')->LoggedUser;
-        $vis = new self;
-        $vis->_loadFromRecord($lu);
-        return $vis;
+    
+    /**
+     * Checks if a user is an admin
+     * @return boolean
+     */
+    public function isAdmin() {
+        return (bool)$this->isAdmin;
     }
-
-    public static function fetchArrayFromDBSet($dbSet) {
-        $output = array();
-        foreach ($dbSet as $record) {
-            $me = new self();
-            $me->_loadFromRecord($record);
-            array_push($output, $me);
-        }
-        return $output;
-    }
+     
 }
