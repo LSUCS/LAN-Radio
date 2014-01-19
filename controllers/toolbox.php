@@ -1,6 +1,10 @@
 <?php
 
-class Controller_Toolbox extends CoreController {
+namespace Core\Controller;
+
+use Core;
+
+class Toolbox extends Core\Controller {
     const REQUIRE_ADMIN = true;
     
     public function action_index() {
@@ -25,6 +29,6 @@ class Controller_Toolbox extends CoreController {
     }
     
     public function action_global() {
-        $this->useHelper('global');
+        $this->useHelper('globals');
     }
 }    

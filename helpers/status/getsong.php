@@ -1,28 +1,33 @@
 <?php
 
-class Helper_Status_Getsong extends CoreHelper {    
+namespace Core\Helper\Status;
+
+use \Core as Core;
+use Core\Core as C;
+use Core\Settings;
+
+class Getsong extends Core\Helper {
     public function run() {
-        Core::get('DB')->query("SELECT 
+        C::get('DB')->query("SELECT 
                         trackid, Score, addedBy, addedDate FROM songlist
                     LIMIT 1");
-        if(!Core::get('DB')->record_count()) die('empty');
+        if(!C::get('DB')->record_count()) die('empty');
         
-        list($ID, $Score, $addedBy, $DateAdded) = Core::get('DB')->next_record(MYSQLI_NUM);
+        list($ID, $Score, $addedBy, $DateAdded) = C::get('DB')->next_record(MYSQLI_NUM);
         echo $ID;
         
-        Core::get('DB')->query("INSERT INTO history (trackid, votes, addedBy, datePlayed, dateAdded, eventID) 
-                        VALUES ('%s', '%s', '%s', NOW(), '%s', '%s')", 
-                        array($ID,$Score,$addedBy,$DateAdded,CoreSettings::get('currentEvent')));
+        C::get('DB')->query("INSERT INTO history (trackid, votes, addedBy, datePlayed, dateAdded, eventID) 
+                        VALUES (?, ?, ?, NOW(), ?, ?)", 
+                        $ID, $Score, $addedBy, $DateAdded, Settings::get('currentEvent'));
     
-        Core::get('DB')->query("DELETE FROM votes WHERE trackid = '%s'", $ID);
-        Core::get('DB')->query("DELETE FROM voting_list WHERE trackid = '%s'", $ID);
+        C::get('DB')->query("DELETE FROM votes WHERE trackid = '%s'", $ID);
+        C::get('DB')->query("DELETE FROM voting_list WHERE trackid = '%s'", $ID);
         
         
         $Track = array("ID" => $ID);
         $msgData = array('type'=>'event', 'event'=>'delete', 'data' => $Track);
         try{
-            Core::requireLibrary("websocket.client", "phpws/phpws");
-            $msg = WebSocketMessage::create(json_encode($msgData));
+            $msg = phpws_WebSocketMessage::create(json_encode($msgData));
             
             $socket = new WebSocket("ws://" . WEBSOCKET_HOST . ":" . WEBSOCKET_PORT . "/" . WEBSOCKET_SERVICE);
             $socket->open();

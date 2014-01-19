@@ -1,6 +1,10 @@
 <?php
 
-class Controller_Index extends CoreController {
+namespace Core\Controller;
+
+use Core;
+
+class Index extends Core\Controller {
     public function action_index() {
         $this->showView('songs');
     }

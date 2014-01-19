@@ -1,15 +1,17 @@
 <?php
 
-class CoreCache {
+namespace Core;
+
+class Cache {
 	public $CacheHits = array();
 	public $ClearCache = false;
 	
-	public function generateClearCacheURL() {
+	public static function generateClearCacheURL() {
         $URI = (empty(Core::get('Core')->pieces)) ? 'index' : Core::get('Core')->pieces;
 		return str_replace('/clearcache', '', $URI) . "/clearcache";
 	}
 	
-	public function get($key, &$flags = NULL) {
+	public static function get($key, &$flags = NULL) {
 		if($this->ClearCache) return false;
         
 		$ret = apc_fetch($key, $succ);
@@ -20,11 +22,11 @@ class CoreCache {
         return false;
 	}
 	
-	public function set($key, $value, $expire = 0) {
+	public static function set($key, $value, $expire = 0) {
 		return apc_store($key, $value, $expire);
 	}
 	
-	public function delete($key, $timeout = 0) {
+	public static function delete($key, $timeout = 0) {
 		return apc_delete($key);
 	}
 }

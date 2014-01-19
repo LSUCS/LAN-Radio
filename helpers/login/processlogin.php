@@ -1,10 +1,17 @@
 <?php
-class Helper_Login_ProcessLogin extends CoreHelper{
+
+namespace Core\Helper\Login;
+
+use \Core as Core;
+use Core\Core as C;
+use Core\Validate;
+use Core\Crypt;
+
+class ProcessLogin extends Core\Helper {
 	
 	public function run(){
 		        
-        Core::requireLibrary("LANAuth");
-        $Auth = new LANAuth;
+        $Auth = new LAN_Auth;
         
         $UserInfo = $Auth->getUser($_POST['user']);
         if(!$UserInfo) {
@@ -20,15 +27,13 @@ class Helper_Login_ProcessLogin extends CoreHelper{
         
         //IP History and device detection normally goes here
         
-        $Crypt = new CoreCrypt;
-        
-        $SessionID = $Crypt->random_hash();
-        Core::get('DB')->query("INSERT INTO users_sessions (SessionID, UserID, Date) VALUES (?, ?, NOW())", array($SessionID, $UserInfo['userid']));
+        $SessionID = Crypt::random_hash();
+        C::get('DB')->query("INSERT INTO users_sessions (SessionID, UserID, Date) VALUES (?, ?, NOW())", $SessionID, $UserInfo['userid']);
         
         $plainKey = $UserInfo['userid'] . "||~#~||" . $SessionID;
         
         $CookieExpire = time()+60*60*24*3; // 3 days, last all LAN
-		setcookie('session', $Crypt->encrypt($plainKey), $CookieExpire, '/');
+		setcookie('session', Crypt::encrypt($plainKey), $CookieExpire, '/');
 	}
 }
 

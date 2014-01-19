@@ -1,9 +1,12 @@
 <?php
 
-require(dirname(dirname(__FILE__)) . '/classes/CoreAutoLoader.php');
+namespace Core;
+
+//Auto loading
+require(dirname(__FILE__) . DIRECTORY_SEPARATOR . "lib" . DIRECTORY_SEPARATOR . "Core" . DIRECTORY_SEPARATOR . "Autoloader.php");
 
 // Here goes
-CoreAutoLoader::initialise();
+AutoLoader::initialise();
 //CoreAutoLoader::debug();
 Core::initialise();
 

@@ -1,6 +1,13 @@
 <?php
 
-class Helper_History_Showtable extends CoreHelper {    
+namespace Core\Helper\History;
+
+use \Core as Core;
+use Core\Core as C;
+use Core\Utility;
+use Core\Model\User;
+
+class Showtable extends Core\Helper { 
     private $Tables = array(
         'recent' => array(
             'columns' => array(
@@ -149,26 +156,26 @@ class Helper_History_Showtable extends CoreHelper {
                 $title = "";
                 switch($Col) {
                     case 'Duration':
-                        $rowInfo = Core::get_time($Val);
+                        $rowInfo = Utility::get_time($Val);
                         break;
                     case 'UserID':
                     case 'ChooserID':
-                        $User = Model_User::loadFromID($Val);
+                        $User = new User($Val);
                         $rowInfo = Core::linkUser($User);
                         $title = $User->username;
                         break;
                     case 'Played':
-                        $rowInfo = Core::timeDiff($Val);
+                        $rowInfo = Utility::timeDiff($Val);
                         break;
                     case 'Added':
-                        $rowInfo = Core::timeDiff(strtotime($D['Played']) - strtotime($Val), false, 2, true);
+                        $rowInfo = Utility::timeDiff(strtotime($D['Played']) - strtotime($Val), false, 2, true);
                         break;
                     case 'Votes':
                     case 'PlayCount':
                         $rowInfo = number_format($Val);
                         break;
                     default:
-                        $rowInfo = $title = Core::displayStr($Val);
+                        $rowInfo = $title = Utility::displayStr($Val);
                 }
                 $this->Output .= "<td class='col" . $i . "' title='" . $title . "'>" . $rowInfo . "</td>";
                 $i++;
@@ -191,10 +198,10 @@ class Helper_History_Showtable extends CoreHelper {
         $this->page = $this->arguments[2];
         
         if(!in_array($this->tableType, array_keys($this->Tables))) $this->error('Table does not exist');
-        if(!Core::isNumber($this->eventID)) $this->error('Invalid Event ID');
-        if(!Core::isNumber($this->page)) $this->error('Invalid Page Number');
+        if(!Utility::isNumber($this->eventID)) $this->error('Invalid Event ID');
+        if(!Utility::isNumber($this->page)) $this->error('Invalid Page Number');
         
-        $DB = Core::get('DB');
+        $DB = C::get('DB');
         //die($this->build_query());
         $DB->query($this->build_query());
         $Total = $DB->record_count();

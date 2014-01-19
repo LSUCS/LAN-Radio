@@ -1,6 +1,10 @@
 <?php
 
-class Controller_Songs extends CoreController {
+namespace Core\Controller;
+
+use Core;
+
+class Songs extends Core\Controller {
     public function action_index() {
         $this->useHelper('songs');
     }

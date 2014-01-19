@@ -1,26 +1,28 @@
 <?php
 
-class Helper_Toolbox_Add extends CoreHelper {
+namespace Core\Helper\Toolbox;
+
+use \Core as Core;
+use Core\Core as C;
+use Core\Validate;
+
+class Add extends Core\Helper {     
     public function run() {
-        $V = new CoreValidate($_POST);
-        $db = Core::get('DB');
+        $V = new Validate($_POST);
+        $db = C::get('DB');
         
         $V->val('newEventName', 'string', true, 'Invalid Event Name', array('minlength'=>3, 'maxlength'=>20));
         
         $E = $V->getErrors();
         if($E) {
-            var_dump($E);
-            die;
-            echo json_encode(array('errors'=>$E));
-            exit;
+            $this->error($E);
         }
         
-        $db->query("SELECT * FROM site_events WHERE Name = ?", array($_POST['newEventName']));
+        $db->query("SELECT * FROM site_events WHERE Name = ?", $_POST['newEventName']);
         if($db->record_count()) {
-            echo json_encode(array('errors'=>array('An event with this name already exists')));
-            exit;
+            $this->error('An event with this name already exists');
         }
         
-        $db->query("INSERT INTO site_events (Name) VALUES (?)", array($_POST['newEventName']));
+        $db->query("INSERT INTO site_events (Name) VALUES (?)", $_POST['newEventName']);
     }
 }

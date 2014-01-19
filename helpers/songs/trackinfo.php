@@ -1,17 +1,25 @@
 <?php
 
-class Helper_Songs_Trackinfo extends CoreHelper {    
+namespace Core\Helper\Songs;
+
+use \Core as Core;
+use Core\Core as C;
+use Core\Validate;
+use Core\Utiltiy;
+use Core\Model\User;
+
+class Trackinfo extends Core\Helper {
     public function run() {
         $trackID = $_GET['id'];
         
-        $Val = new CoreValidate($_GET);
+        $Val = Validate($_GET);
         $Val->val('id', 'trackid', true, "Invalid or missing Track ID");
         
         if($Err = $Val->getErrors()) {
             foreach($Err as $e) echo $e . "\n";
             die;
         }
-        Core::get('DB')->query("SELECT
+        C::get('DB')->query("SELECT
                         vl.trackid,
                         vl.addedBy,
                         vl.addedDate,
@@ -27,26 +35,26 @@ class Helper_Songs_Trackinfo extends CoreHelper {
                         ON vl.trackid = v.trackid
                     WHERE vl.trackid = ?
                     GROUP BY vl.trackid",
-                    array($trackID));
+                    $trackID);
         
-        if(Core::get('DB')->record_count() < 1) die('invalid');
+        if(C::get('DB')->record_count() < 1) die('invalid');
         
-        $TrackInfo = Core::get('DB')->next_record(MYSQLI_ASSOC);
+        $TrackInfo = C::get('DB')->next_record(MYSQLI_ASSOC);
         
-        $User = Model_User::loadFromID($TrackInfo['addedBy']);
+        $User = new User($TrackInfo['addedBy']);
         
-        $T = Core::get('Template');
+        $T = C::get('Template');
         $T->init('trackinfo');
         $T->set('Title', $TrackInfo['Title']);
         $T->set('Artist', $TrackInfo['Artist']);
         $T->set('Album', $TrackInfo['Album']);
-        $T->set('Duration', Core::get_time($TrackInfo['Duration']));
+        $T->set('Duration', Utiltiy::get_time($TrackInfo['Duration']));
         $T->set('Votes', $TrackInfo['Votes']);
         $T->set('Username', $User->username);
         $T->set('UserID', $User->ID);
         $T->set('Avatar', $User->avatarURL);
         
-        switch(Core::getSource($trackID)) {
+        switch(Utiltiy::getSource($trackID)) {
             case 'youtube':
                 $code = array_pop(explode('/', $trackID));
                 $tag = '<iframe width="560" height="315" src="http://www.youtube.com/embed/' . $code . '" frameborder="0" allowfullscreen></iframe>';
@@ -59,7 +67,7 @@ class Helper_Songs_Trackinfo extends CoreHelper {
         
         ob_get_clean();
         ob_start();
-        Core::get('Template')->push();
+        C::get('Template')->push();
         
         $info = ob_get_contents();
         ob_end_clean();

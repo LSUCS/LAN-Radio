@@ -1,8 +1,14 @@
 <?php
-class View_Toolbox_Controls extends CorePage{    
+
+namespace Core\View\Toolbox;
+
+use \Core;
+use Core\Core as C;
+
+class Controls extends \Core\Page {
 	public function render(){
-        $template = Core::get('Template');
-        $db = Core::get('DB');
+        $template = C::get('Template');
+        $db = C::get('DB');
         
         $this->showHeader('Controls', "default", false);
 		$template->init('controls');

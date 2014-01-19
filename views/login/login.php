@@ -1,12 +1,17 @@
 <?php
 
-class View_Login_Login extends CorePage{
+namespace Core\View\Login;
+
+use \Core;
+use Core\Core as C;
+
+class Login extends \Core\Page {
 	
 	public function render(){
 		$this->bodyStyle = "overflow: hidden";
 		$this->showHeader('Login');
 
-        $template = Core::get('Template');
+        $template = C::get('Template');
         $template->init('login');
 
         if ($_GET['return'][0] == '/')

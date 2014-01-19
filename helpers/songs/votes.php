@@ -1,11 +1,16 @@
 <?php
 
-class Helper_Songs_Votes extends CoreHelper {    
+namespace Core\Helper\Songs;
+
+use \Core as Core;
+use Core\Core as C;
+use Core\Validate;
+use Core\Cache;
+use Core\Model\User;
+
+class Votes extends Core\Helper {
     public function run() {
-        ini_set('display_errors', true);
-        error_reporting(E_ALL);
-        
-        $Val = new CoreValidate($_GET);
+        $Val = new Validate($_GET);
         
         $Val->val('id', 'trackid', true, "Invalid or missing Track ID");
         
@@ -16,26 +21,26 @@ class Helper_Songs_Votes extends CoreHelper {
         
         $trackID = $_GET['id'];
         
-        if(!$voters = Core::get('Cache')->get('votes_' . $trackID)) {
-            Core::get("DB")->query("SELECT * FROM votes WHERE trackid = ? ORDER BY time ASC", array($trackID));
+        if(!$voters = Cache::get('votes_' . $trackID)) {
+            C::get("DB")->query("SELECT * FROM votes WHERE trackid = ? ORDER BY time ASC", array($trackID));
             
             $voters = array();    
-            while($vote = Core::get('DB')->next_record(MYSQLI_ASSOC)) {
-                $voter = Model_User::loadFromID($vote['userid']);
+            while($vote = C::get('DB')->next_record(MYSQLI_ASSOC)) {
+                $voter = new User($vote['userid']);
                 
                 $voters[] = array(
                     'ID' => $voter->ID,
                     'Username' => $voter->username,
-                    'Link' => Core::linkUser($voter),
+                    'Link' => $voter->link(),
                     'Vote' => ($vote['updown']) ? 'up' : 'down'
                 );
             }
             
-            Core::get('Cache')->set('votes_' . $trackID, $voters);
+            Cache::set('votes_' . $trackID, $voters);
         }
-  		Core::get('Template')->init('voters');
-        Core::get('Template')->set("VOTERS", $voters, true);
+  		C::get('Template')->init('voters');
+        C::get('Template')->set("VOTERS", $voters, true);
         
-		Core::get('Template')->push();
+		C::get('Template')->push();
     }
 }

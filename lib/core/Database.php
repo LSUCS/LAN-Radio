@@ -1,9 +1,11 @@
 <?php
 
+namespace Core;
+
 /**
  * Database system
  */
-class CoreDatabase{
+class Database{
     /**
      * Queries that this class has run.
      * @var array
@@ -48,10 +50,13 @@ class CoreDatabase{
      * Run a query with the provided parameters.
      *
      * @param string $Query SQL query to run
-     * @param array $params
+     * @param (multi) $params
      * @return void
      */
-	public function query($Query, $params = array()){
+	public function query() {
+        $params = func_get_args();
+        $Query = array_shift($params);
+
 		$this->_connect();
 		if(count($params) != 0){
 			foreach($params as &$v){ $v = mysqli_real_escape_string($this->LinkID, $v); }
@@ -61,7 +66,7 @@ class CoreDatabase{
 		$this->QueryID = mysqli_query($this->LinkID, $Query);
 		$end = microtime(true);
 		$this->Queries[] = array('Query' => $Query, 'ExecutionTime' => sprintf('%.08f', $end - $start));
-		if(mysqli_errno($this->LinkID)){
+		if(mysqli_errno($this->LinkID)) {
 			Core::get('Error')->halt(mysqli_errno($this->LinkID) . ' - ' . mysqli_error($this->LinkID), true);
 		}
 	}
@@ -156,7 +161,7 @@ class CoreDatabase{
      */
 	private function _connect(){
 		// Connect to MySQL
-		$this->LinkID = mysqli_connect(SQL_HOST, SQL_USER, SQL_PASSWORD, SQL_DATABASE, SQL_PORT);
+		$this->LinkID = mysqli_connect(Config::SQL_HOST, Config::SQL_USER, Config::SQL_PASSWORD, Config::SQL_DATABASE, Config::SQL_PORT);
 		if(!$this->LinkID){
 			Core::get('Error')->halt(mysqli_connect_errno() . ' - ' . mysqli_connect_error(), true);
 		}

@@ -1,14 +1,16 @@
 <?php
 
-abstract class CorePage{
+namespace Core;
+
+abstract class Page{
 	public static $instance;
 	public $bodyStyle;
 	public $useJQuery = true;
-	public $parent;
-    public $arguments;
+	public $arguments;
+    private $controller;
 	
-	function __construct(&$parent, $arguments = array()) {
-		$this->parent = $parent;
+	function __construct($controller, $arguments = array()) {
+        $this->controller = $controller;
         $this->arguments = $arguments;
 
 		self::$instance = $this;
@@ -21,7 +23,7 @@ abstract class CorePage{
 	public function showHeader($pageName = "Unknown", $header="default", $search = true){
 		$Template = Core::get('Template');
         //Can force public. Can't force private
-		if(!$this->parent->loggedIn() || $header == "public") {
+		if(Session::loggedIn() || $header == "public") {
             //Public options
 			$Template->init('public_layout', true);
 			$Template->set('CLEAR_CACHE', '');
@@ -31,14 +33,14 @@ abstract class CorePage{
             //Private options
             
 			$Template->init('private_layout', true);
-			$Template->set('USER_NAME_LINK', $this->parent->linkUserMe());
-			$Template->set('USER_NAME', $this->parent->LoggedUser->username);
+			$Template->set('USER_NAME_LINK', Session::getUser()->link());
+			$Template->set('USER_NAME', Session::getUser()->username);
             $Template->set('USER_AUTHKEY', '');
 
-			if($this->parent->LoggedUser->isAdmin) {			 
+			if(Session::isAdmin()) {			 
                 $Template->set('MENUITEM_TOOLBOX', true, true);
                 $Template->set('MENUITEM_ADMINBAR', true, true);
-				$Template->set('CLEAR_CACHE', '<a href="'.Core::get('Cache')->generateClearCacheURL().'" id="clearcache">[Clear Cache]</a>');
+				$Template->set('CLEAR_CACHE', '<a href="'.Cache::generateClearCacheURL().'" id="clearcache">[Clear Cache]</a>');
 			} else {
                 $Template->set('MENUITEM_TOOLBOX', false, true);
                 $Template->set('MENUITEM_ADMINBAR', false, true);
@@ -57,6 +59,8 @@ abstract class CorePage{
             $Template->set('SEARCH', ($search) ? true:false, true);
 		}
 		// Basic Tags
+        $Template->set("CONTROLLER", $controller);
+        $Template->set("ACTION", $action);
 		$Template->set('PAGE_TITLE', "$pageName :: ".SITE_NAME);
 		$Template->set('BODY_STYLE', $this->bodyStyle);
 		$Template->set('HEADER_INCLUDES', $this->headerIncludes(), true);
@@ -71,23 +75,23 @@ abstract class CorePage{
 		// Stop render time
 		list($usec, $sec) = explode(" ", microtime());
         
-		$this->parent->Debug['ViewRenderTime'] = number_format((($usec + $sec) - $this->parent->renderStarted), 8);	
+		Core::get('Core')->Debug['ViewRenderTime'] = number_format((($usec + $sec) - Core::get('Core')->renderStarted), 8);	
 			
 		$Template = Core::get('Template');
-		if(!$this->parent->loggedIn()) {
+		if(!Session::loggedIn()) {
 			$Template->init('public_layout', true);
 			$Template->set('DEBUG_TABLES', '');	
 		} else {
 			$Template->init('private_layout', true);
-			if($this->parent->LoggedUser->isAdmin)
-				$Template->set('DEBUG_TABLES', $this->parent->debug());
-            else
+			if(Session::isAdmin()) {
+				$Template->set('DEBUG_TABLES', Core::get('Core')->debug());
+                $Template->set('CREATION_TIME', 'This page was created in ' . Core::get('Core')->Debug['ViewRenderTime' ]. ' second(s).<br/>');
+            } else {
                 $Template->set('DEBUG_TABLES', '');
+                $Template->set('CREATION_TIME', '');
+            }
 		}
-		if(SHOW_RENDERTIME)
-			$Template->set('CREATION_TIME', 'This page was created in '.$this->parent->Debug['ViewRenderTime'].' second(s).<br/><br/>');
-		else
-			$Template->set('CREATION_TIME', '');
+			
 		$Template->set('HEADER', false, true);
 		$Template->set('FOOTER', true, true);
         $Template->set('YEAR', date('Y'));

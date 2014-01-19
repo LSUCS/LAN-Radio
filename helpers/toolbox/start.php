@@ -1,9 +1,16 @@
 <?php
 
-class Helper_Toolbox_Start extends CoreHelper {
+namespace Core\Helper\Toolbox;
+
+use \Core as Core;
+use Core\Core as C;
+use Core\Validate;
+use Core\Settings;
+
+class Start extends Core\Helper {     
     public function run() {
-        $V = new CoreValidate($_POST);
-        $db = Core::get('DB');
+        $V = new Validate($_POST);
+        $db = C::get('DB');
         
         $db->query("SELECT ID FROM site_events");
         $events = $db->collect('ID');
@@ -20,11 +27,10 @@ class Helper_Toolbox_Start extends CoreHelper {
         }
         
         if($E) {
-            echo json_encode(array('errors'=>$E));
-            exit;
+            $this->error($E);
         }
         
-        $currentEvent = CoreSettings::get('currentEvent');
+        $currentEvent = Settings::get('currentEvent');
         
         //We're trying to start an event
         if(isset($_POST['startEvent'])) {
@@ -46,6 +52,6 @@ class Helper_Toolbox_Start extends CoreHelper {
         }
         
         
-        $db->query("UPDATE site_config SET currentEvent = ?", array($newEvent));
+        $db->query("UPDATE site_config SET currentEvent = ?", $newEvent);
     }
 }

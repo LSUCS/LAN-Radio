@@ -1,25 +1,24 @@
 <?php
 
-class Helper_Mpd_Command extends CoreHelper {
+namespace Core\Helper\Mpd;
+
+use \Core as Core;
+use Core\Core as C;
+
+class Command extends Core\Helper {
     private $MPD = null;
     
     private function connect() {
-        Core::requireLibrary('MPD');
-        $this->MPD = new MPD(MPD_HOST, MPD_PORT, MPD_PASSWORD);
+        $this->MPD = new MPD_MPD(MPD_HOST, MPD_PORT, MPD_PASSWORD);
     
-        if(!empty($this->MPD->errStr)) $this->jsonError($this->MPD->errStr);
-    }
-    
-    private function jsonError($err) {
-        echo json_encode(array('error' => $err));
-        exit;
+        if(!empty($this->MPD->errStr)) $this->error($this->MPD->errStr);
     }
     
     public function run() {
         $command = $this->arguments[0];
         $method = 'run_' . $command;
         
-        if(!method_exists($this, $method)) $this->jsonError('Invalid Command');
+        if(!method_exists($this, $method)) $this->error('Invalid Command');
         
         $this->connect();
         call_user_func(array($this, $method), $this->arguments[1]);

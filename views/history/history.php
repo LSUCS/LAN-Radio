@@ -1,5 +1,11 @@
 <?php
-class View_History_History extends CorePage{
+
+namespace Core\View\History;
+
+use \Core;
+use Core\Core as C;
+
+class History extends \Core\Page {
 	
     function headerIncludes() {
         return array(
@@ -7,15 +13,15 @@ class View_History_History extends CorePage{
         );
     }
     
-	public function render(){
+	public function render() {
 		$this->showHeader('History', "default", false);
 		
-        Core::get('DB')->query("SELECT * FROM site_events");
-        $Events = Core::get('DB')->to_array(false, MYSQLI_ASSOC);
+        C::get('DB')->query("SELECT * FROM site_events");
+        $Events = C::get('DB')->to_array(false, MYSQLI_ASSOC);
         
-		Core::get('Template')->init('main');
-        Core::get('Template')->set('EVENTS', $Events);
-		Core::get('Template')->push();
+		C::get('Template')->init('main');
+        C::get('Template')->set('EVENTS', $Events);
+		C::get('Template')->push();
 		
 		$this->showFooter();
 	}

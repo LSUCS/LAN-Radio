@@ -1,5 +1,11 @@
 <?php
-class View_Index_Songs extends CorePage{
+
+namespace Core\View\Songs;
+
+use \Core;
+use Core\Core as C;
+
+class Songs extends \Core\Page {
 	
     function headerIncludes() {
         return array(
@@ -15,8 +21,8 @@ class View_Index_Songs extends CorePage{
 	public function render(){
 		$this->showHeader('Index');
 		
-		Core::get('Template')->init('main');
-		Core::get('Template')->push();
+		C::get('Template')->init('main');
+		C::get('Template')->push();
 		
 		$this->showFooter();
 	}

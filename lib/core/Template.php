@@ -1,8 +1,10 @@
 <?php
 
+namespace Core;
+
 /* Based on bTemplate (http://www.massassi.com/bTemplate) */
 
-class CoreTemplate {
+class Template {
     // Configuration variables
     private $base_path = '';
     private $reset_vars = TRUE;
@@ -32,108 +34,29 @@ class CoreTemplate {
     }
 
     public function init($templateName, $ignoreFolder = false, $dontSetGlobals = false) {
-        // Get path to template file
-        if (!$ignoreFolder) {
-            $router = CoreRouter::getInstance();
-            $file = 'templates/_STYLE_/' . $router->getCalledController() . '/' . $templateName . '.htm';
-        } else {
-            $file = 'templates/_STYLE_/' . $templateName . '.htm';
-        }
-        // If the user is logged in, does their theme have a template for this page?
-        if ($this->parent->loggedIn() && file_exists(str_replace('_STYLE_', $this->parent->LoggedUser->theme, $file)))
-            $file = str_replace('_STYLE_', $this->parent->LoggedUser->theme, $file);
-        else
-            $file = str_replace('_STYLE_', DEFAULT_STYLE, $file);
 
+        //Specify file manually
         if (substr_compare($templateName, 'templates/', 0, 10) === 0) {
             $file = $templateName;
+        } else {
+            // Get path to template file
+            if (!$ignoreFolder) {
+                $router = Router::getInstance();
+                $file = array('templates', Config::DEFAULT_STYLE, $router->getCalledController(), $templateName . '.htm');
+            } else {
+                $file = array('templates', Config::DEFAULT_STYLE, $templateName . '.htm');
+            }
+            $file = implode(DIRECTORY_SEPARATOR, $file);
         }
-
         $this->parent->Debug['Templates'][] = $file;
-        $this->base_path = INSTALL_PATH . $file;
+        $this->base_path = Config::INSTALL_PATH . DIRECTORY_SEPARATOR . $file;
         $this->reset_vars(true, true, true, true, true);
         // Set a few global vars
         if (!$dontSetGlobals) {
-            $this->set('STATIC_SERVER', STATIC_SERVER);
-            $this->set('CORE_SERVER', CORE_SERVER);
-            $this->set('SHORT_NAME', SHORT_NAME);
-            $this->set('DEFAULT_STYLE', DEFAULT_STYLE);
-        }
-    }
-
-    /*--------------------------------------------------------------*\
-        Method: process_model()
-        Takes a Model and converts it into a templated form.
-    \*--------------------------------------------------------------*/
-    public function process_model(&$var, $tag) {
-        if (is_array($var)) {
-            array_walk_recursive($var, array($this, 'process_model'));
-            return;
-        }
-
-        if ($var instanceof CoreModel) {
-            $var_class = get_class($var);
-            $cn = $var_class;
-            // Model_Torrent_Episode ==> torrent_episode
-            $cn = strtolower(str_ireplace('Model_', '', $cn));
-
-            $model_template_engine = new CoreTemplate($this->parent);
-            if (!isset($this->modeldir[$cn])) {
-                /*
-                 * Look in the following directories in order:
-                 * 1) <style>/<current>/
-                 * 2) <style>/models/
-                 */
-                $splitup = explode('_', $cn);
-                $baseCheck = array(
-                    'templates/_STYLE_/_CURRENT_/_CN_.htm',
-                    'templates/_STYLE_/models/_CN_.htm',
-                    'templates/' . DEFAULT_STYLE . '/_CURRENT_/_CN_.htm',
-                    'templates/' . DEFAULT_STYLE . '/models/_CN_.htm'
-                );
-                $check = array();
-                for ($i = 0; $i < count($splitup); $i++) {
-                    $curcn = implode('_', array_slice($splitup, 0, count($splitup)-$i));
-                    array_map(function ($val) use (&$curcn, &$check) {
-                            $val = str_replace('_CN_', $curcn, $val);
-                            $check[] = $val;
-                            return $val;
-                        }, $baseCheck);
-                    ob_flush();
-                }
-                $found = false;
-                $nr = CoreRouter::getInstance();
-                $cc = $nr->getCalledController();
-                foreach ($check as &$look) {
-                    if ($this->parent->loggedIn())
-                        $look = str_replace('_STYLE_', $this->parent->LoggedUser['Theme'], $look);
-                    else
-                        $look = str_replace('_STYLE_', DEFAULT_STYLE, $look);
-
-                    $look = str_replace('_CURRENT_', $cc, $look);
-
-                    if (file_exists($look)) {
-                        $found = $look;
-                        break;
-                    }
-                }
-                if (!$found)
-                    throw new Exception("Couldn't find a model template for " . $cn . " - searched: " . implode('; ', $check));
-                $this->modeldir[$cn] = $found;
-            }
-            $model_template_engine->init($this->modeldir[$cn], true, false);
-            if (method_exists($var, 'getTemplateVariables')) {
-                foreach ($var->getTemplateVariables() as $global_key => $global_val) {
-                    $model_template_engine->set($global_key, $global_val);
-                }
-            } else {
-                foreach ($var as $global_key => $global_val) {
-                    $model_template_engine->set($global_key, $global_val);
-                }
-            }
-            $var = $model_template_engine->parse(file_get_contents($this->modeldir[$cn]));
-            $this->parent->Debug['Templates'][count($this->parent->Debug['Templates'])-1] .=
-                    '<br />(' . $var_class . ' - ' . $cn . ')';
+            $this->set('STATIC_SERVER', Config::STATIC_SERVER);
+            $this->set('CORE_SERVER', Config::CORE_SERVER);
+            $this->set('SHORT_NAME', Config::SHORT_NAME);
+            $this->set('DEFAULT_STYLE', Config::DEFAULT_STYLE);
         }
     }
 
@@ -142,7 +65,6 @@ class CoreTemplate {
          Sets all types of variables (scalar, loop, hash).
      \*--------------------------------------------------------------*/
     public function set($tag, $var, $if = NULL) {
-        $this->process_model($var, $tag);
         if (is_array($var)) {
             $this->arrays[$tag] = $var;
             if ($if) {
@@ -393,7 +315,7 @@ class CoreTemplate {
         $file = $this->base_path;
         // Open the file
         $fp = fopen($file, 'rb');
-        if (!$fp) return FALSE;
+        if(!$fp) throw new TemplateNotFound("Could not find " . $file);
 
         // Read the file
         $contents = fread($fp, filesize($file));
@@ -407,22 +329,21 @@ class CoreTemplate {
             if ($pos === false) break;
             $filename = substr($contents, ($pos + 9), strpos($contents, '}', $pos) - ($pos + 9));
             // Get file content
-            $incfile = INSTALL_PATH . 'templates/_STYLE_/common/' . $filename . '.htm';
+            $incfile = Config::INSTALL_PATH . 'templates/_STYLE_/common/' . $filename . '.htm';
             if ($this->parent->LoggedIn() && file_exists(str_replace('_STYLE_', $this->parent->LoggedUser['Theme'], $incfile)))
                 $incfile = str_replace('_STYLE_', $this->parent->LoggedUser['Theme'], $incfile);
             else
-                $incfile = str_replace('_STYLE_', DEFAULT_STYLE, $incfile);
+                $incfile = str_replace('_STYLE_', Config::DEFAULT_STYLE, $incfile);
             $fp = fopen($incfile, 'rb');
             $incdata = fread($fp, filesize($incfile));
             fclose($fp);
             $contents = str_replace('{include:' . $filename . '}', $incdata, $contents);
             // Add to debug
-            $this->parent->Debug['Templates'][] = substr($file, strlen(INSTALL_PATH));
+            $this->parent->Debug['Templates'][] = substr($file, strlen(Config::INSTALL_PATH));
         }
 
         // Parse and echo the contents
         echo $this->parse($contents);
     }
 }
-
-?>
+class TemplateNotFound extends \Exception {}

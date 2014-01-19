@@ -1,6 +1,10 @@
 <?php
 
-class Controller_Login extends CoreController {
+namespace Core\Controller;
+
+use Core;
+
+class Login extends Core\Controller {
     const ENFORCE_LOGIN = false;
 
     protected function __routing($pieces) {

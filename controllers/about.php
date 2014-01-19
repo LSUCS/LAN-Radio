@@ -1,6 +1,10 @@
 <?php
 
-class Controller_About extends CoreController {
+namespace Core\Controller;
+
+use Core;
+
+class About extends Core\Controller {
     public function action_index() {
         $this->showView('main');
     }

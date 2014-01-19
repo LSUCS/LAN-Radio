@@ -1,10 +1,16 @@
 <?php
-class View_About_Main extends CorePage{
+
+namespace Core\View\About;
+
+use \Core;
+use Core\Core as C;
+
+class Main extends \Core\Page {
 	public function render(){
 		$this->showHeader('About', 'default', false);
 		
-		Core::get('Template')->init('main');
-		Core::get('Template')->push();
+		C::get('Template')->init('main');
+		C::get('Template')->push();
 		
 		$this->showFooter();
 	}

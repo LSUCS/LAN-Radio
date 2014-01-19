@@ -1,6 +1,8 @@
 <?php
 
-abstract class CoreErrorAbstract {
+namespace Core;
+
+abstract class ErrorAbstract {
     private $parent;
 
 	public final function __construct(&$parent){
@@ -22,16 +24,16 @@ abstract class CoreErrorAbstract {
      * @param Exception $exception Final exception
      * @return void
      */
-    public abstract function haltException(Exception $exception);
+    public abstract function haltException(\Exception $exception);
 }
 
-class CoreErrorLive extends CoreErrorAbstract {
+class ErrorLive extends ErrorAbstract {
     public function halt($details, $stop) {
         $this->publicDisplay();
         exit();
     }
 
-    public function haltException(Exception $exception) {
+    public function haltException(\Exception $exception) {
         $this->publicDisplay();
         exit();
     }
@@ -39,13 +41,13 @@ class CoreErrorLive extends CoreErrorAbstract {
     public function publicDisplay() {
         ob_clean();
         header('HTTP/1.1 500 Internal Server Error');
-        echo "<h2>", SHORT_NAME," has encountered a fatal error</h2>";
+        echo "<h2>", Config::SHORT_NAME," has encountered a fatal error</h2>";
         echo "<b>Please try refreshing the page.</b>";
         echo "<b>The system administrators have been informed.</b>";
     }
 }
 
-class CoreErrorDevelopment extends CoreErrorAbstract {
+class ErrorDevelopment extends ErrorAbstract {
 	public function halt($details, $stop){
 		// Uh oh.. An error has occurred somewhere on the website. Clean the pipes..
 		ob_clean();
@@ -73,7 +75,7 @@ class CoreErrorDevelopment extends CoreErrorAbstract {
 			die;
 	}
 
-    public function haltException(Exception $exception) {
+    public function haltException(\Exception $exception) {
 		// Uh oh.. An error has occurred somewhere on the website. Clean the pipes..
 		//ob_clean();
 		// Ready the troops!
@@ -98,10 +100,10 @@ class CoreErrorDevelopment extends CoreErrorAbstract {
 	
 }
 
-if(DEBUG_MODE) {
-    class CoreError extends CoreErrorDevelopment {}
+if(Config::DEBUG_MODE) {
+    class Error extends ErrorDevelopment {}
 } else {
-    class CoreError extends CoreErrorLive {}
+    class Error extends ErrorLive {}
 }
 
 ?>

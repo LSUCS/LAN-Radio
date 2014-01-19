@@ -1,20 +1,24 @@
 <?php
 
-class Helper_Mpd_Playerinfo extends CoreHelper {
+namespace Core\Helper\Mpd;
+
+use \Core as Core;
+use Core\Cache;
+use Core\Core as C;
+use Core\Model\User;
+
+class Playerinfo extends Core\Helper {
     private function connect() {
-        Core::requireLibrary('MPD');
-        $this->MPD = new MPD(MPD_HOST, MPD_PORT, MPD_PASSWORD);
+        $this->MPD = new MPD_MPD(MPD_HOST, MPD_PORT, MPD_PASSWORD);
     
         if(!empty($this->MPD->errStr)) {
-            echo json_encode(array('error' => $this->MPD->errStr));
-            die;
+            $this->error($this->MPD->errStr);
         }
         
     }
     
     public function run() {
-
-        if(!$Return = Core::get('Cache')->get('current_song_info')) {
+        if(!$Return = Cache::get('current_song_info')) {
             $this->connect();
             if($this->MPD->state !== "play") {
                 $Return = array('error' => "No Track Playing");
@@ -32,16 +36,16 @@ class Helper_Mpd_Playerinfo extends CoreHelper {
                 $Return['year'] = $this->MPD->current_track_year;
                 $Return['file'] = $this->MPD->current_track_file;
                 
-                Core::get('DB')->query("SELECT votes, addedBy FROM history ORDER BY datePlayed DESC LIMIT 1", array($this->MPD->current_track_file));
-                if(Core::get('DB')->record_count() == 0) {
+                C::get('DB')->query("SELECT votes, addedBy FROM history ORDER BY datePlayed DESC LIMIT 1", $this->MPD->current_track_file);
+                if(C::get('DB')->record_count() == 0) {
                     $Return = array('error' => 'Kaboomboom', 'track' => $this->MPD->current_track_file);
                     $expire = 3;
                 } else {
-                    $Info = Core::get('DB')->next_record(MYSQLI_ASSOC);
+                    $Info = C::get('DB')->next_record(MYSQLI_ASSOC);
                     
                     $Return['votes'] = $Info['votes'];
                     
-                    $User = Model_User::loadFromID($Info['addedBy']);
+                    $User = new User($Info['addedBy']);
                     $Return['avatar'] = $User->avatarURL;
                     $Return['username'] = $User->username;
                     
@@ -54,7 +58,7 @@ class Helper_Mpd_Playerinfo extends CoreHelper {
                 }
             }
             
-            Core::get('Cache')->set('current_song_info', $Return, $expire);
+            Cache::set('current_song_info', $Return, $expire);
             
         } else {
             if(!isset($Return['error'])) {

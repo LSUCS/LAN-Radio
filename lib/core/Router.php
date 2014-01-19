@@ -1,13 +1,17 @@
 <?php
 
+namespace Core;
+
+use Core\Controller;
+
 /**
- * @throws Exception|Core404Exception
+ * @throws Exception|_404Exception
  * Core routing system
  */
 
-class CoreRouter {
+class Router {
     /**
-     * @var CoreRouter Instance of self
+     * @var Core_Router Instance of self
      */
     private static $_instance = null;
     /**
@@ -24,7 +28,7 @@ class CoreRouter {
     /**
      * Singleton: getInstance instantiates if necessary and returns self
      * @static
-     * @return CoreRouter
+     * @return Router
      */
     public static function getInstance() {
         if (self::$_instance == null) {
@@ -40,7 +44,7 @@ class CoreRouter {
      */
     public function getCalledController() {
         if (!$this->called_controller)
-            throw new Exception("getCalledController called before routing occurred!");
+            throw new \Exception("getCalledController called before routing occurred!");
         return $this->called_controller;
     }
 
@@ -51,7 +55,14 @@ class CoreRouter {
      */
     public function run() {
         $ru = $_SERVER['REQUEST_URI'];
-        // this is in the format /user/blah/
+        
+        //Remove and directory stuff from the url
+        if(Config::SUBDIR) {
+            if(strpos($ru, '/' . Config::SUBDIR) !== -1) $ru = substr($ru, 1 + strlen(Config::SUBDIR));
+        }
+        
+        // this is in the format /add/room
+
         $end = strpos($ru, '?');
         
         $qs = '';
@@ -87,22 +98,17 @@ class CoreRouter {
 
         $this->called_controller = strtolower($controller_name);
 
-        $controller_name = 'Controller_' . $controller_name;
+        $controller_name = 'Core\\Controller\\' . $controller_name;
 
-		// clear cache?
-		if (count($ru_parts) >= 1 && $ru_parts[count($ru_parts)-1] == 'clearcache') {
-			array_pop($ru_parts);
-			Core::get('Cache')->ClearCache = true;
-		}
-		
         // now!
         try {
         	Core::get('Core')->pieces = $ru;
+    
             $controller = new $controller_name;
             $controller->run($ru_parts);
-        } catch (CoreAutoloaderException $cae) {
-            throw new Core404Exception($cae->getMessage(), 1, $nae);
-        } catch (Exception $e) {
+        } catch (AutoloaderException $cae) {
+            throw new _404Exception($cae->getMessage(), 1, $nae);
+        } catch (\Exception $e) {
             Core::get('Error')->haltException($e);
         }
     }

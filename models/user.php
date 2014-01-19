@@ -1,6 +1,11 @@
 <?php
 
-class Model_User extends CoreModel {
+namespace Core\Model;
+
+use \Core as Core;
+use Core\Core as C;
+
+class User extends Core\Model {
 
     public $ID; // int(11) NOT NULL AUTO_INCREMENT,
     public $username; // varchar(25) NOT NULL,

@@ -1,11 +1,17 @@
 <?php
 
-class Helper_Songs_Add extends CoreHelper {    
+namespace Core\Helper\Songs;
+
+use \Core as Core;
+use Core\Core as C;
+use Core\Cache;
+use Core\Utiltiy;
+
+class Add extends Core\Helper {
     public function run() {
-        $C = Core::get('Cache');
-        $db = Core::get('DB');
+        $db = C::get('DB');
         
-        $bannedUsers = $C->get('add-banned');
+        $bannedUsers = Cache::get('add-banned');
         if(!$bannedUsers) {
             $db->query("SELECT * FROM banned_users");
             $bannedUsers = $db->to_array('UserID', MYSQLI_ASSOC);
@@ -16,13 +22,13 @@ class Helper_Songs_Add extends CoreHelper {
         }
         
         //Check everything is well in Smallville
-        $trackID = Core::unEscapeID($_GET['track']);
+        $trackID = Utility::unEscapeID($_GET['track']);
         
-        $db->query("SELECT * FROM voting_list WHERE trackid = ?", array($trackID));
+        $db->query("SELECT * FROM voting_list WHERE trackid = ?", $trackID);
         if($db->record_count()) die('exists');
         
         //Check if the user has been adding too much.
-        $db->query("SELECT addedDate FROM voting_list WHERE addedBy = ? AND UNIX_TIMESTAMP() - UNIX_TIMESTAMP(addedDate) < " . ADD_TIME . " ORDER BY addedBy ASC", array($this->parent->LoggedUser->ID));
+        $db->query("SELECT addedDate FROM voting_list WHERE addedBy = ? AND UNIX_TIMESTAMP() - UNIX_TIMESTAMP(addedDate) < " . ADD_TIME . " ORDER BY addedBy ASC", $this->parent->LoggedUser->ID);
         if($db->record_count() > ADD_MAX) {
             list($voteTime) = $db->next_record(MYSQLI_NUM);
             $timeToNextVote = time() - strtotime($voteTime) - ADD_TIME;
@@ -44,7 +50,7 @@ class Helper_Songs_Add extends CoreHelper {
             $flag = 0;
             for($try = 1; $try <= 3; $try++) {
                 //Get info on the track and add it to the database
-                if(Core::getSource($trackID) == "spotify") {
+                if(Utility::getSource($trackID) == "spotify") {
                     
                     $data = $this->lookupJSON('http://ws.spotify.com/lookup/1/.json?uri=' . $trackID);
                     
@@ -81,30 +87,29 @@ class Helper_Songs_Add extends CoreHelper {
             
             //Add info to the track catalogue
             $db->query("INSERT INTO track_info (trackid, Title, Artist, Album, Duration) VALUES(?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE",
-                array($trackID, $Track['Title'], $Track['Artist'], $Track['Album'], $Track['Time']));
+                $trackID, $Track['Title'], $Track['Artist'], $Track['Album'], $Track['Time']);
         }
         
         //Add it to the voting list
-        $db->query("INSERT INTO voting_list (trackid, addedBy, addedDate) VALUES (?, ?, NOW())", array($trackID, $this->parent->LoggedUser->ID));
+        $db->query("INSERT INTO voting_list (trackid, addedBy, addedDate) VALUES (?, ?, NOW())", $trackID, $this->parent->LoggedUser->ID);
         
         //Add a vote
-        $db->query("INSERT INTO votes (trackid, userid, updown) VALUES (?, ?, 1) ON DUPLICATE KEY UPDATE updown = 1", array($trackID, $this->parent->LoggedUser->ID));
+        $db->query("INSERT INTO votes (trackid, userid, updown) VALUES (?, ?, 1) ON DUPLICATE KEY UPDATE updown = 1", $trackID, $this->parent->LoggedUser->ID);
         
         //Find out the new position in the big table.
         $db->query("SELECT *, @rownum:=@rownum+1 as row_position FROM
                                     ( SELECT * FROM songlist ) position, (SELECT @rownum:=0) r");
 
-        $NewRows = Core::get("DB")->to_array('trackid');
+        $NewRows = C::get("DB")->to_array('trackid');
         
         $Track = $NewRows[$trackID];
         $Track["position"] = $Track["row_position"];
-        $Track["source"] = Core::getSource($trackID);
-        $Track["Duration"] = Core::get_time($Track["Duration"]);
+        $Track["source"] = Utility::getSource($trackID);
+        $Track["Duration"] = Utility::get_time($Track["Duration"]);
 
         $msgData = array('type'=>'event', 'event'=>'add', 'data'=>$Track);
         
-        Core::requireLibrary("websocket.client", "phpws/phpws");
-        $msg = WebSocketMessage::create(json_encode($msgData));
+        $msg = phpws_WebSocketMessage::create(json_encode($msgData));
 
         $socket = new WebSocket("ws://" . WEBSOCKET_HOST . ":" . WEBSOCKET_PORT . "/" . WEBSOCKET_SERVICE);
         $socket->open();

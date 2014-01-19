@@ -1,14 +1,21 @@
 <?php
 
-class Helper_Songs_Songs extends CoreHelper {    
+namespace Core\Helper\Songs;
+
+use \Core as Core;
+use Core\Core as C;
+use Core\Utility;
+use Core\Model\User;
+
+class Songs extends Core\Helper { 
     public function run() {
         //Load the active voting list
-        Core::get("DB")->query("SELECT * FROM songlist");
-        $VotingTracks = Core::get("DB")->to_array(false, MYSQL_ASSOC);
+        C::get("DB")->query("SELECT * FROM songlist");
+        $VotingTracks = C::get("DB")->to_array(false, MYSQL_ASSOC);
                 
         //Load the users' votes
-        Core::get("DB")->query("SELECT trackid, updown FROM votes WHERE userid = " . $this->parent->LoggedUser->ID);
-        $this->UserVotes = Core::get("DB")->to_array('trackid', MYSQLI_ASSOC);
+        C::get("DB")->query("SELECT trackid, updown FROM votes WHERE userid = " . $this->parent->LoggedUser->ID);
+        $this->UserVotes = C::get("DB")->to_array('trackid', MYSQLI_ASSOC);
         
   		Core::get('Template')->init('table');
         
@@ -23,18 +30,18 @@ class Helper_Songs_Songs extends CoreHelper {
                 $parity = ($counter % 2 == 0) ? 'even' : 'odd';
                 
                 if(!array_key_exists($VT['addedBy'], $Users)) {
-                    $Users[$VT['addedBy']] = Model_User::loadFromID($VT['addedBy']);
+                    $Users[$VT['addedBy']] = new User($VT['addedBy']);
                 }
                 
                 $Songs[] = array(
                     'ID' => $VT['trackid'],
-                    'SOURCE' => Core::getSource($VT['trackid']),
+                    'SOURCE' => Utility::getSource($VT['trackid']),
                     'COUNT' => $counter,
-                    'TITLE' => Core::displayStr($VT['Title']),
-                    'ARTIST' => Core::displayStr($VT['Artist']),
-                    'DURATION' => Core::get_time($VT['Duration']),
-                    'ALBUM' => Core::displayStr($VT['Album']),
-                    'ADDEDBY' => Core::linkUser($Users[$VT['addedBy']]),
+                    'TITLE' => Utility::displayStr($VT['Title']),
+                    'ARTIST' => Utility::displayStr($VT['Artist']),
+                    'DURATION' => Utility::get_time($VT['Duration']),
+                    'ALBUM' => Utility::displayStr($VT['Album']),
+                    'ADDEDBY' => Utility::linkUser($Users[$VT['addedBy']]),
                     'SCORE' => $VT['Score'],
                     'PARITY' => $parity,
                     'UPCOLOUR' => $this->getColour(1, $VT['trackid']),
@@ -42,13 +49,13 @@ class Helper_Songs_Songs extends CoreHelper {
                 );   
             }
             
-            Core::get('Template')->set("TABLE_ROWS", true, true);
-            Core::get('Template')->set("SONGS", $Songs);
+            C::get('Template')->set("TABLE_ROWS", true, true);
+            C::get('Template')->set("SONGS", $Songs);
         } else {
-            Core::get('Template')->set("TABLE_ROWS", false, true);
+            C::get('Template')->set("TABLE_ROWS", false, true);
         }
         
-		Core::get('Template')->push();
+		C::get('Template')->push();
     }
     
     private function getColour($Direction, $ID) {

@@ -1,6 +1,10 @@
 <?php
 
-class Controller_Player extends CoreController {
+namespace Core\Controller;
+
+use Core;
+
+class Player extends Core\Controller {
     public function action_index() {
         $this->showView('player');
     }

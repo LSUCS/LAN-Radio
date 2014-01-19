@@ -1,9 +1,15 @@
 <?php
 
-class Helper_Toolbox_Name extends CoreHelper {
+namespace Core\Helper\Toolbox;
+
+use \Core as Core;
+use Core\Core as C;
+use Core\Validate;
+
+class Name extends Core\Helper {     
     public function run() {
-        $V = new CoreValidate($_POST);
-        $db = Core::get('DB');
+        $V = new Validate($_POST);
+        $db = C::get('DB');
         
         $db->query("SELECT ID FROM site_events");
         $events = $db->collect('ID');
@@ -12,12 +18,9 @@ class Helper_Toolbox_Name extends CoreHelper {
         
         $E = $V->getErrors();
         if($E) {
-            echo json_encode(array('errors'=>$E));
-            exit;
+            $this->error($E);
         }
         
-        
-        
-        $db->query("UPDATE site_config SET currentEvent = ?", array($_POST['eventID']));
+        $db->query("UPDATE site_config SET currentEvent = ?", $_POST['eventID']);
     }
 }

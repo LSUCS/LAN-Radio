@@ -1,13 +1,20 @@
 <?php
 
-class Helper_Songs_Vote extends CoreHelper {    
+namespace Core\Helper\Songs;
+
+use \Core as Core;
+use Core\Core as C;
+use Core\Validate;
+use Core\Cache;
+
+class Vote extends Core\Helper {
     public function run() {
         
         $direction = $this->arguments[0];
         
         $trackID = $_GET['id'];
         
-        $Val = new CoreValidate(array('id'=>$trackID, 'dir'=>$direction));
+        $Val = new Validate(array('id'=>$trackID, 'dir'=>$direction));
         $Val->val('id', 'trackid', true, "Invalid or missing Track ID");
         $Val->val('dir', 'integer', true, "Invalid Direction", array('minsize'=>0, 'maxsize'=>1));
         
@@ -16,32 +23,32 @@ class Helper_Songs_Vote extends CoreHelper {
             die;
         }
         
-        $db = Core::get('DB');
+        $db = C::get('DB');
         
-        $db->query("SELECT * FROM voting_list WHERE trackid = ?", array($trackID));
+        $db->query("SELECT * FROM voting_list WHERE trackid = ?", $trackID);
         if(!$db->record_count()) {
             die('notrack');
         }
              
-        $db->query("SELECT updown FROM votes WHERE trackid = ? AND userid = ?", array($trackID, $this->parent->LoggedUser->ID));
+        $db->query("SELECT updown FROM votes WHERE trackid = ? AND userid = ?", $trackID, $this->parent->LoggedUser->ID);
         if($db->record_count()) {
             list($vote) = $db->next_record(MYSQLI_NUM);
             if($vote == $direction) die('identical');
             
-            $db->query("UPDATE votes SET updown = ? WHERE trackid = ? AND userid = ?", array($direction, $trackID, $this->parent->LoggedUser->ID));
+            $db->query("UPDATE votes SET updown = ? WHERE trackid = ? AND userid = ?", $direction, $trackID, $this->parent->LoggedUser->ID);
         } else {
             if(!$direction) {
                 //Check if the user has been down voting too much.
-                $db->query("SELECT time FROM votes WHERE updown = 0 AND userid = ? AND time > UNIX_TIMESTAMP()-" . VOTE_TIME . " ORDER BY time ASC", array($this->parent->LoggedUser->ID));
+                $db->query("SELECT time FROM votes WHERE updown = 0 AND userid = ? AND time > UNIX_TIMESTAMP()-" . VOTE_TIME . " ORDER BY time ASC", $this->parent->LoggedUser->ID);
                 if($db->record_count() > VOTE_MAX) {
                     list($voteTime) = $db->next_record(MYSQLI_NUM);
                     $timeToNextVote = time() - $voteTime - VOTE_TIME;
                     die('votemax - ' . $timeToNextVote);
                 }
             }
-            $db->query("INSERT INTO votes (trackid, userid, updown, time) VALUES (?, ?, ?, UNIX_TIMESTAMP())", array($trackID, $this->parent->LoggedUser->ID, $direction));
+            $db->query("INSERT INTO votes (trackid, userid, updown, time) VALUES (?, ?, ?, UNIX_TIMESTAMP())", $trackID, $this->parent->LoggedUser->ID, $direction);
         }
-        Core::get('Cache')->delete('votes_' . $trackID);
+        Cache::delete('votes_' . $trackID);
         
         //Find out the new position in the big table.
         $db->query("SELECT *, @rownum:=@rownum+1 as row_position FROM (
@@ -54,8 +61,7 @@ class Helper_Songs_Vote extends CoreHelper {
         $msgData = array('type'=>'event', 'event'=>'vote', 'data' => $Track);
         
         try{
-            Core::requireLibrary("websocket.client", "phpws/phpws");
-            $msg = WebSocketMessage::create(json_encode($msgData));
+            $msg = phpws_WebSocketMessage::create(json_encode($msgData));
             
             $socket = new WebSocket("ws://" . WEBSOCKET_HOST . ":" . WEBSOCKET_PORT . "/" . WEBSOCKET_SERVICE);
             $socket->open();

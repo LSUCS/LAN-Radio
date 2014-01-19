@@ -1,25 +1,18 @@
 <?php
+
+namespace Core;
+
 /**
  * Base controller/router class, from which all controllers inherit
  */
-
-class CoreController {
+abstract class Controller {
     protected $core;
+    private $action = false;
     const ENFORCE_LOGIN = true;
-    const REQUIRE_ADMIN = false;
     const FALLBACK_TO_INDEX = false;
 
     /**
-     * Controller base constructor.
-     * If you subclass CoreController, please call the parent constructor.
-     */
-    public function __construct() {
-        $this->core = Core::get('Core');
-    }
-
-    /**
      * Main routing function. Override this if you want to change how actions are called.
-     * @throws Core404Exception
      * @param $pieces Pieces of URL
      * @return void
      */
@@ -30,16 +23,27 @@ class CoreController {
         } else {
             $action = 'index';
         }
+        $this->__load($action, $pieces);
+    }
+    
+    /**
+     * Loads the Action of the controller, and stores what it was called
+     * @throws Core\_404Exception     
+     * @param $pieces Pieces of URL
+     * @return void
+     */
+     protected function __load($action, $pieces = array()) {
+        $this->action = $action;
         if(method_exists($this, 'action_' . $action)) {
             call_user_func_array(array($this, 'action_' . $action), array($pieces));
         } else {
             if (static::FALLBACK_TO_INDEX && method_exists($this, 'action_index')) {
                 call_user_func_array(array($this, 'action_index'), array($pieces));
             } else {
-                throw new Core404Exception();
+                throw new _404Exception();
             }
         }
-    }
+     }
 
     /**
      * GO! This function simply checks ENFORCE_LOGIN and calls ENFORCE_LOGIN() if necessary.
@@ -49,13 +53,21 @@ class CoreController {
      */
     public function run($pieces) {
         if (static::ENFORCE_LOGIN) {
-            $this->core->enforceLogin();
-        }
-        if (static::REQUIRE_ADMIN) {
-            $this->core->enforceAdmin();
+            Session::enforceLogin();
         }
 
         $this->__routing($pieces);
+    }
+    
+    /**
+     * Get the name of the called action, without action_ prefix
+     * @throws \Exception
+     * @return string Name of called action
+     */
+    public function getCalledAction() {
+        if (!$this->action)
+            throw new \Exception("getCalledAction called before controller routing occurred!");
+        return $this->action;
     }
 
     /**
@@ -66,8 +78,10 @@ class CoreController {
      * @return void
      */
     public function showView($viewName, $render = true, $arguments = array()) {
-        $controllerName = strtolower(str_replace('Controller_', '', get_class($this)));
-
+        $className = explode('\\', get_class($this));
+        $className = $className[count($className) -1];
+        $controllerName = $className . '\\' . $viewName;
+        
         try {
             /*$cache_locked_var = 'viewenabled_' . $controllerName . '_' . strtolower($viewName);
             $PageEnabled = Core::get('Cache')->get_value($cache_locked_var);
@@ -82,8 +96,8 @@ class CoreController {
             if (!$PageEnabled)
                 $this->core->niceError(123);
             */
-            $className = 'View_' . $controllerName . '_' . $viewName;
-            $Page = new $className($this->core, $arguments);
+            $className = 'Core\\View\\' . $controllerName;
+            $Page = new $className($this, $arguments);
             if ($render) {
                 $this->core->Debug['View'] = "{$className} in views/{$controllerName}/{$viewName}.php";
                 list($usec, $sec) = explode(" ", microtime());
@@ -102,12 +116,14 @@ class CoreController {
      * @return void
      */
     public function useHelper($helperName, $arguments = array()) {
-        $controllerName = strtolower(str_replace('Controller_', '', get_class($this)));
+        $className = explode('\\', get_class($this));
+        $className = $className[count($className) -1];
+        $controllerName = $className . '\\' . $helperName;
 
         try {
-            $className = 'Helper_' . ucfirst($controllerName) . '_' . ucfirst($helperName);
+            $className = 'Core\\Helper\\' . ucfirst($controllerName);
             $StartTime = microtime(true);
-            $Helper = new $className($this->core, $arguments);
+            $Helper = new $className($this, $arguments);
             $Helper->run();
             $EndTime = microtime(true);
 			$this->Debug['Helper'] = "$className";
@@ -133,7 +149,7 @@ class CoreController {
         }
 
         // build URL. this could be expanded!
-        $url = CORE_SERVER . "$controllerName/";
+        $url = Config::CORE_SERVER . "$controllerName/";
         foreach ($pieces as $piece) {
             $url .= $piece . '/';
         }

@@ -1,6 +1,11 @@
 <?php
 
-class Controller_Mpd extends CoreController {
+namespace Core\Controller;
+
+use Core;
+use Core\Core as C;
+
+class Mpd extends Core\Controller {
     public function action_search() {
         $this->useHelper('search');
     }
@@ -8,7 +13,7 @@ class Controller_Mpd extends CoreController {
         $this->useHelper('playerinfo');
     }
     public function action_command($args) {
-        Core::get('Core')->enforceAdmin();
+        C::get('Core')->enforceAdmin();
         $this->useHelper('command', $args);
     }
 }

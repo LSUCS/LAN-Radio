@@ -1,6 +1,10 @@
 <?php
 
-class Controller_Status extends CoreController {
+namespace Core\Controller;
+
+use Core;
+
+class Status extends Core\Controller {
     const ENFORCE_LOGIN = false;
     
     public function action_status() {

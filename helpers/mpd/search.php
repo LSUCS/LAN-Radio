@@ -1,11 +1,15 @@
 <?php
 
-class Helper_Mpd_Search extends CoreHelper {
+namespace Core\Helper\Mpd;
+
+use \Core as Core;;
+
+class Search extends Core\Helper {
     private function connect() {
         Core::requireLibrary('MPD');
-        $this->MPD = new MPD(MPD_HOST, MPD_PORT, MPD_PASSWORD);
+        $this->MPD = new MPD_MPD(MPD_HOST, MPD_PORT, MPD_PASSWORD);
     
-        if(!empty($this->MPD->errStr)) json_encode(array('error' => $this->MPD->errStr));
+        if(!empty($this->MPD->errStr)) $this->error($this->MPD->errStr);
     }
     
     public function run() {
