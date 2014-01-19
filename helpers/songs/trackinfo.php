@@ -11,7 +11,6 @@ class Helper_Songs_Trackinfo extends CoreHelper {
             foreach($Err as $e) echo $e . "\n";
             die;
         }
-        //die($trackID);
         Core::get('DB')->query("SELECT
                         vl.trackid,
                         vl.addedBy,
@@ -36,9 +35,41 @@ class Helper_Songs_Trackinfo extends CoreHelper {
         
         $User = Model_User::loadFromID($TrackInfo['addedBy']);
         
-        $TrackInfo['Username'] = $User->Username;
-        $TrackInfo['Avatar'] = $User->AvatarURL;
+        $T = Core::get('Template');
+        $T->init('trackinfo');
+        $T->set('Title', $TrackInfo['Title']);
+        $T->set('Artist', $TrackInfo['Artist']);
+        $T->set('Album', $TrackInfo['Album']);
+        $T->set('Duration', Core::get_time($TrackInfo['Duration']));
+        $T->set('Votes', $TrackInfo['Votes']);
+        $T->set('Username', $User->username);
+        $T->set('UserID', $User->ID);
+        $T->set('Avatar', $User->avatarURL);
         
-        echo json_encode($TrackInfo);
+        switch(Core::getSource($trackID)) {
+            case 'youtube':
+                $code = array_pop(explode('/', $trackID));
+                $tag = '<iframe width="560" height="315" src="http://www.youtube.com/embed/' . $code . '" frameborder="0" allowfullscreen></iframe>';
+                break;
+            case 'spotify':
+                $tag = '<iframe src="https://embed.spotify.com/?uri=' . $trackID . '" width="250" height="330" frameborder="0" allowtransparency="true"></iframe>';
+                break; 
+        }
+        $T->set('EMBED_TAG', $tag);
+        
+        ob_get_clean();
+        ob_start();
+        Core::get('Template')->push();
+        
+        $info = ob_get_contents();
+        ob_end_clean();
+
+        $title = $TrackInfo['Title'] . ' - ' . $TrackInfo['Artist'];
+        $output = array(
+            'Title' => $title,
+            'Info' => $info
+        );
+
+        echo json_encode($output);       
     }
 }

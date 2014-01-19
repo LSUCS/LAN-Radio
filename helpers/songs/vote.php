@@ -41,6 +41,7 @@ class Helper_Songs_Vote extends CoreHelper {
             }
             $db->query("INSERT INTO votes (trackid, userid, updown, time) VALUES (?, ?, ?, UNIX_TIMESTAMP())", array($trackID, $this->parent->LoggedUser->ID, $direction));
         }
+        Core::get('Cache')->delete('votes_' . $trackID);
         
         //Find out the new position in the big table.
         $db->query("SELECT *, @rownum:=@rownum+1 as row_position FROM (

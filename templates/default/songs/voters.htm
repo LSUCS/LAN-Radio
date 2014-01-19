@@ -1,0 +1,14 @@
+<table id="voters-table">
+    {if:VOTERS}
+        {loop:VOTERS}
+        <tr>
+            <td><a href="{tag:VOTERS[].Link /}">{tag:VOTERS[].Username /}</a></td>
+            <td><span class="vote-{tag:VOTERS[].Vote /}" alt="{tag:VOTERS[].Vote /}"></span></td>
+        </tr>
+        {/loop:VOTERS}
+    {else:VOTERS}
+        <tr>
+            <td>Nobody has voted for this song.</td>
+        </tr>
+    {/if:VOTERS}
+    </table>

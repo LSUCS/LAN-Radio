@@ -17,7 +17,7 @@ class View_History_History extends CorePage{
         Core::get('Template')->set('EVENTS', $Events);
 		Core::get('Template')->push();
 		
-		//$this->showFooter();
+		$this->showFooter();
 	}
 	
 }

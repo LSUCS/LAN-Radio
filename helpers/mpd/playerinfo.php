@@ -42,8 +42,8 @@ class Helper_Mpd_Playerinfo extends CoreHelper {
                     $Return['votes'] = $Info['votes'];
                     
                     $User = Model_User::loadFromID($Info['addedBy']);
-                    $Return['avatar'] = $User->AvatarURL;
-                    $Return['username'] = $User->Username;
+                    $Return['avatar'] = $User->avatarURL;
+                    $Return['username'] = $User->username;
                     
                     if($Return['length'] - $Return['position'] < 10) {
                         $expire = $Return['length'] - $Return['position'];

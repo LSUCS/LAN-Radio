@@ -13,11 +13,20 @@
     }
 });*/
 
-$(function() {
-	dialogBox = $('<div id="track-info"></div>').dialog({autoOpen: false, width: 600});
+$(document).ready(function() {
+	dialogBox = $('<div id="track-info"></div>').dialog({autoOpen: false, width: 600, close: function() { $(this).html(''); }});
     radioJS.refreshTable();
     radioJS.scrollbar = $('#table-container');
     radioJS.scrollbar.tinyscrollbar();
+    
+    /* this hides extra leftover tooltips */
+    $("#main")
+        .on("mouseover", function () {
+            $('.score').tooltip('close');
+        })
+        .on("mouseover", "#voting-table", function (event) {
+            event.stopPropagation();
+        });
 });
 
 var radioJS = {
@@ -220,6 +229,28 @@ var radioJS = {
             success: function(table) {
                 $('#table-goes-here').html(table);
                 radioJS.scrollbar.tinyscrollbar_update('relative');
+                $( ".score" ).tooltip({
+                    position: {
+                        my: "left+40 top",
+                        at: "left bottom",
+                        collision: "flipfit"
+                    },
+                    content: function(callback) {
+                        var id = $(this).attr('id');
+                        id = id.substr(6);
+                        radioJS.getTooltip(id, callback);
+                    },
+                    close: function( event, ui ) {
+                        ui.tooltip.hover(
+                            function () {
+                                $(this).stop(true).fadeTo(400, 1); 
+                            },
+                            function () {
+                                $(this).fadeOut("400", function(){ $(this).remove(); })
+                            }
+                        );
+                    }
+                });
             }
         });
     },
@@ -282,15 +313,14 @@ var radioJS = {
             dataType: "json",
             success: function(trackData) {
                 if(typeof trackData === 'object') {
-                    console.log(trackData);
+                    //console.log(trackData);
                     
                     if(dialogBox.dialog('isOpen') === true) {
                         dialogBox.dialog('close');
                     }
-                    dialogBox.dialog({'title': radioJS.getDialogTitle(trackData)});
-                    dialogBox.html(radioJS.trackDialog(trackData));
-                    console.log(dialogBox.dialog('open'));
-                    //dialog = $('<div id="track-info" title="' + getDialogTitle(trackData) + '">' + trackDialog(trackData) + '</div>').dialog();
+                    dialogBox.dialog({'title': trackData.Title});
+                    dialogBox.html(trackData.Info);
+                    dialogBox.dialog('open');
                 } else {
                     alert('Error: ' + trackData);
                 }
@@ -298,41 +328,12 @@ var radioJS = {
         });
     },
     
-    getDialogTitle: function(data) {
-        return data.Artist + " - " + data.Title;
-    },
-    
-    trackDialog: function(data) {
-        //yayyyy, tables for layout
-        return "<table><tr><td colspan='2'>" + this.playableTrack(data.trackid) + "</td></tr><tr><td>" + this.displayTrackInfo(data) + "</td><td>" + this.displayVoteInfo(data) + "</td></tr></table>";
-    },
-    
-    displayTrackInfo: function(info) {
-        var ret = [info.Title, info.Artist, info.Album, formatTime(info.Duration)];
-        return ret.join("<br />")
-    },
-    
-    playableTrack: function(id) {
-        if(id.indexOf('spotify') !== -1) {
-            return '<iframe src="https://embed.spotify.com/?uri=' + id + '" width="250" height="330" frameborder="0" allowtransparency="true"></iframe>';
-        } else if (id.indexOf('youtube') !== -1) {
-            return '<iframe width="560" height="315" src="http://www.youtube.com/embed/' + this.getYoutubeCode(id) + '" frameborder="0" allowfullscreen></iframe>';
-        } else {
-            return 'a picture or something will go here';
-        }
-    },
-    
-    getYoutubeCode: function(id) {
-        var parts = id.split('/');
-        return parts[parts.length-1];
-    },
-    
-    displayVoteInfo: function(data) {
-        var ret = [data.Votes, formatUsername(data.addedBy, data.Username)];
-        return ret.join("<br />");
-    },
-    
-    clickVotes: function(data) {
-        
+    getTooltip: function(id, callback) {
+        $.get(  '/songs/votes/',
+                {'id': id},
+                function(voteData) {
+                    callback(voteData);
+                }
+        );
     }
 }

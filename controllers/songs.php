@@ -13,6 +13,10 @@ class Controller_Songs extends CoreController {
         $this->useHelper('vote', $args);
     }
     
+    public function action_votes() {
+        $this->useHelper('votes');
+    }
+    
     public function action_trackinfo() {
         $this->useHelper('trackinfo');
     }

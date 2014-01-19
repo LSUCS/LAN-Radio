@@ -14,7 +14,7 @@
                         <a href="#" onclick="radioJS.vote(1,'{tag:SONGS[].ID /}'); event.stopPropagation(); return false;">
                             <button id="button-up-{tag:SONGS[].ID /}" class="voteup{tag:SONGS[].UPCOLOUR /} votebtn"></button>
                         </a>
-                        <a onclick="radioJS.clickVotes('{tag:SONGS[].ID}'); event.stopPropagation();" id="score-{tag:SONGS[].ID /}" class="score">{tag:SONGS[].SCORE /}</a>
+                        <span id="score-{tag:SONGS[].ID /}" title="" class="score">{tag:SONGS[].SCORE /}</span>
                         <a href="#" onclick="radioJS.vote(0,'{tag:SONGS[].ID /}'); event.stopPropagation(); return false;">
                             <button id="button-down-{tag:SONGS[].ID /}" class="votedown{tag:SONGS[].DOWNCOLOUR /} votebtn"></button>
                         </a>

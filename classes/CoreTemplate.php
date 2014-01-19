@@ -161,10 +161,12 @@ class CoreTemplate {
          Method: set_cloop()
          Sets a cloop (case loop).
      \*--------------------------------------------------------------*/
-    public function set_cloop($tag, $array, $cases) {
+    public function set_cloop($tag, $casename, $array, $cases) {
         $this->carrays[$tag] = array(
             'array' => $array,
-            'cases' => $cases);
+            'cases' => $cases,
+            'casename' => $casename
+        );
     }
 
     /*--------------------------------------------------------------*\
@@ -304,10 +306,10 @@ class CoreTemplate {
 
         // Process the loop
         foreach ($array as $key => $value) {
-            if (is_numeric($key) && is_array($value)) {
+            if (is_array($value) || is_object($value)) {
                 $i = $loop;
                 foreach ($value as $key2 => $value2) {
-                    if (!is_array($value2)) {
+                    if (!is_array($value2) && !is_object($value2)) {
                         // Replace associative array tags
                         $i = str_replace($this->get_tag($tag . '[].' . $key2), $value2, $i);
                     }
@@ -316,11 +318,9 @@ class CoreTemplate {
                         $i = $this->parse_loop($tag . '[].' . $key2, $value2, $i);
                     }
                 }
-            }
-            elseif (is_string($key) && !is_array($value)) {
+            } elseif (is_string($key) && !is_array($value)) {
                 $contents = str_replace($this->get_tag($tag . '.' . $key), $value, $contents);
-            }
-            elseif (!is_array($value)) {
+            } elseif (!is_array($value)) {
                 $i = str_replace($this->get_tag($tag . '[]'), $value, $loop);
             }
 
@@ -342,23 +342,32 @@ class CoreTemplate {
         $loop = $this->get_statement($t, $contents);
 
         // Set up the cases
-        $array['cases'][] = 'default';
+        $array['cases'][] = 'DEFAULT';
         $case_content = array();
         $parsed = NULL;
+        
+        $casename = $array['casename'];
+        unset($array['casename']);
 
         // Get the case strings
         foreach ($array['cases'] as $case) {
-            $ctags[$case] = $this->get_tags($case, 'case:');
+            $ctags[$case] = $this->get_tags($case, $casename . ':');
             $case_content[$case] = $this->get_statement($ctags[$case], $loop);
         }
 
         // Process the loop
-        foreach ($array['array'] as $key => $value) {
-            if (is_numeric($key) && is_array($value)) {
+        foreach ($array['array'] as $value) {
+            if (is_array($value) || is_object($value)) {
                 // Set up the cases
-                if (isset($value['case'])) $current_case = $value['case'];
-                else $current_case = 'default';
-                unset($value['case']);
+                if (is_object($value) && isset($value->$casename)) {
+                    $current_case = $value->$casename;
+                    unset($value->$casename);
+                } elseif(is_array($value) && isset($value[$casename])) {
+                    $current_case = $value[$casename];
+                    unset($value[$casename]);
+                } else {
+                    $current_case = 'DEFAULT';
+                }
                 $i = $case_content[$current_case];
 
                 // Loop through each value

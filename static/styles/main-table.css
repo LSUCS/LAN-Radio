@@ -219,3 +219,59 @@
     -khtml-user-select: none;
     -webkit-user-select: none;
 }
+
+/* Fix for random 8px padding I can't see where is coming from */
+#voters-table:first-child {
+    margin-top: -8px;
+}
+#voters-table .vote-up, #voters-table .vote-down {
+    display: block;
+    height: 16px;
+    width: 16px;
+    padding: 5px;
+}
+#voters-table .vote-up {
+    background: url('imgs/arrow_up_green_16x16.png') center 10px no-repeat;
+}
+#voters-table .vote-down {
+    background: url('imgs/arrow_down_red_16x16.png') center 10px no-repeat;
+}
+#voters-table a:hover {
+    color:#F25D23;
+}
+
+.trackinfo .embedLink {
+    padding-bottom: 10px;
+    border-bottom: 2px solid #AAA;
+    text-align: center;
+    margin: auto;
+}
+.trackinfo .track-details {
+    margin-top: 10px;
+    float: left;
+    max-width: 70%;
+}
+.trackinfo .vote-info {
+    float: right;
+    max-width: 25%;
+}
+.trackinfo .avatar {
+    max-width: 110px;
+    max-height: 150px;
+    margin: auto;
+}
+.trackinfo .vote-info {
+    padding: 4px;
+    margin: 2px;
+    border-radius: 5px;
+}
+.trackinfo .tag {
+    font-weight: bold;
+    width: 65px;
+    display: inline-block;
+    text-align: right;
+}
+.trackinfo .track-details div {
+    text-indent: -70px;
+    padding-left: 75px;
+}

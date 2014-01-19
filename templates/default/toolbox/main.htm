@@ -32,35 +32,37 @@
             <tr>
                 <td class="table-header" colspan="2">Global Settings</td>
             </tr>
+            <tr>
+                <td colspan="2">&nbsp;</td>
+            </tr>
             <!-- Libraries -->
             <tr>
                 <td class="label" colspan="2">Available Libraries</td>
             </tr>
             <tr>
-                <td></td>
-                <td>
+                <td colspan="2">
                     <input type="checkbox" name="spotify" id="spotify-button" {if:SPOTIFY}checked="checked"{/if:SPOTIFY} />
                     <label for="spotify-button">Spotify</label>
                 </td>
             </tr>
             <tr>
-                <td></td>
-                <td>
+                <td colspan="2">
                     <input type="checkbox" name="youtube" id="youtube-button" {if:YOUTUBE}checked="checked"{/if:YOUTUBE} />
                     <label for="youtube-button">Youtube</label>
                 </td>
             </tr>
             <tr>
-                <td></td>
-                <td>
+                <td colspan="2">
                     <input type="checkbox" name="local" id="local-button" {if:LOCAL}checked="checked"{/if:LOCAL} />
                     <label for="local-button">Local</label>
                 </td>
             </tr>
             <!-- End Libraries -->
             <tr>
-                <td class="label">Allow Upload</td>
-                <td><input type="checkbox" name="upload" {if:UPLOAD}checked="checked"{/if:UPLOAD} /></td>
+                <td colspan="2">
+                    <input type="checkbox" name="upload" {if:UPLOAD}checked="checked"{/if:UPLOAD} />
+                    <label for="upload">Allow Upload</label>
+                </td>
             </tr>
             <tr>
                 <td colspan="2" class="center"><input class="button" type="submit" value="Submit" /></td>
@@ -68,7 +70,9 @@
         </form>
     </table>
     
-    <h3>Event Settings</h3>
+    <br />
+    <br />
+    <h3 class="table-header">Event Settings</h3>
     <table>
         <form method="post" action="/toolbox/add">
             <tr>
@@ -78,14 +82,14 @@
             </tr>
         </form>
         <tr>
-            <td colspan="5" style="font-weight: bold;">Current Events</td>
+            <td colspan="5" style="font-weight: bold;">Events</td>
         </tr>
     {loop:EVENTS2}
         <form method="post" action="/toolbox/start">
             <input type="hidden" name="eventID" value="{tag:EVENTS2[].ID /}" />
             <tr>
                 <td colspan="2">
-                    <input type="text" value="{tag:EVENTS2[].Name /}" />
+                    <span>{tag:EVENTS2[].Name /}</span>
                 </td>
                 <td>
                     <input class="button" type="submit" name="startEvent" {tag:EVENTS2[].START_ACTION /} />

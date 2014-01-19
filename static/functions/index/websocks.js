@@ -1,6 +1,6 @@
 /* So I learnt how to do JS objects/classes... */
 var ws = {
-    url: "ws://192.168.0.26",
+    url: "ws://192.168.0.9",
     port: 1521,
     service: "radio",
     sock: null,
@@ -34,6 +34,7 @@ var ws = {
             else if(eventData.event == "delete") ws.ondelete(eventData.song);
             else if(eventData.event == "vote") ws.onvote(eventData.song);
             else if(eventData.event == "next") ws.onnext(eventData.song);
+            else if(eventData.event == "listeners") ws.onlisteners(eventData.listeners);
         }
     },
     
@@ -81,6 +82,10 @@ var ws = {
     onclose: function() {
         radioJS.websocks = false;
         console.log("closed");
+    },
+    
+    onlisteners: function(listeners) {
+        
     },
     
     send: function(msg) {

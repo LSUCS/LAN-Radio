@@ -153,6 +153,10 @@ a {
     text-align: center;
 }
 
+.strong {
+    font-weight: bold;
+}
+
 
 /* debug stuff */
 

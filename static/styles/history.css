@@ -201,3 +201,11 @@
     float: right;
     font-size: 20px;
 }
+
+.table-container table {
+    margin: 20px auto;
+    position: relative;
+    clear: both;
+    overflow: hidden;
+    border-radius: 0.3em 0.3em 0 0 !important;
+}

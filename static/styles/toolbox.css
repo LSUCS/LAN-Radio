@@ -28,3 +28,12 @@ li {
 #add-song {
     width: 250px;
 }
+
+.table-header {
+    font-size: 20px;
+    text-decoration: underline;
+}
+
+table .button {
+    margin: 3px;
+}

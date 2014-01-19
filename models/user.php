@@ -13,7 +13,7 @@ class Model_User extends CoreModel {
         $this->ID = null;
         $this->Username = null;
         $this->Email = '';
-        $this->AvatarURL = '';
+        $this->avatarURL = '';
         $this->isAdmin = false;
     }
 
