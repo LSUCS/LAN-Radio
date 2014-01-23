@@ -25,6 +25,7 @@
 }
 
 #library-buttons .library-icon {
+    width: 25px;
     position: relative;
     top: 5px;
 }
@@ -41,12 +42,21 @@
     z-index:2;
     height: 25px;
     line-height: 25px;
+    padding-top: 4px;
 }
 #searchinput{
     padding: 0 5px 0 5px;
+    text-overflow: ellipsis;
+}
+#searchinput.loading {
+    padding-right: 25px;
 }
 #searchfield {
     color: #03214D;
+}
+#searchLoading {
+    top: 9px;
+    left: 258px;
 }
 #search-results {
 	color:#ffffff;

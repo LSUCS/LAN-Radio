@@ -9,20 +9,18 @@ class Login extends Core\Controller {
     const ENFORCE_LOGIN = false;
 
     protected function __routing($pieces) {
-        if (Session::loggedIn()) { // logged in
-            if ($pieces[0] != 'logout') {
+        if(Session::loggedIn()) {
+            if($pieces[0] != 'logout') {
                 $this->redirect('index');
-                exit();
             } else {
-                $this->action_logout();
+                $this->__load('logout');
                 $this->redirect('login', 'index');
-                exit();
             }
-        } else { // logged out
-            if ($pieces[0] == 'login') {
-                exit($this->action_login());
+        } else {
+            if(isset($pieces[0])) {
+                $this->__load($pieces[0], $pieces);
             } else {
-                exit($this->action_index());
+                $this->__load('index');
             }
         }
     }

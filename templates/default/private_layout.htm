@@ -61,7 +61,17 @@
         </div>
         {if:SEARCH}
         <form id="searchbox" method="get" onsubmit="search.updateSearch(); return false;">
-            <span class="label">Search: </span><input type="text" id="searchinput" onfocus="search.updateSearch();" />
+            <span class="label">Search: </span><input type="text" id="searchinput" class="loading" onfocus="search.updateSearch();" />
+            <div id="searchLoading" class="floatingCirclesG">
+                <div class="f_circleG" id="frotateG_01"></div>
+                <div class="f_circleG" id="frotateG_02"></div>
+                <div class="f_circleG" id="frotateG_03"></div>
+                <div class="f_circleG" id="frotateG_04"></div>
+                <div class="f_circleG" id="frotateG_05"></div>
+                <div class="f_circleG" id="frotateG_06"></div>
+                <div class="f_circleG" id="frotateG_07"></div>
+                <div class="f_circleG" id="frotateG_08"></div>
+            </div>
             <div id="library-buttons">
                 <ul>
                     <li>
@@ -72,11 +82,16 @@
                     </li>
                     <li>
                         <label for="library-youtube">
-                            <img src="{tag:STATIC_SERVER /}images/youtube-icon.png" alt="Youtube Icon" title="Youtube" class="library-icon" />
+                            <img src="{tag:STATIC_SERVER /}images/youtube-icon.png" alt="Youtube Icon" title="YouTube" class="library-icon" />
                         </label>
                         <input type="checkbox" class="library-button" id="library-youtube" />
                     </li>
-
+                    <li>
+                        <label for="library-soundcloud">
+                            <img src="{tag:STATIC_SERVER /}images/soundcloud-icon.png" alt="SoundCloud Icon" title="SoundCloud" class="library-icon" />
+                        </label>
+                        <input type="checkbox" class="library-button" id="library-soundcloud" />
+                    </li>
                 </ul>
             </div>
         </form>

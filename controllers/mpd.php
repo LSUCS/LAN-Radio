@@ -4,6 +4,7 @@ namespace Core\Controller;
 
 use Core;
 use Core\Core as C;
+use Core\Session;
 
 class Mpd extends Core\Controller {
     public function action_search() {
@@ -13,7 +14,7 @@ class Mpd extends Core\Controller {
         $this->useHelper('playerinfo');
     }
     public function action_command($args) {
-        C::get('Core')->enforceAdmin();
+        Session::enforceAdmin();
         $this->useHelper('command', $args);
     }
 }

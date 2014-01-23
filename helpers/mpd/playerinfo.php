@@ -6,10 +6,12 @@ use \Core as Core;
 use Core\Cache;
 use Core\Core as C;
 use Core\Model\User;
+use Core\Config;
 
 class Playerinfo extends Core\Helper {
     private function connect() {
-        $this->MPD = new MPD_MPD(MPD_HOST, MPD_PORT, MPD_PASSWORD);
+        C::loadLibrary('MPD/MPD.php');
+        $this->MPD = new \MPD(Config::MPD_HOST, Config::MPD_PORT, Config::MPD_PASSWORD);
     
         if(!empty($this->MPD->errStr)) {
             $this->error($this->MPD->errStr);

@@ -5,6 +5,7 @@ namespace Core\Model;
 use \Core as Core;
 use Core\Core as C;
 use Core\Cache;
+use Core\ModelNoSuchRecordException;
 
 class User extends Core\Model {
 
@@ -46,7 +47,7 @@ class User extends Core\Model {
             $out = $Auth->getUserByID($id);
             
             if(array_key_exists('error', $out)) {
-                throw new CoreModelNoSuchRecordException();
+                throw new ModelNoSuchRecordException('User does not Exist');
             }
             
             Cache::set($cK, $out);

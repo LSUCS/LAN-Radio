@@ -22,8 +22,8 @@ class Router {
     /**
      * Singleton: no public constructor
      */
-    private function __construct() {
-    }
+    private function __construct() {        
+    }    
 
     /**
      * Singleton: getInstance instantiates if necessary and returns self

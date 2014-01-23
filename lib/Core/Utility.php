@@ -232,7 +232,7 @@ class Utility {
      * @return bool
      */
     public static function validID($ID) {
-        return preg_match('/(spotify:(?:track:[a-z0-9]+)|http:\/\/gdata\.youtube\.com\/feeds\/api\/videos\/[a-z0-9-_]+)/i', $ID); 
+        return preg_match('/(spotify:(?:track:[a-z0-9]+)|http:\/\/gdata\.youtube\.com\/feeds\/api\/videos\/[a-z0-9-_]+|soundcloud:song;\d+)/i', $ID); 
     }
     
     public static function unEscapeID($ID) {
@@ -242,6 +242,9 @@ class Utility {
     public static function getSource($ID){
         if(strstr($ID, "spotify") !== false) {
             return "spotify";
+        }
+        if(strstr($ID, "soundcloud") !== false) {
+            return "soundcloud";
         }
         if(strstr($ID, "gdata.youtube.com") !== false) {
             return "youtube";

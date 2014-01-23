@@ -5,6 +5,7 @@
 
     <link rel="stylesheet" href="{tag:STATIC_SERVER /}styles/player.css" />
     <script type="text/javascript" src="{tag:STATIC_SERVER /}functions/jquery.js"></script>
+    <script type="text/javascript" src="{tag:STATIC_SERVER /}functions/jquery-ui.js"></script>
     <script type="text/javascript" src="{tag:STATIC_SERVER /}functions/player/player.js"></script>
     <script type="text/javascript" src="{tag:STATIC_SERVER /}functions/player/jquery.jplayer.min.js"></script>
     <script type="text/javascript">
@@ -22,7 +23,7 @@
                     $(this).jPlayer("setMedia", stream);
                 },
                 swfPath: '{tag:STATIC_SERVER /}functions/player',
-                supplied: "mp3, oga",
+                supplied: "oga, mp3",
                 cssSelectorAncestor: "#player",
                 pause: function() {
                     $(this).jPlayer('clearMedia');
@@ -74,13 +75,19 @@
     <div id="jplayer"></div>
 
     <div id="player" class="jp-audio jp-controls">
-        <a id="play-pause" href="#">
+        <a id="play-pause" href="#" onclick="event.preventDefault();">
             <div class="play"></div>
         </a>
         <div id="track-info">
             <span id="song"></span>
             <span id="artist">Artist</span>
         </div>
+        <div id="sliderContainer">   
+            <span class="tooltip"></span>   
+            <div id="slider"></div>  
+            <span class="volume"></span>  
+        </div>  
+        
         <div id="time-info">
             <div id="bar-container">           
                 <div id="current-time">0:00</div>

@@ -79,7 +79,7 @@ function successfulLogin(){
 	$('#foot').html("");
 	$('#foot').animate({height: '100%'}, 250, function(){ 
         $('#foot').animate({top: 0, height: '40px'}, function(){
-		  //document.location = "/index/";
+		  document.location = "/index/";
 		});
     });
 }

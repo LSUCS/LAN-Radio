@@ -8,6 +8,7 @@ $(function () {
     });*/
     
     $('#search-results').resizable();
+    $('#searchLoading').hide();
 });
 
 var search = {
@@ -32,44 +33,42 @@ var search = {
             "data": {'search': query, 'libraries': libraries.join('|')},
             "dataType": "json",
             "success": function(data) {
+                $('#searchLoading').hide();
                 if(typeof data === 'object') {
-                    console.log(data);
-
                     search.showTracks(search.filterSongs(data));
                 }
            }
         });
+        
+        $('#searchinput').addClass('loading');
+        $('#searchLoading').show();
     },
     
     filterSongs: function(data) {
         for(d in data) {
-            if(data[d].Time == "0") delete data[d];
+            if(data[d].Time == "0" || data[d].Time > 1500) delete data[d];
         }
         return data;
     },
     
     getLibrary: function(file) {
         if(file.indexOf('spotify') !== -1) return 'spotify';
+        if(file.indexOf('soundcloud') !== -1) return 'soundcloud';
         if(file.indexOf('gdata.youtube.com') !== -1) return 'youtube';
-        return local;
+        return 'local';
     },
     
     showTracks: function(data) {
         var html = "<table id='search-results-table'><thead><tr><th class='icon'></th><th>Track Name</th><th>Artist/Uploader</th><th></th><th>Album</th></tr></thead><tbody>";
-        //var limit = (data.length > 20) ? 20 : data.length;
-        var limit = data.length;
         var row = 'even';
-        var current = 0;
         for(t in data) {
             row = (row === 'even') ? 'odd' : 'even';
             html += "<tr id='" + escapeID(data[t].file) + "' class='row" + row + "'><td>";
             html += "<img class='search-library-icon' src='/static/images/" + this.getLibrary(data[t].file) + "-icon.png' />";
             html += "</td><td>" + data[t].Title + "</td><td>" + data[t].Artist + "</td><td>";
             html += formatTime(data[t].Time) + "</td><td>" + data[t].Album + "</td></tr>";
-            if(++current > limit) break;
         }
         html += "</tbody></table>";
-        //html = this.addTableEvents($(html));
     
         $('#search-results').html(html);
         this.showSearch();
