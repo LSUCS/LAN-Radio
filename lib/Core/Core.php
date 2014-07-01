@@ -31,10 +31,14 @@ class Core {
         error_reporting(PHP_ERROR_REPORTING);
         set_error_handler(array('\\Core\\Core', 'registerError'));
         register_shutdown_function(array('\\Core\\Core', 'coreShutdown'));
-                
+        
         $C = new Core();
         self::register('Core', $C);
         $C->Debug['RequestedPage'] = $_SERVER['PHP_SELF'];
+        
+        list($usec, $sec) = explode(" ", microtime());
+        $C->renderStarted = $usec + $sec;
+        
         Session::handleSessions();
         if(Session::loggedIn()) {
             $C->LoggedUser = $_SESSION['logged_user'];

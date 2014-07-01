@@ -3,7 +3,7 @@
 namespace Core;
 
 //Auto loading
-require(dirname(__FILE__) . DIRECTORY_SEPARATOR . "lib" . DIRECTORY_SEPARATOR . "Core" . DIRECTORY_SEPARATOR . "Autoloader.php");
+require(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . "lib" . DIRECTORY_SEPARATOR . "Core" . DIRECTORY_SEPARATOR . "AutoLoader.php");
 
 // Here goes
 AutoLoader::initialise();
@@ -22,9 +22,11 @@ $db->query("SELECT *, @rownum:=@rownum+1 as row_position FROM (
 $songs = $db->to_array();
 $removeSongs = array_slice($songs, 50);
 
+echo "deleting " . count($removeSongs) . "\n";
+
 foreach($removeSongs as $r) {
-    $db->query("DELETE FROM voting_list WHERE trackid = ?", array($r['trackid']));
-    $db->query("DELETE FROM votes WHERE trackid = ?", array($r['trackid']));    
+    $db->query("DELETE FROM voting_list WHERE trackid = ?", $r['trackid']);
+    $db->query("DELETE FROM votes WHERE trackid = ?", $r['trackid']);
 }                        
 
 ?>

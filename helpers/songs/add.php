@@ -66,7 +66,8 @@ class Add extends Core\Helper {
                         );
                         break;
                     case 'soundcloud':
-                        $soundcloudID = substr($trackID, strpos($trackID, ';') +1 );
+                        $lastDot = strrpos($trackID, '.');
+                        $soundcloudID = substr($trackID, $lastDot +1 );
                         $data = $this->lookupJSON('http://api.soundcloud.com/tracks/' . $soundcloudID . '.json?client_id=' . Config::SOUNDCLOUD_CLIENT_ID);
                         
                         $Track = array(

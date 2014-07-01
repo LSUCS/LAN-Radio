@@ -46,7 +46,7 @@ define("MPD_CMD_LSDIR", "lsinfo");
 define("MPD_CMD_SEARCH", "search");
 define("MPD_CMD_START_BULK", "command_list_begin");
 define("MPD_CMD_END_BULK", "command_list_end");
-define("MPD_CMD_FIND", "find");
+define("MPD_CMD_FIND", "libfind");
 define("MPD_CMD_RANDOM", "random");
 define("MPD_CMD_SEEK", "seek");
 define("MPD_CMD_PLSWAPTRACK", "swap");

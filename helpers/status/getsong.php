@@ -16,8 +16,7 @@ class Getsong extends Core\Helper {
         
         list($ID, $Score, $addedBy, $DateAdded) = C::get('DB')->next_record(MYSQLI_NUM);
         echo $ID;
-        die;        
-        
+        //die;
         C::get('DB')->query("INSERT INTO history (trackid, votes, addedBy, datePlayed, dateAdded, eventID) 
                         VALUES (?, ?, ?, NOW(), ?, ?)", 
                         $ID, $Score, $addedBy, $DateAdded, Settings::get('currentEvent'));

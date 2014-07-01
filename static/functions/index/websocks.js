@@ -1,6 +1,6 @@
 /* So I learnt how to do JS objects/classes... */
 var ws = {
-    url: "ws://192.168.0.9",
+    url: "ws://192.168.0.26",
     port: 1521,
     service: "radio",
     sock: null,

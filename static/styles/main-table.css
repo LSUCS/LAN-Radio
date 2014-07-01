@@ -5,6 +5,9 @@
 .voting-table a{
     color:inherit;
 }
+.vote-info a{
+    outline:none;
+}
 .voting-table .col6 a:hover{
     color:#F25D23;
     border-color:#F25D23;

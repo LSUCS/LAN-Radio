@@ -31,6 +31,7 @@ class Settings {
         $db = Core::get('DB');
         $db->query("SELECT * FROM settings");
         self::$settings = $db->to_array("setting", MYSQLI_ASSOC);
+        self::$loaded = true;        
     }
     
     private static function checkSetting($setting) {

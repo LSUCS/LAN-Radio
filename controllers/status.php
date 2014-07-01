@@ -7,7 +7,7 @@ use Core;
 class Status extends Core\Controller {
     const ENFORCE_LOGIN = false;
     
-    public function action_status() {
+    public function action_index() {
         $this->useHelper('status');
     }
     public function action_getsong() {

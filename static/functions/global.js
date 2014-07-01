@@ -1,5 +1,5 @@
 function escapeID(ID) {
-    return ID.replace( /(:|\.|\[|\]|\/)/g, "\\$1" );
+    return ID.replace( /(:|\.|\[|\]|\/|\s)/g, "\\$1" );
 }
 
 function formatTime(time) {

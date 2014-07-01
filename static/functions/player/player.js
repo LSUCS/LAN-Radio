@@ -48,6 +48,11 @@ $(function() {
 		stop: function(event,ui) {
 		    tooltip.fadeOut('fast');
 		},
+        
+        change: function() {
+            var volume = parseInt($($('#slider').children()[0]).css('width'))/100;
+            $("#jplayer").jPlayer('volume', volume);
+        }
 	});
     
 });
