@@ -9,6 +9,7 @@ use Core\Config;
 
 class Getsong extends Core\Helper {
     public function run() {
+
         C::get('DB')->query("SELECT 
                         trackid, Score, addedBy, addedDate FROM songlist
                     LIMIT 1");
@@ -16,7 +17,7 @@ class Getsong extends Core\Helper {
         
         list($ID, $Score, $addedBy, $DateAdded) = C::get('DB')->next_record(MYSQLI_NUM);
         echo $ID;
-        //die;
+        
         C::get('DB')->query("INSERT INTO history (trackid, votes, addedBy, datePlayed, dateAdded, eventID) 
                         VALUES (?, ?, ?, NOW(), ?, ?)", 
                         $ID, $Score, $addedBy, $DateAdded, Settings::get('currentEvent'));

@@ -1,12 +1,12 @@
 $(document).ready(function() {
-    history.changeTable('recent');
+    historyPage.changeTable('recent');
     
     $('#eventSelector').on("change", function() {
-        history.changeTable(history.currentTable, $(this).val(), 1);
+        historyPage.changeTable(historyPage.currentTable, $(this).val(), 1);
     })
 });
 
-var history = {
+var historyPage = {
     changingTable: false,
     scrollbar: false,
     currentTable: '',
@@ -52,7 +52,7 @@ var history = {
         $.get(
             "/history/table/" + data,
             function(data) {
-                history.createTable(data, direction);
+                historyPage.createTable(data, direction);
            }
         );
         
@@ -102,7 +102,7 @@ var history = {
             duration: 1000,
             complete: function() {
                 table.css('top', '0');
-                history.cleanUp(tableToRemove);
+                historyPage.cleanUp(tableToRemove);
             }
         });
     },

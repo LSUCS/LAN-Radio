@@ -66,7 +66,7 @@ html, body {height: 100%;}
 }
 #adminlinks {
     position: absolute;
-    left: 45%;
+    left: 43%;
 }
 #adminlinks a {
     color: #FFF;
@@ -97,17 +97,24 @@ html, body {height: 100%;}
 
 #header #navigation {
     display: inline;
-    position:absolute;
+    position: absolute;
     top:65px;
-    left:50%;
+    left:calc(50% - 90px);
     width: 120px;
     overflow:visible;
-    margin-left:-60px;
 }
 
 #header #navigation ul {
     display: inline;
     text-decoration: none;
+}
+
+#header #navigation ul a:first-child {
+    float: left;
+}
+
+#header #navigation ul a {
+    float: right;
 }
 
 #header #navigation ul li {
